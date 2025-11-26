@@ -11,7 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Plant01.Upper.Application\Plant01.Upper.Application.csproj" />
     <ProjectReference Include="..\Plant01.Upper.Infrastructure\Plant01.Upper.Infrastructure.csproj" />
-    <ProjectReference Include="..\Plant01.Upper.Presentation.Wpf\Plant01.Upper.Presentation.Wpf.csproj" />
+    <ProjectReference Include="..\Plant01.Upper.Shell.Core\Plant01.Upper.Shell.Core.csproj" />
     <ProjectReference Include="..\Plant01.WpfUI\Plant01.WpfUI.csproj" />
   </ItemGroup>
 
