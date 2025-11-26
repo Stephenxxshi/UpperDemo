@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using Microsoft.Extensions.DependencyInjection;
 
 using Plant01.Upper.Presentation.Core.Models;
 
-using System;
 using System.Collections.ObjectModel;
 
 namespace Plant01.Upper.Presentation.Core.ViewModels;
@@ -44,7 +44,7 @@ public partial class ShellViewModel : ObservableObject
 
     public ShellViewModel()
     {
-        
+
     }
     public ShellViewModel(IServiceProvider serviceProvider)
     {
