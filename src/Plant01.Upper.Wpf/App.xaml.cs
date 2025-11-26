@@ -3,6 +3,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Presentation.Bootstrapper;
+using Plant01.WpfUI.Helpers;
+using System.Windows.Media;
 
 using System.Windows;
 
@@ -40,6 +42,9 @@ public partial class App : System.Windows.Application
         }
 
         RegisterEvents();
+
+        // Initialize Theme (Ant Design Blue)
+        // ThemeManager.ApplyTheme(Color.FromRgb(0x16, 0x77, 0xff), ThemeType.Light);
 
         await Host.StartAsync();
 

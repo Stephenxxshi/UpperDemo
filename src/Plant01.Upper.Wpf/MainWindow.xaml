@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:Plant01.Upper.Wpf"
         xmlns:vm ="clr-namespace:Plant01.Upper.Presentation.Core.ViewModels;assembly=Plant01.Upper.Presentation.Core"
         xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+        xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance vm:ShellViewModel, IsDesignTimeCreatable=True}"
         Title="{Binding Title}" Height="450" Width="800">
@@ -15,6 +16,19 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/NavigateDataTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="WindowCloseButtonStyle" TargetType="Button" BasedOn="{StaticResource AntDesign.Button.Text}">
+                <Setter Property="Content" Value="✕"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Padding" Value="10"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ErrorColor}}"/>
+                        <Setter Property="Background" Value="#1AFF0000"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Window.DataContext>
@@ -33,41 +47,47 @@
 
         <!--  LOGO  -->
         <Grid Grid.Row="0" Grid.Column="0">
-            <Border Background="{StaticResource BackGround}" Style="{StaticResource SidebarBorder}">
+            <Border Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}" 
+                    BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColorSplit}}"
+                    BorderThickness="0,0,1,0">
                 <Image Width="80"
                Height="20"
                Source="/Assets/Images/Copyright.png"
-               Style="{StaticResource ProductLogo}" />
+               Margin="10" />
             </Border>
         </Grid>
 
         <!--  时间  -->
-        <Grid Grid.Row="0" Grid.Column="1" Background="{StaticResource BackGround}">
+        <Grid Grid.Row="0" Grid.Column="1" Background="{DynamicResource {x:Static themes:DesignTokenKeys.BodyBackground}}">
             <Image Margin="0,0,100,0" HorizontalAlignment="Right" Source="/Assets/Images/TitleBackgournd.png" />
             <Border Grid.Row="0"
             Grid.Column="1"
             VerticalAlignment="Center"
             Panel.ZIndex="10"
             Background="Transparent"
-            Style="{StaticResource NavbarBorder}">
+            BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColorSplit}}"
+            BorderThickness="0,0,0,1">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseMove">
                         <i:InvokeCommandAction Command="{Binding Path=OnDragCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <Grid>
-                    <TextBlock Margin="10,0,0,0" Style="{StaticResource Clock}" Text="{Binding Path=CurrentTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss dddd}, ConverterCulture=zh-CN}" />
+                    <TextBlock Margin="10,0,0,0" 
+                               Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"
+                               FontSize="14"
+                               VerticalAlignment="Center"
+                               Text="{Binding Path=CurrentTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss dddd}, ConverterCulture=zh-CN}" />
                     <Button Command="{Binding Path=OnClosedCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                    Foreground="Red"
                     IsTabStop="False"
-                    Style="{StaticResource WindowClose}" />
+                    Style="{StaticResource WindowCloseButtonStyle}" />
                 </Grid>
             </Border>
         </Grid>
 
         <!--  侧边导航栏  -->
-        <Grid Grid.Row="1" Grid.Column="0" Panel.ZIndex="10">
+        <Grid Grid.Row="1" Grid.Column="0" Panel.ZIndex="10" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <ItemsControl ItemsSource="{Binding MenuItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -91,7 +111,7 @@
         </Grid>
 
         <!--  版本号  -->
-        <Grid Grid.Row="2" Grid.Column="0" Background="{StaticResource BackGround}">
+        <Grid Grid.Row="2" Grid.Column="0" Background="{DynamicResource {x:Static themes:DesignTokenKeys.BodyBackground}}">
             <TextBlock HorizontalAlignment="Center"
                VerticalAlignment="Center"
                Foreground="White"
