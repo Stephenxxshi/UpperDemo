@@ -8,6 +8,7 @@ namespace Plant01.WpfUI.Themes
     {
         private Color _primaryColor = Color.FromRgb(0x16, 0x77, 0xff); // Default Blue
         private ThemeType _themeType = ThemeType.Light;
+        private DensityType _density = DensityType.Default;
 
         public Color PrimaryColor
         {
@@ -29,6 +30,16 @@ namespace Plant01.WpfUI.Themes
             }
         }
 
+        public DensityType Density
+        {
+            get => _density;
+            set
+            {
+                _density = value;
+                UpdateTheme();
+            }
+        }
+
         public AntDesignThemeDictionary()
         {
             UpdateTheme();
@@ -36,7 +47,7 @@ namespace Plant01.WpfUI.Themes
 
         private void UpdateTheme()
         {
-            ThemeManager.ApplyThemeToDictionary(this, _primaryColor, _themeType);
+            ThemeManager.ApplyThemeToDictionary(this, _primaryColor, _themeType, _density);
         }
     }
 }

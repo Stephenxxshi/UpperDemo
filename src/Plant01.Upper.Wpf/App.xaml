@@ -1,15 +1,19 @@
-﻿<Application x:Class="Plant01.Upper.Wpf.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Plant01.Upper.Wpf"
-             xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI"
-             xmlns:helpers="clr-namespace:Plant01.WpfUI.Helpers;assembly=Plant01.WpfUI">
+﻿<Application
+    x:Class="Plant01.Upper.Wpf.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:helpers="clr-namespace:Plant01.WpfUI.Helpers;assembly=Plant01.WpfUI"
+    xmlns:local="clr-namespace:Plant01.Upper.Wpf"
+    xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Ant Design Theme Configuration -->
-                <themes:AntDesignThemeDictionary PrimaryColor="#23333a" ThemeType="Dark"/>
-                
+                <!--  Ant Design Theme Configuration  -->
+                <themes:AntDesignThemeDictionary
+                    Density="Touch"
+                    PrimaryColor="#23333a"
+                    ThemeType="Dark" />
+
                 <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Generic.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />

@@ -35,4 +35,25 @@ public static class DesignTokenKeys
     public static ComponentResourceKey TextQuaternary => CreateKey(nameof(TextQuaternary));
     
     public static ComponentResourceKey MaskColor => CreateKey(nameof(MaskColor));
+
+    // Shadows
+    public static ComponentResourceKey BoxShadowSmall => CreateKey(nameof(BoxShadowSmall));
+    public static ComponentResourceKey BoxShadow => CreateKey(nameof(BoxShadow));
+    public static ComponentResourceKey BoxShadowLarge => CreateKey(nameof(BoxShadowLarge));
+
+    // Sizing & Density
+    public static ComponentResourceKey ControlHeight => CreateKey(nameof(ControlHeight));
+    public static ComponentResourceKey ControlHeightLG => CreateKey(nameof(ControlHeightLG));
+    public static ComponentResourceKey ControlHeightSM => CreateKey(nameof(ControlHeightSM));
+    
+    public static ComponentResourceKey FontSize => CreateKey(nameof(FontSize));
+    public static ComponentResourceKey FontSizeLG => CreateKey(nameof(FontSizeLG));
+    public static ComponentResourceKey FontSizeSM => CreateKey(nameof(FontSizeSM));
+
+    public static ComponentResourceKey PaddingXS => CreateKey(nameof(PaddingXS));
+    public static ComponentResourceKey PaddingSM => CreateKey(nameof(PaddingSM));
+    public static ComponentResourceKey PaddingMD => CreateKey(nameof(PaddingMD));
+    public static ComponentResourceKey PaddingLG => CreateKey(nameof(PaddingLG));
+    
+    public static ComponentResourceKey BorderRadius => CreateKey(nameof(BorderRadius));
 }

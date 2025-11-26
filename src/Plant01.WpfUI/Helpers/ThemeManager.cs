@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using Plant01.WpfUI.Themes;
 
 namespace Plant01.WpfUI.Helpers
@@ -10,15 +11,22 @@ namespace Plant01.WpfUI.Helpers
         Dark
     }
 
+    public enum DensityType
+    {
+        Compact,
+        Default,
+        Touch
+    }
+
     public static class ThemeManager
     {
-        public static void ApplyTheme(Color primarySeed, ThemeType themeType)
+        public static void ApplyTheme(Color primarySeed, ThemeType themeType, DensityType density = DensityType.Default)
         {
             if (Application.Current == null) return;
-            ApplyThemeToDictionary(Application.Current.Resources, primarySeed, themeType);
+            ApplyThemeToDictionary(Application.Current.Resources, primarySeed, themeType, density);
         }
 
-        public static void ApplyThemeToDictionary(ResourceDictionary resources, Color primarySeed, ThemeType themeType)
+        public static void ApplyThemeToDictionary(ResourceDictionary resources, Color primarySeed, ThemeType themeType, DensityType density = DensityType.Default)
         {
             bool isDark = themeType == ThemeType.Dark;
 
@@ -56,6 +64,11 @@ namespace Plant01.WpfUI.Helpers
                 SetBrush(resources, DesignTokenKeys.TextQuaternary, Color.FromArgb(64, 255, 255, 255)); // 25%
                 
                 SetBrush(resources, DesignTokenKeys.MaskColor, Color.FromArgb(115, 0, 0, 0));
+                
+                // Dark Shadows (Subtler or different)
+                SetShadow(resources, DesignTokenKeys.BoxShadowSmall, 2, 0.2);
+                SetShadow(resources, DesignTokenKeys.BoxShadow, 6, 0.3);
+                SetShadow(resources, DesignTokenKeys.BoxShadowLarge, 10, 0.4);
             }
             else
             {
@@ -72,7 +85,84 @@ namespace Plant01.WpfUI.Helpers
                 SetBrush(resources, DesignTokenKeys.TextQuaternary, Color.FromArgb(64, 0, 0, 0)); // 25%
                 
                 SetBrush(resources, DesignTokenKeys.MaskColor, Color.FromArgb(115, 0, 0, 0));
+
+                // Light Shadows
+                SetShadow(resources, DesignTokenKeys.BoxShadowSmall, 2, 0.1);
+                SetShadow(resources, DesignTokenKeys.BoxShadow, 6, 0.15);
+                SetShadow(resources, DesignTokenKeys.BoxShadowLarge, 10, 0.2);
             }
+
+            // 4. Density & Sizing
+            ApplyDensity(resources, density);
+        }
+
+        private static void ApplyDensity(ResourceDictionary resources, DensityType density)
+        {
+            double baseHeight = 32;
+            double baseFontSize = 14;
+            double basePadding = 15;
+            double borderRadius = 6;
+
+            switch (density)
+            {
+                case DensityType.Compact:
+                    baseHeight = 24;
+                    baseFontSize = 12;
+                    basePadding = 7;
+                    borderRadius = 4;
+                    break;
+                case DensityType.Default:
+                    baseHeight = 32;
+                    baseFontSize = 14;
+                    basePadding = 15;
+                    borderRadius = 6;
+                    break;
+                case DensityType.Touch:
+                    baseHeight = 44; // Minimum touch target
+                    baseFontSize = 16;
+                    basePadding = 20;
+                    borderRadius = 8;
+                    break;
+            }
+
+            SetValue(resources, DesignTokenKeys.ControlHeight, baseHeight);
+            SetValue(resources, DesignTokenKeys.ControlHeightSM, baseHeight * 0.75);
+            SetValue(resources, DesignTokenKeys.ControlHeightLG, baseHeight * 1.25);
+
+            SetValue(resources, DesignTokenKeys.FontSize, baseFontSize);
+            SetValue(resources, DesignTokenKeys.FontSizeSM, baseFontSize - 2);
+            SetValue(resources, DesignTokenKeys.FontSizeLG, baseFontSize + 2);
+
+            SetValue(resources, DesignTokenKeys.PaddingMD, new Thickness(basePadding, 4, basePadding, 4));
+            SetValue(resources, DesignTokenKeys.PaddingSM, new Thickness(basePadding / 2, 2, basePadding / 2, 2));
+            
+            SetValue(resources, DesignTokenKeys.BorderRadius, new CornerRadius(borderRadius));
+        }
+
+        private static void SetValue(ResourceDictionary resources, ComponentResourceKey key, object value)
+        {
+            if (resources.Contains(key))
+            {
+                resources[key] = value;
+            }
+            else
+            {
+                resources.Add(key, value);
+            }
+        }
+
+        private static void SetShadow(ResourceDictionary resources, ComponentResourceKey key, double blur, double opacity)
+        {
+            var shadow = new DropShadowEffect
+            {
+                BlurRadius = blur,
+                ShadowDepth = blur / 3,
+                Opacity = opacity,
+                Color = Colors.Black,
+                Direction = 270
+            };
+            shadow.Freeze();
+            SetValue(resources, key, shadow);
         }
 
         private static void SetBrush(ResourceDictionary resources, ComponentResourceKey key, Color color)
