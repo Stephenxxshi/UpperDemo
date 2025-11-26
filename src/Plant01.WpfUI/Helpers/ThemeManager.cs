@@ -94,6 +94,9 @@ namespace Plant01.WpfUI.Helpers
 
             // 4. Density & Sizing
             ApplyDensity(resources, density);
+
+            // 5. Control Item Colors
+            SetControlItemColors(resources, palette, isDark);
         }
 
         private static void ApplyDensity(ResourceDictionary resources, DensityType density)
@@ -137,6 +140,25 @@ namespace Plant01.WpfUI.Helpers
             SetValue(resources, DesignTokenKeys.PaddingSM, new Thickness(basePadding / 2, 2, basePadding / 2, 2));
             
             SetValue(resources, DesignTokenKeys.BorderRadius, new CornerRadius(borderRadius));
+            SetValue(resources, DesignTokenKeys.BorderRadiusBase, borderRadius);
+        }
+
+        private static void SetControlItemColors(ResourceDictionary resources, List<Color> palette, bool isDark)
+        {
+            if (isDark)
+            {
+                // Dark Mode
+                SetBrush(resources, DesignTokenKeys.ControlItemBgHover, Color.FromArgb(20, 255, 255, 255)); // White 8%
+                SetBrush(resources, DesignTokenKeys.ControlItemBgActive, palette[5]); // Primary Base (Solid for Dark Menu usually)
+                SetBrush(resources, DesignTokenKeys.ControlItemBgActiveHover, palette[4]);
+            }
+            else
+            {
+                // Light Mode
+                SetBrush(resources, DesignTokenKeys.ControlItemBgHover, Color.FromRgb(0xF5, 0xF5, 0xF5)); // Neutral hover
+                SetBrush(resources, DesignTokenKeys.ControlItemBgActive, palette[0]); // Primary-1 (Light Blue)
+                SetBrush(resources, DesignTokenKeys.ControlItemBgActiveHover, palette[1]); // Primary-2
+            }
         }
 
         private static void SetValue(ResourceDictionary resources, ComponentResourceKey key, object value)

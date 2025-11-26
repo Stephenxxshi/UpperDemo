@@ -98,8 +98,8 @@
                     <Grid>
                         <Rectangle
                             Fill="{TemplateBinding Background}"
-                            RadiusX="{DynamicResource {x:Static local:DesignTokenKeys.BorderRadius}}"
-                            RadiusY="{DynamicResource {x:Static local:DesignTokenKeys.BorderRadius}}"
+                            RadiusX="{DynamicResource {x:Static local:DesignTokenKeys.BorderRadiusBase}}"
+                            RadiusY="{DynamicResource {x:Static local:DesignTokenKeys.BorderRadiusBase}}"
                             Stroke="{TemplateBinding BorderBrush}"
                             StrokeDashArray="4 2"
                             StrokeThickness="1" />

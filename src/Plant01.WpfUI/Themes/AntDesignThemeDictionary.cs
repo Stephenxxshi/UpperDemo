@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Media;
 using Plant01.WpfUI.Helpers;
@@ -42,6 +43,7 @@ namespace Plant01.WpfUI.Themes
 
         public AntDesignThemeDictionary()
         {
+            MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Plant01.WpfUI;component/Themes/Generic.xaml", UriKind.Relative) });
             UpdateTheme();
         }
 

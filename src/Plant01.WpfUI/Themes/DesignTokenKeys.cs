@@ -56,4 +56,10 @@ public static class DesignTokenKeys
     public static ComponentResourceKey PaddingLG => CreateKey(nameof(PaddingLG));
     
     public static ComponentResourceKey BorderRadius => CreateKey(nameof(BorderRadius));
+    public static ComponentResourceKey BorderRadiusBase => CreateKey(nameof(BorderRadiusBase));
+
+    // Control Item States (Menu, List, etc.)
+    public static ComponentResourceKey ControlItemBgHover => CreateKey(nameof(ControlItemBgHover));
+    public static ComponentResourceKey ControlItemBgActive => CreateKey(nameof(ControlItemBgActive));
+    public static ComponentResourceKey ControlItemBgActiveHover => CreateKey(nameof(ControlItemBgActiveHover));
 }

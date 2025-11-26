@@ -1,0 +1,63 @@
+﻿<Window x:Class="wpfuidemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+        xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI"
+        mc:Ignorable="d"
+        Title="WpfUI Demo" Height="600" Width="900"
+        Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Navigation Menu -->
+        <Border BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" 
+                BorderThickness="0,0,1,0"
+                Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
+            <controls:AntMenu x:Name="NavMenu" Margin="0,10,0,0" SelectedItemChanged="NavMenu_SelectedItemChanged">
+                <controls:AntMenuItem Header="General" Icon="🏠" IsExpanded="True">
+                    <controls:AntMenuItem Header="Dashboard" Tag="Dashboard" IsSelected="True"/>
+                    <controls:AntMenuItem Header="Button 按钮" Tag="Button"/>
+                    <controls:AntMenuItem Header="Icon 图标"/>
+                    <controls:AntMenuItem Header="Typography 排版"/>
+                </controls:AntMenuItem>
+                <controls:AntMenuItem Header="Layout" Icon="📐">
+                    <controls:AntMenuItem Header="Grid 栅格"/>
+                    <controls:AntMenuItem Header="Layout 布局"/>
+                    <controls:AntMenuItem Header="Space 间距"/>
+                </controls:AntMenuItem>
+                <controls:AntMenuItem Header="Navigation" Icon="🧭" IsExpanded="True">
+                    <controls:AntMenuItem Header="Menu 导航菜单"/>
+                    <controls:AntMenuItem Header="Dropdown 下拉菜单"/>
+                    <controls:AntMenuItem Header="Steps 步骤条"/>
+                </controls:AntMenuItem>
+                <controls:AntMenuItem Header="Data Entry" Icon="📝">
+                    <controls:AntMenuItem Header="Input 输入框"/>
+                    <controls:AntMenuItem Header="Select 选择器"/>
+                </controls:AntMenuItem>
+            </controls:AntMenu>
+        </Border>
+
+        <!-- Content Area -->
+        <Grid Grid.Column="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Toolbar -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,20">
+                <Button Content="Toggle Dark Mode" Click="ToggleTheme_Click" Style="{DynamicResource AntDesign.Button.Default}" Margin="0,0,10,0"/>
+                <Button Content="Compact Mode" Click="CompactMode_Click" Style="{DynamicResource AntDesign.Button.Default}" Margin="0,0,10,0"/>
+                <Button Content="Touch Mode" Click="TouchMode_Click" Style="{DynamicResource AntDesign.Button.Default}" Margin="0,0,10,0"/>
+            </StackPanel>
+
+            <!-- Page Content -->
+            <ContentControl x:Name="MainContent" Grid.Row="1"/>
+        </Grid>
+    </Grid>
+</Window>
