@@ -6,6 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:Plant01.Upper.Wpf"
         xmlns:vm ="clr-namespace:Plant01.Upper.Presentation.Core.ViewModels;assembly=Plant01.Upper.Presentation.Core"
+        xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance vm:ShellViewModel, IsDesignTimeCreatable=True}"
         Title="{Binding Title}" Height="450" Width="800">
@@ -70,7 +71,15 @@
             <ItemsControl ItemsSource="{Binding MenuItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Content="{Binding Title}" Command="{Binding DataContext.NavigateToCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" />
+                        <controls:IconRadioButton GroupName="NavGroup"
+                                            Content="{Binding Title}" 
+                                            Icon="{Binding IconChar}"
+                                            IconPlacement="{Binding IconPlacement}"
+                                            IconFontFamily="/Assets/Fonts/#iconfont"
+                                            IconSize="20"
+                                            Command="{Binding DataContext.NavigateToCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                            CommandParameter="{Binding}" 
+                                            Margin="5"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -22,7 +22,8 @@ public partial class ShellViewModel : ObservableObject
         new MenuItem{
             Name = "Dashboard",
             Description = "Overview of the system",
-            Icon = "Icons/dashboard.png",
+            IconChar = "&#xe62b;", 
+            IconPlacement = "Top",
             Title = "Dashboard",
             ViewModelType = typeof(DashboardViewModel)
         },
@@ -30,7 +31,8 @@ public partial class ShellViewModel : ObservableObject
         {
             Name = "Settings",
             Description = "Application settings",
-            Icon = "Icons/settings.png",
+            IconChar = "&#xe7c6;",
+            IconPlacement = "Top",
             Title = "Settings",
             ViewModelType = typeof(SettingsViewModel)
         }

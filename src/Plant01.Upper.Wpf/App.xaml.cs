@@ -11,7 +11,7 @@ namespace Plant01.Upper.Wpf;
 /// <summary>
 /// Interaction logic for App.xaml
 /// </summary>
-public partial class App : Application
+public partial class App : System.Windows.Application
 {
     private static IHost? _host;
     private const string MutexName = "Plant01.Upper.Wpf.SingleInstance";
