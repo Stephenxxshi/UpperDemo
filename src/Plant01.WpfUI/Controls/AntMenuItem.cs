@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Plant01.WpfUI.Helpers;
 
 namespace Plant01.WpfUI.Controls
 {
@@ -12,7 +13,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty IconProperty =
-            DependencyProperty.Register(nameof(Icon), typeof(string), typeof(AntMenuItem), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(Icon), typeof(string), typeof(AntMenuItem), new PropertyMetadata(null, null, IconHelper.CoerceIcon));
 
         public string Icon
         {

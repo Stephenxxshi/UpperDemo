@@ -25,18 +25,20 @@
                     <controls:AntMenuItem Header="Icon 图标"/>
                     <controls:AntMenuItem Header="Typography 排版"/>
                 </controls:AntMenuItem>
-                <controls:AntMenuItem Header="Layout" Icon="📐">
-                    <controls:AntMenuItem Header="Grid 栅格"/>
-                    <controls:AntMenuItem Header="Layout 布局"/>
-                    <controls:AntMenuItem Header="Space 间距"/>
+                <controls:AntMenuItem Header="Layout" Icon="📐" IsExpanded="True">
+                    <controls:AntMenuItem Header="Layout 布局" Tag="Layout"/>
+                    <controls:AntMenuItem Header="Space 间距" Tag="Layout"/>
+                    <controls:AntMenuItem Header="Divider 分割线" Tag="Layout"/>
+                    <controls:AntMenuItem Header="Splitter 分割面板" Tag="Layout"/>
                 </controls:AntMenuItem>
                 <controls:AntMenuItem Header="Navigation" Icon="🧭" IsExpanded="True">
                     <controls:AntMenuItem Header="Menu 导航菜单"/>
                     <controls:AntMenuItem Header="Dropdown 下拉菜单"/>
                     <controls:AntMenuItem Header="Steps 步骤条"/>
                 </controls:AntMenuItem>
-                <controls:AntMenuItem Header="Data Entry" Icon="📝">
-                    <controls:AntMenuItem Header="Input 输入框"/>
+                <controls:AntMenuItem Header="Data Entry" Icon="📝" IsExpanded="True">
+                    <controls:AntMenuItem Header="Input 输入框" Tag="Input"/>
+                    <controls:AntMenuItem Header="Switch 开关" Tag="Switch"/>
                     <controls:AntMenuItem Header="Select 选择器"/>
                 </controls:AntMenuItem>
             </controls:AntMenu>
@@ -51,9 +53,25 @@
 
             <!-- Toolbar -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,20">
+                <!-- Color Palette -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,20,0" VerticalAlignment="Center">
+                    <TextBlock Text="Theme: " VerticalAlignment="Center" Margin="0,0,5,0" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+                    <Button Width="20" Height="20" Margin="2" Background="#1677ff" Click="Color_Click" Tag="#1677ff" ToolTip="Daybreak Blue" Style="{DynamicResource AntDesign.Button.Base}" Cursor="Hand" BorderThickness="0"/>
+                    <Button Width="20" Height="20" Margin="2" Background="#f5222d" Click="Color_Click" Tag="#f5222d" ToolTip="Dust Red" Style="{DynamicResource AntDesign.Button.Base}" Cursor="Hand" BorderThickness="0"/>
+                    <Button Width="20" Height="20" Margin="2" Background="#fa8c16" Click="Color_Click" Tag="#fa8c16" ToolTip="Sunset Orange" Style="{DynamicResource AntDesign.Button.Base}" Cursor="Hand" BorderThickness="0"/>
+                    <Button Width="20" Height="20" Margin="2" Background="#faad14" Click="Color_Click" Tag="#faad14" ToolTip="Calendula Gold" Style="{DynamicResource AntDesign.Button.Base}" Cursor="Hand" BorderThickness="0"/>
+                    <Button Width="20" Height="20" Margin="2" Background="#13c2c2" Click="Color_Click" Tag="#13c2c2" ToolTip="Cyan" Style="{DynamicResource AntDesign.Button.Base}" Cursor="Hand" BorderThickness="0"/>
+                    <Button Width="20" Height="20" Margin="2" Background="#52c41a" Click="Color_Click" Tag="#52c41a" ToolTip="Polar Green" Style="{DynamicResource AntDesign.Button.Base}" Cursor="Hand" BorderThickness="0"/>
+                    <Button Width="20" Height="20" Margin="2" Background="#722ed1" Click="Color_Click" Tag="#722ed1" ToolTip="Golden Purple" Style="{DynamicResource AntDesign.Button.Base}" Cursor="Hand" BorderThickness="0"/>
+                </StackPanel>
+
                 <Button Content="Toggle Dark Mode" Click="ToggleTheme_Click" Style="{DynamicResource AntDesign.Button.Default}" Margin="0,0,10,0"/>
-                <Button Content="Compact Mode" Click="CompactMode_Click" Style="{DynamicResource AntDesign.Button.Default}" Margin="0,0,10,0"/>
-                <Button Content="Touch Mode" Click="TouchMode_Click" Style="{DynamicResource AntDesign.Button.Default}" Margin="0,0,10,0"/>
+                
+                <ComboBox x:Name="DensityCombo" SelectedIndex="1" SelectionChanged="Density_SelectionChanged" Width="100" VerticalContentAlignment="Center">
+                    <ComboBoxItem Content="Compact" Tag="Compact"/>
+                    <ComboBoxItem Content="Default" Tag="Default"/>
+                    <ComboBoxItem Content="Touch" Tag="Touch"/>
+                </ComboBox>
             </StackPanel>
 
             <!-- Page Content -->

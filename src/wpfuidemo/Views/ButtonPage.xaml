@@ -4,26 +4,85 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI"
+             xmlns:ui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel>
-        <TextBlock Text="Buttons" 
-                   FontSize="{DynamicResource {x:Static themes:DesignTokenKeys.FontSizeLG}}" 
-                   Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"
-                   FontWeight="Bold"
-                   Margin="0,0,0,20"/>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="AntButton" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
 
-        <TextBlock Text="Type" 
-                   FontSize="{DynamicResource {x:Static themes:DesignTokenKeys.FontSize}}" 
-                   Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"
-                   Margin="0,0,0,10"/>
-        
-        <WrapPanel Margin="0,0,0,20">
-            <Button Content="Primary Button" Style="{DynamicResource AntDesign.Button.Primary}" Margin="0,0,10,10"/>
-            <Button Content="Default Button" Style="{DynamicResource AntDesign.Button.Default}" Margin="0,0,10,10"/>
-            <Button Content="Dashed Button" Style="{DynamicResource AntDesign.Button.Dashed}" Margin="0,0,10,10"/>
-            <Button Content="Text Button" Style="{DynamicResource AntDesign.Button.Text}" Margin="0,0,10,10"/>
-            <Button Content="Link Button" Style="{DynamicResource AntDesign.Button.Link}" Margin="0,0,10,10"/>
-        </WrapPanel>
-    </StackPanel>
+            <TextBlock Text="Types" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntButton Content="Primary" Type="Primary" Margin="0,0,10,10"/>
+                <ui:AntButton Content="Default" Type="Default" Margin="0,0,10,10"/>
+                <ui:AntButton Content="Dashed" Type="Dashed" Margin="0,0,10,10"/>
+                <ui:AntButton Content="Text" Type="Text" Margin="0,0,10,10"/>
+                <ui:AntButton Content="Link" Type="Link" Margin="0,0,10,10"/>
+            </WrapPanel>
+
+            <TextBlock Text="Shapes &amp; Icons" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntButton Type="Primary" Shape="Circle" Icon="🔍" Margin="0,0,10,10"/>
+                <ui:AntButton Type="Primary" Shape="Round" Content="Search" Icon="🔍" Margin="0,0,10,10"/>
+                <ui:AntButton Type="Default" Shape="Circle" Icon="🔍" Margin="0,0,10,10"/>
+                <ui:AntButton Type="Dashed" Shape="Round" Content="Dashed" Icon="🔍" Margin="0,0,10,10"/>
+            </WrapPanel>
+
+            <TextBlock Text="Icon Formats" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <StackPanel Margin="0,0,20,10">
+                    <TextBlock Text="Direct Char (🔍)" Margin="0,0,0,5"/>
+                    <ui:AntButton Type="Primary" Icon="🔍" Content="Direct"/>
+                </StackPanel>
+                <StackPanel Margin="0,0,20,10">
+                    <TextBlock Text="XAML Hex (&amp;#x2605;)" Margin="0,0,0,5"/>
+                    <ui:AntButton Type="Primary" Icon="&#x2605;" Content="Hex Entity"/>
+                </StackPanel>
+                <StackPanel Margin="0,0,20,10">
+                    <TextBlock Text="HTML String (&amp;amp;#x2605;)" Margin="0,0,0,5"/>
+                    <ui:AntButton Type="Primary" Icon="&amp;#x2605;" Content="HTML String"/>
+                </StackPanel>
+            </WrapPanel>
+
+            <TextBlock Text="States &amp; Shadows" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <TextBlock Text="Hover, Press, or Focus to see states and shadows." Margin="0,0,0,10" Foreground="Gray"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntButton Type="Primary" Content="Primary Shadow" Margin="0,0,10,10"/>
+                <ui:AntButton Type="Default" Content="Default Shadow" Margin="0,0,10,10"/>
+            </WrapPanel>
+
+            <TextBlock Text="Loading" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntButton Type="Primary" Loading="True" Content="Loading" Margin="0,0,10,10"/>
+                <ui:AntButton Type="Default" Loading="True" Content="Loading" Margin="0,0,10,10"/>
+                <ui:AntButton Type="Primary" Shape="Circle" Loading="True" Margin="0,0,10,10"/>
+            </WrapPanel>
+            
+            <TextBlock Text="Disabled" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntButton Content="Primary(Disabled)" Type="Primary" IsEnabled="False" Margin="0,0,10,10"/>
+                <ui:AntButton Content="Default(Disabled)" Type="Default" IsEnabled="False" Margin="0,0,10,10"/>
+                <ui:AntButton Content="Text(Disabled)" Type="Text" IsEnabled="False" Margin="0,0,10,10"/>
+            </WrapPanel>
+
+            <TextBlock Text="Danger" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntButton Content="Primary Danger" Type="Primary" Danger="True" Margin="0,0,10,10"/>
+                <ui:AntButton Content="Default Danger" Type="Default" Danger="True" Margin="0,0,10,10"/>
+                <ui:AntButton Content="Dashed Danger" Type="Dashed" Danger="True" Margin="0,0,10,10"/>
+                <ui:AntButton Content="Text Danger" Type="Text" Danger="True" Margin="0,0,10,10"/>
+                <ui:AntButton Content="Link Danger" Type="Link" Danger="True" Margin="0,0,10,10"/>
+            </WrapPanel>
+
+            <TextBlock Text="Ghost" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <Border Background="Gray" Padding="20" Margin="0,0,0,20">
+                <WrapPanel>
+                    <ui:AntButton Content="Primary Ghost" Type="Primary" Ghost="True" Margin="0,0,10,10"/>
+                    <ui:AntButton Content="Default Ghost" Type="Default" Ghost="True" Margin="0,0,10,10"/>
+                    <ui:AntButton Content="Dashed Ghost" Type="Dashed" Ghost="True" Margin="0,0,10,10"/>
+                    <ui:AntButton Content="Danger Ghost" Type="Primary" Danger="True" Ghost="True" Margin="0,0,10,10"/>
+                </WrapPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

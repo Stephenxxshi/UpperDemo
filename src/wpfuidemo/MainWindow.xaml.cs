@@ -30,16 +30,37 @@ namespace wpfuidemo
             ApplyTheme();
         }
 
-        private void CompactMode_Click(object sender, RoutedEventArgs e)
+        private void Color_Click(object sender, RoutedEventArgs e)
         {
-            _currentDensity = DensityType.Compact;
-            ApplyTheme();
+            if (sender is System.Windows.Controls.Button btn && btn.Tag is string colorCode)
+            {
+                try
+                {
+                    _primarySeed = (Color)ColorConverter.ConvertFromString(colorCode);
+                    ApplyTheme();
+                }
+                catch { }
+            }
         }
 
-        private void TouchMode_Click(object sender, RoutedEventArgs e)
+        private void Density_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            _currentDensity = DensityType.Touch;
-            ApplyTheme();
+            if (sender is System.Windows.Controls.ComboBox combo && combo.SelectedItem is System.Windows.Controls.ComboBoxItem item && item.Tag is string density)
+            {
+                switch (density)
+                {
+                    case "Compact":
+                        _currentDensity = DensityType.Compact;
+                        break;
+                    case "Default":
+                        _currentDensity = DensityType.Default;
+                        break;
+                    case "Touch":
+                        _currentDensity = DensityType.Touch;
+                        break;
+                }
+                ApplyTheme();
+            }
         }
 
         private void NavMenu_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -61,6 +82,15 @@ namespace wpfuidemo
                     break;
                 case "Button":
                     MainContent.Content = new ButtonPage();
+                    break;
+                case "Input":
+                    MainContent.Content = new InputPage();
+                    break;
+                case "Switch":
+                    MainContent.Content = new SwitchPage();
+                    break;
+                case "Layout":
+                    MainContent.Content = new LayoutPage();
                     break;
                 default:
                     // Keep current content or show placeholder

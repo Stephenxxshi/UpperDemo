@@ -19,6 +19,8 @@ public static class DesignTokenKeys
     public static ComponentResourceKey SuccessColor => CreateKey(nameof(SuccessColor));
     public static ComponentResourceKey WarningColor => CreateKey(nameof(WarningColor));
     public static ComponentResourceKey ErrorColor => CreateKey(nameof(ErrorColor));
+    public static ComponentResourceKey ErrorColorHover => CreateKey(nameof(ErrorColorHover));
+    public static ComponentResourceKey ErrorColorActive => CreateKey(nameof(ErrorColorActive));
     public static ComponentResourceKey InfoColor => CreateKey(nameof(InfoColor));
 
     // Neutral Colors
@@ -29,11 +31,15 @@ public static class DesignTokenKeys
     public static ComponentResourceKey BorderColor => CreateKey(nameof(BorderColor));
     public static ComponentResourceKey BorderColorSplit => CreateKey(nameof(BorderColorSplit));
 
+    public static ComponentResourceKey FillColor => CreateKey(nameof(FillColor)); // New Token for neutral fills (Switch off, etc.)
+
     public static ComponentResourceKey TextPrimary => CreateKey(nameof(TextPrimary));
     public static ComponentResourceKey TextSecondary => CreateKey(nameof(TextSecondary));
     public static ComponentResourceKey TextTertiary => CreateKey(nameof(TextTertiary));
     public static ComponentResourceKey TextQuaternary => CreateKey(nameof(TextQuaternary));
-    
+    public static ComponentResourceKey TextOnPrimary => CreateKey(nameof(TextOnPrimary)); // Always White usually
+    public static ComponentResourceKey PlaceholderColor => CreateKey(nameof(PlaceholderColor));
+
     public static ComponentResourceKey MaskColor => CreateKey(nameof(MaskColor));
 
     // Shadows
@@ -62,4 +68,5 @@ public static class DesignTokenKeys
     public static ComponentResourceKey ControlItemBgHover => CreateKey(nameof(ControlItemBgHover));
     public static ComponentResourceKey ControlItemBgActive => CreateKey(nameof(ControlItemBgActive));
     public static ComponentResourceKey ControlItemBgActiveHover => CreateKey(nameof(ControlItemBgActiveHover));
+    public static ComponentResourceKey ControlItemBgPressed => CreateKey(nameof(ControlItemBgPressed));
 }

@@ -9,6 +9,13 @@
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Button.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Menu.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/IconControls.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Input.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntButton.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Typography.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSwitch.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDivider.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSpace.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSplitter.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

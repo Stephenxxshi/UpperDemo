@@ -46,6 +46,8 @@ namespace Plant01.WpfUI.Helpers
             SetBrush(resources, DesignTokenKeys.SuccessColor, Color.FromRgb(0x52, 0xc4, 0x1a));
             SetBrush(resources, DesignTokenKeys.WarningColor, Color.FromRgb(0xfa, 0xad, 0x14));
             SetBrush(resources, DesignTokenKeys.ErrorColor, Color.FromRgb(0xff, 0x4d, 0x4f));
+            SetBrush(resources, DesignTokenKeys.ErrorColorHover, Color.FromRgb(0xff, 0x78, 0x75));
+            SetBrush(resources, DesignTokenKeys.ErrorColorActive, Color.FromRgb(0xd9, 0x36, 0x3e));
             SetBrush(resources, DesignTokenKeys.InfoColor, Color.FromRgb(0x16, 0x77, 0xff));
 
             // 3. Neutrals
@@ -57,11 +59,14 @@ namespace Plant01.WpfUI.Helpers
                 
                 SetBrush(resources, DesignTokenKeys.BorderColor, Color.FromRgb(0x42, 0x42, 0x42));
                 SetBrush(resources, DesignTokenKeys.BorderColorSplit, Color.FromRgb(0x30, 0x30, 0x30));
+                SetBrush(resources, DesignTokenKeys.FillColor, Color.FromRgb(0x6b, 0x6b, 0x6b)); // Dark Mode Neutral Fill
 
                 SetBrush(resources, DesignTokenKeys.TextPrimary, Color.FromArgb(217, 255, 255, 255)); // 85%
                 SetBrush(resources, DesignTokenKeys.TextSecondary, Color.FromArgb(115, 255, 255, 255)); // 45%
                 SetBrush(resources, DesignTokenKeys.TextTertiary, Color.FromArgb(77, 255, 255, 255)); // 30%
                 SetBrush(resources, DesignTokenKeys.TextQuaternary, Color.FromArgb(64, 255, 255, 255)); // 25%
+                SetBrush(resources, DesignTokenKeys.TextOnPrimary, Colors.White);
+                SetBrush(resources, DesignTokenKeys.PlaceholderColor, Color.FromArgb(100, 255, 255, 255)); // Dark Mode Placeholder
                 
                 SetBrush(resources, DesignTokenKeys.MaskColor, Color.FromArgb(115, 0, 0, 0));
                 
@@ -78,11 +83,14 @@ namespace Plant01.WpfUI.Helpers
 
                 SetBrush(resources, DesignTokenKeys.BorderColor, Color.FromRgb(0xd9, 0xd9, 0xd9));
                 SetBrush(resources, DesignTokenKeys.BorderColorSplit, Color.FromRgb(0xf0, 0xf0, 0xf0));
+                SetBrush(resources, DesignTokenKeys.FillColor, Color.FromRgb(0x80, 0x80, 0x80)); // Light Mode Neutral Fill (Visible Gray)
 
                 SetBrush(resources, DesignTokenKeys.TextPrimary, Color.FromArgb(224, 0, 0, 0)); // 88%
                 SetBrush(resources, DesignTokenKeys.TextSecondary, Color.FromArgb(166, 0, 0, 0)); // 65%
                 SetBrush(resources, DesignTokenKeys.TextTertiary, Color.FromArgb(115, 0, 0, 0)); // 45%
                 SetBrush(resources, DesignTokenKeys.TextQuaternary, Color.FromArgb(64, 0, 0, 0)); // 25%
+                SetBrush(resources, DesignTokenKeys.TextOnPrimary, Colors.White);
+                SetBrush(resources, DesignTokenKeys.PlaceholderColor, Color.FromRgb(191, 191, 191)); // #BFBFBF
                 
                 SetBrush(resources, DesignTokenKeys.MaskColor, Color.FromArgb(115, 0, 0, 0));
 
@@ -149,6 +157,7 @@ namespace Plant01.WpfUI.Helpers
             {
                 // Dark Mode
                 SetBrush(resources, DesignTokenKeys.ControlItemBgHover, Color.FromArgb(20, 255, 255, 255)); // White 8%
+                SetBrush(resources, DesignTokenKeys.ControlItemBgPressed, Color.FromArgb(30, 255, 255, 255)); // White 12%
                 SetBrush(resources, DesignTokenKeys.ControlItemBgActive, palette[5]); // Primary Base (Solid for Dark Menu usually)
                 SetBrush(resources, DesignTokenKeys.ControlItemBgActiveHover, palette[4]);
             }
@@ -156,6 +165,7 @@ namespace Plant01.WpfUI.Helpers
             {
                 // Light Mode
                 SetBrush(resources, DesignTokenKeys.ControlItemBgHover, Color.FromRgb(0xF5, 0xF5, 0xF5)); // Neutral hover
+                SetBrush(resources, DesignTokenKeys.ControlItemBgPressed, Color.FromRgb(0xE6, 0xE6, 0xE6)); // Neutral pressed
                 SetBrush(resources, DesignTokenKeys.ControlItemBgActive, palette[0]); // Primary-1 (Light Blue)
                 SetBrush(resources, DesignTokenKeys.ControlItemBgActiveHover, palette[1]); // Primary-2
             }

@@ -48,7 +48,7 @@
         TargetType="Button">
         <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.TextOnPrimary}}" />
         <Setter Property="Effect" Value="{DynamicResource {x:Static local:DesignTokenKeys.BoxShadowSmall}}" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
@@ -140,10 +140,10 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.TextPrimary}}" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#0A000000" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlItemBgHover}}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#1A000000" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlItemBgPressed}}" />
             </Trigger>
         </Style.Triggers>
     </Style>

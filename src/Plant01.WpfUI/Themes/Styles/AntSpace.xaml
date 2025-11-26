@@ -1,0 +1,29 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Plant01.WpfUI.Controls"
+                    xmlns:converters="clr-namespace:Plant01.WpfUI.Converters">
+
+    <Style TargetType="{x:Type controls:AntSpace}">
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="{Binding Direction, RelativeSource={RelativeSource AncestorType=controls:AntSpace}}"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="Margin">
+                        <Setter.Value>
+                            <MultiBinding Converter="{x:Static converters:SpaceMarginConverter.Instance}">
+                                <Binding Path="Size" RelativeSource="{RelativeSource AncestorType=controls:AntSpace}"/>
+                                <Binding Path="Direction" RelativeSource="{RelativeSource AncestorType=controls:AntSpace}"/>
+                            </MultiBinding>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
