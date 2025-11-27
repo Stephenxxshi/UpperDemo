@@ -14,5 +14,8 @@
 
         <TextBlock Text="Disabled" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
         <ui:AntDatePicker Width="200" HorizontalAlignment="Left" IsEnabled="False" Margin="0,0,0,20"/>
+
+        <TextBlock Text="Range Picker" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+        <ui:AntDateRangePicker Width="300" HorizontalAlignment="Left" Margin="0,0,0,20"/>
     </StackPanel>
 </UserControl>

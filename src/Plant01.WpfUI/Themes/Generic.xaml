@@ -19,6 +19,7 @@
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntCheckbox.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntCalendar.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDatePicker.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDateRangePicker.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
