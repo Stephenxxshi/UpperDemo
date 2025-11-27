@@ -28,6 +28,13 @@
             <TextBlock Text="Disabled" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
             <ui:AntSelect Width="200" Margin="0,0,0,20" IsEnabled="False" Placeholder="Disabled" Text="Lucy"/>
 
+            <TextBlock Text="Sizes" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                <ui:AntSelect Width="200" Margin="0,0,10,0" Size="Small" Placeholder="Small"/>
+                <ui:AntSelect Width="200" Margin="0,0,10,0" Size="Default" Placeholder="Default"/>
+                <ui:AntSelect Width="200" Margin="0,0,10,0" Size="Large" Placeholder="Large"/>
+            </StackPanel>
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>

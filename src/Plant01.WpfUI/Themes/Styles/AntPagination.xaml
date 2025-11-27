@@ -32,6 +32,18 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Size, RelativeSource={RelativeSource AncestorType=controls:AntPagination}}" Value="Small">
+                <Setter Property="Width" Value="24"/>
+                <Setter Property="Height" Value="24"/>
+                <Setter Property="FontSize" Value="12"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Size, RelativeSource={RelativeSource AncestorType=controls:AntPagination}}" Value="Large">
+                <Setter Property="Width" Value="40"/>
+                <Setter Property="Height" Value="40"/>
+                <Setter Property="FontSize" Value="16"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="{x:Type controls:AntPagination}">
@@ -54,7 +66,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Width="32" Height="32" Margin="0,0,8,0">
+                                    <Button Margin="0,0,8,0">
                                         <Button.Style>
                                             <Style TargetType="Button" BasedOn="{StaticResource PaginationButtonStyle}">
                                                 <Setter Property="Command" Value="{Binding PageClickCommand, RelativeSource={RelativeSource AncestorType=controls:AntPagination}}"/>
@@ -99,7 +111,7 @@
                                             SelectedItem="{Binding PageSize, RelativeSource={RelativeSource TemplatedParent}}"
                                             Margin="8,0,0,0"
                                             Width="100"
-                                            Height="32"
+                                            Size="{Binding Size, RelativeSource={RelativeSource TemplatedParent}}"
                                             VerticalContentAlignment="Center">
                             <controls:AntSelect.Style>
                                 <Style TargetType="controls:AntSelect">
@@ -134,7 +146,9 @@
                                 </Style>
                             </StackPanel.Style>
                             <TextBlock Text="跳至" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
-                            <controls:AntInput x:Name="PART_QuickJumper" Width="50" Height="32" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                            <controls:AntInput x:Name="PART_QuickJumper" Width="50" 
+                                               Size="{Binding Size, RelativeSource={RelativeSource TemplatedParent}}"
+                                               VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                             <TextBlock Text="页" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
                         </StackPanel>
                     </StackPanel>

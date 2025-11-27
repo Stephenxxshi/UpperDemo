@@ -70,4 +70,12 @@ public static class DesignTokenKeys
     public static ComponentResourceKey ControlItemBgActive => CreateKey(nameof(ControlItemBgActive));
     public static ComponentResourceKey ControlItemBgActiveHover => CreateKey(nameof(ControlItemBgActiveHover));
     public static ComponentResourceKey ControlItemBgPressed => CreateKey(nameof(ControlItemBgPressed));
+
+    // Table
+    public static ComponentResourceKey TableHeaderBg => CreateKey(nameof(TableHeaderBg));
+    public static ComponentResourceKey TableHeaderSortBg => CreateKey(nameof(TableHeaderSortBg));
+    public static ComponentResourceKey TableHeaderColor => CreateKey(nameof(TableHeaderColor));
+    public static ComponentResourceKey TableRowHoverBg => CreateKey(nameof(TableRowHoverBg));
+    public static ComponentResourceKey TableStripedRowBg => CreateKey(nameof(TableStripedRowBg));
+    public static ComponentResourceKey TableSelectedRowBg => CreateKey(nameof(TableSelectedRowBg));
 }

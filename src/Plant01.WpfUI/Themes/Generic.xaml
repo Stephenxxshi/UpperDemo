@@ -22,6 +22,11 @@
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDateRangePicker.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntPagination.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSelect.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDataGrid.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntModal.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntTimeline.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSteps.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntColorPicker.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

@@ -30,17 +30,10 @@ namespace wpfuidemo
             ApplyTheme();
         }
 
-        private void Color_Click(object sender, RoutedEventArgs e)
+        private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
         {
-            if (sender is System.Windows.Controls.Button btn && btn.Tag is string colorCode)
-            {
-                try
-                {
-                    _primarySeed = (Color)ColorConverter.ConvertFromString(colorCode);
-                    ApplyTheme();
-                }
-                catch { }
-            }
+            _primarySeed = e.NewValue;
+            ApplyTheme();
         }
 
         private void Density_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -92,6 +85,9 @@ namespace wpfuidemo
                 case "Checkbox":
                     MainContent.Content = new CheckboxPage();
                     break;
+                case "ColorPicker":
+                    MainContent.Content = new ColorPickerPage();
+                    break;
                 case "DatePicker":
                     MainContent.Content = new DatePickerPage();
                     break;
@@ -106,6 +102,18 @@ namespace wpfuidemo
                     break;
                 case "Pagination":
                     MainContent.Content = new PaginationPage();
+                    break;
+                case "DataGrid":
+                    MainContent.Content = new DataGridPage();
+                    break;
+                case "Timeline":
+                    MainContent.Content = new TimelinePage();
+                    break;
+                case "Steps":
+                    MainContent.Content = new StepsPage();
+                    break;
+                case "Modal":
+                    MainContent.Content = new DialogPage();
                     break;
                 default:
                     // Keep current content or show placeholder

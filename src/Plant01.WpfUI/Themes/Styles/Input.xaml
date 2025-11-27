@@ -5,6 +5,18 @@
     xmlns:controls="clr-namespace:Plant01.WpfUI.Controls">
 
     <Style TargetType="{x:Type controls:AntInput}">
+        <Style.Triggers>
+            <Trigger Property="Size" Value="Small">
+                <Setter Property="Height" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlHeightSM}}" />
+                <Setter Property="Padding" Value="{DynamicResource {x:Static local:DesignTokenKeys.PaddingXS}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static local:DesignTokenKeys.FontSize}}" />
+            </Trigger>
+            <Trigger Property="Size" Value="Large">
+                <Setter Property="Height" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlHeightLG}}" />
+                <Setter Property="Padding" Value="{DynamicResource {x:Static local:DesignTokenKeys.PaddingLG}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static local:DesignTokenKeys.FontSizeLG}}" />
+            </Trigger>
+        </Style.Triggers>
         <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.ComponentBackground}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.BorderColor}}" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.TextPrimary}}" />

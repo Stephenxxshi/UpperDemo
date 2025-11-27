@@ -106,6 +106,9 @@ namespace Plant01.WpfUI.Helpers
 
             // 5. Control Item Colors
             SetControlItemColors(resources, palette, isDark);
+
+            // 6. Table Colors
+            SetTableColors(resources, palette, isDark);
         }
 
         private static void ApplyDensity(ResourceDictionary resources, DensityType density)
@@ -169,6 +172,28 @@ namespace Plant01.WpfUI.Helpers
                 SetBrush(resources, DesignTokenKeys.ControlItemBgPressed, Color.FromRgb(0xE6, 0xE6, 0xE6)); // Neutral pressed
                 SetBrush(resources, DesignTokenKeys.ControlItemBgActive, palette[0]); // Primary-1 (Light Blue)
                 SetBrush(resources, DesignTokenKeys.ControlItemBgActiveHover, palette[1]); // Primary-2
+            }
+        }
+
+        private static void SetTableColors(ResourceDictionary resources, List<Color> palette, bool isDark)
+        {
+            if (isDark)
+            {
+                SetBrush(resources, DesignTokenKeys.TableHeaderBg, Color.FromRgb(0x1D, 0x1D, 0x1D));
+                SetBrush(resources, DesignTokenKeys.TableHeaderSortBg, Color.FromRgb(0x26, 0x26, 0x26));
+                SetBrush(resources, DesignTokenKeys.TableHeaderColor, Color.FromArgb(217, 255, 255, 255)); // TextPrimary
+                SetBrush(resources, DesignTokenKeys.TableRowHoverBg, Color.FromArgb(20, 255, 255, 255)); // White 8%
+                SetBrush(resources, DesignTokenKeys.TableStripedRowBg, Color.FromArgb(10, 255, 255, 255)); // White 4%
+                SetBrush(resources, DesignTokenKeys.TableSelectedRowBg, palette[5]); // Primary Base
+            }
+            else
+            {
+                SetBrush(resources, DesignTokenKeys.TableHeaderBg, Color.FromRgb(0xFA, 0xFA, 0xFA));
+                SetBrush(resources, DesignTokenKeys.TableHeaderSortBg, Color.FromRgb(0xF5, 0xF5, 0xF5));
+                SetBrush(resources, DesignTokenKeys.TableHeaderColor, Color.FromArgb(224, 0, 0, 0)); // TextPrimary
+                SetBrush(resources, DesignTokenKeys.TableRowHoverBg, Color.FromRgb(0xFA, 0xFA, 0xFA));
+                SetBrush(resources, DesignTokenKeys.TableStripedRowBg, Color.FromRgb(0xFA, 0xFA, 0xFA));
+                SetBrush(resources, DesignTokenKeys.TableSelectedRowBg, palette[0]); // Primary-1
             }
         }
 

@@ -120,6 +120,15 @@ namespace Plant01.WpfUI.Controls
             private set => SetValue(PageCountPropertyKey, value);
         }
 
+        public static readonly DependencyProperty SizeProperty = DependencyProperty.Register(
+            nameof(Size), typeof(AntSize), typeof(AntPagination), new PropertyMetadata(AntSize.Default));
+
+        public AntSize Size
+        {
+            get => (AntSize)GetValue(SizeProperty);
+            set => SetValue(SizeProperty, value);
+        }
+
         #endregion
 
         #region Events

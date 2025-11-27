@@ -1,0 +1,68 @@
+<UserControl x:Class="wpfuidemo.Views.TimelinePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800">
+
+    <ScrollViewer>
+        <StackPanel Margin="20">
+            <TextBlock Text="Basic Timeline" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+            
+            <controls:AntTimeline Margin="0,0,0,40">
+                <controls:AntTimelineItem>
+                    <TextBlock Text="Create a services site 2015-09-01"/>
+                </controls:AntTimelineItem>
+                <controls:AntTimelineItem>
+                    <TextBlock Text="Solve initial network problems 2015-09-01"/>
+                </controls:AntTimelineItem>
+                <controls:AntTimelineItem>
+                    <TextBlock Text="Technical testing 2015-09-01"/>
+                </controls:AntTimelineItem>
+                <controls:AntTimelineItem>
+                    <TextBlock Text="Network problems being solved 2015-09-01"/>
+                </controls:AntTimelineItem>
+            </controls:AntTimeline>
+
+            <TextBlock Text="Color Timeline" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+
+            <controls:AntTimeline Margin="0,0,0,40">
+                <controls:AntTimelineItem Color="Green">
+                    <TextBlock Text="Create a services site 2015-09-01"/>
+                </controls:AntTimelineItem>
+                <controls:AntTimelineItem Color="Green">
+                    <TextBlock Text="Solve initial network problems 2015-09-01"/>
+                </controls:AntTimelineItem>
+                <controls:AntTimelineItem Color="Red">
+                    <StackPanel>
+                        <TextBlock Text="Technical testing 2015-09-01"/>
+                        <TextBlock Text="Error occurred during testing." Foreground="Red"/>
+                    </StackPanel>
+                </controls:AntTimelineItem>
+                <controls:AntTimelineItem Color="Blue">
+                    <TextBlock Text="Network problems being solved 2015-09-01"/>
+                </controls:AntTimelineItem>
+            </controls:AntTimeline>
+
+            <TextBlock Text="Custom Dot Timeline" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+
+            <controls:AntTimeline>
+                <controls:AntTimelineItem>
+                    <TextBlock Text="Create a services site 2015-09-01"/>
+                </controls:AntTimelineItem>
+                <controls:AntTimelineItem>
+                    <controls:AntTimelineItem.Dot>
+                        <TextBlock Text="⏰" FontSize="16" Foreground="Orange"/>
+                    </controls:AntTimelineItem.Dot>
+                    <TextBlock Text="Solve initial network problems 2015-09-01"/>
+                </controls:AntTimelineItem>
+                <controls:AntTimelineItem>
+                    <TextBlock Text="Technical testing 2015-09-01"/>
+                </controls:AntTimelineItem>
+            </controls:AntTimeline>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

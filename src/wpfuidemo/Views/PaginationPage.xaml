@@ -23,16 +23,25 @@
             <TextBlock Text="Quick Jumper" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
             <ui:AntPagination Total="500" Current="1" ShowQuickJumper="True" Margin="0,0,0,20"/>
 
+            <TextBlock Text="Sizes" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <StackPanel Margin="0,0,0,20">
+                <TextBlock Text="Small" Margin="0,0,0,5"/>
+                <ui:AntPagination Total="50" Size="Small" Margin="0,0,0,10"/>
+                <TextBlock Text="Default" Margin="0,0,0,5"/>
+                <ui:AntPagination Total="50" Size="Default" Margin="0,0,0,10"/>
+                <TextBlock Text="Large" Margin="0,0,0,5"/>
+                <ui:AntPagination Total="50" Size="Large" Margin="0,0,0,10"/>
+            </StackPanel>
+
             <TextBlock Text="Real Data Example" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <DataGrid x:Name="DemoGrid" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10"
-                      BorderThickness="1" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}">
-                <DataGrid.Columns>
+            <ui:AntDataGrid x:Name="DemoGrid" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10">
+                <ui:AntDataGrid.Columns>
                     <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="150"/>
                     <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200"/>
                     <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="100"/>
-                </DataGrid.Columns>
-            </DataGrid>
+                </ui:AntDataGrid.Columns>
+            </ui:AntDataGrid>
             
             <ui:AntPagination x:Name="DataPagination"
                               Total="{Binding TotalItems}"

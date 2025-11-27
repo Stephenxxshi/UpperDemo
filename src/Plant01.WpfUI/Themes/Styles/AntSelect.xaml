@@ -164,6 +164,18 @@
 
     <!-- AntSelect Style -->
     <Style TargetType="{x:Type controls:AntSelect}">
+        <Style.Triggers>
+            <Trigger Property="Size" Value="Small">
+                <Setter Property="Height" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ControlHeightSM}}" />
+                <Setter Property="Padding" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PaddingXS}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static themes:DesignTokenKeys.FontSize}}" />
+            </Trigger>
+            <Trigger Property="Size" Value="Large">
+                <Setter Property="Height" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ControlHeightLG}}" />
+                <Setter Property="Padding" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PaddingLG}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static themes:DesignTokenKeys.FontSizeLG}}" />
+            </Trigger>
+        </Style.Triggers>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}"/>
@@ -172,6 +184,8 @@
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
         <Setter Property="Padding" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PaddingSM}}"/>
+        <Setter Property="Height" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ControlHeight}}"/>
+        <Setter Property="FontSize" Value="{DynamicResource {x:Static themes:DesignTokenKeys.FontSize}}"/>
         <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
         <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
         <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>

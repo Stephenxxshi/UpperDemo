@@ -99,5 +99,14 @@ namespace Plant01.WpfUI.Controls
             get => (CornerRadius)GetValue(CornerRadiusProperty);
             set => SetValue(CornerRadiusProperty, value);
         }
+
+        public static readonly DependencyProperty SizeProperty = DependencyProperty.Register(
+            nameof(Size), typeof(AntSize), typeof(AntButton), new PropertyMetadata(AntSize.Default));
+
+        public AntSize Size
+        {
+            get => (AntSize)GetValue(SizeProperty);
+            set => SetValue(SizeProperty, value);
+        }
     }
 }
