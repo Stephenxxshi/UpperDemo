@@ -250,6 +250,55 @@
                             <Setter Property="Effect" Value="{x:Null}" />
                         </Trigger>
 
+                        <!-- Hover States (Unchecked) -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Type" Value="Default"/>
+                                <Condition Property="IsChecked" Value="False"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColorHover}}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColorHover}}" />
+                        </MultiTrigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Type" Value="Primary"/>
+                                <Condition Property="IsChecked" Value="False"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColorHover}}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColorHover}}" />
+                        </MultiTrigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Type" Value="Dashed"/>
+                                <Condition Property="IsChecked" Value="False"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColorHover}}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColorHover}}" />
+                        </MultiTrigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Type" Value="Text"/>
+                                <Condition Property="IsChecked" Value="False"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlItemBgHover}}" />
+                        </MultiTrigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Type" Value="Link"/>
+                                <Condition Property="IsChecked" Value="False"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColorHover}}" />
+                        </MultiTrigger>
+
                         <!-- Shape: Circle -->
                         <Trigger Property="Shape" Value="Circle">
                             <Setter Property="CornerRadius" Value="500"/>

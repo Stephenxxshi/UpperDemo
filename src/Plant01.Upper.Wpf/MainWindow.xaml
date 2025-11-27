@@ -40,25 +40,37 @@
                 VerticalAlignment="Top"
                 Source="/Assets/Images/TitleBackgournd.png" />
 
-            <controls:AntSelect
-                x:Name="DensityCombo"
-                Width="100"
-                VerticalContentAlignment="Center"
-                SelectedIndex="1"
-                WindowChrome.IsHitTestVisibleInChrome="True"
-                SelectionChanged="Density_SelectionChanged">
-                <ComboBoxItem Content="Compact" Tag="Compact" />
-                <ComboBoxItem Content="Default" Tag="Default" />
-                <ComboBoxItem Content="Touch" Tag="Touch" />
-            </controls:AntSelect>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 
-            <StackPanel
-                Margin="0,0,20,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Orientation="Horizontal"
-                WindowChrome.IsHitTestVisibleInChrome="True">
-                <controls:AntColorPicker VerticalAlignment="Center" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+                <!--  三种大小  -->
+                <controls:AntSelect
+                    x:Name="DensityCombo"
+                    Width="100"
+                    HorizontalAlignment="Right"
+                    SelectedIndex="1"
+                    SelectionChanged="Density_SelectionChanged"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
+                    <ComboBoxItem Content="Compact" Tag="Compact" />
+                    <ComboBoxItem Content="Default" Tag="Default" />
+                    <ComboBoxItem Content="Touch" Tag="Touch" />
+                </controls:AntSelect>
+
+                <!--  暗黑模式  -->
+                <controls:AntButton
+                    Margin="10,0"
+                    HorizontalAlignment="Right"
+                    Click="ToggleTheme_Click"
+                    Content="暗黑模式"
+                    Type="Link"
+                    WindowChrome.IsHitTestVisibleInChrome="True" />
+
+                <!--  主题颜色  -->
+                <StackPanel
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
+                    <controls:AntColorPicker VerticalAlignment="Center" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+                </StackPanel>
             </StackPanel>
 
         </Grid>
@@ -92,7 +104,7 @@
             <ItemsControl ItemsSource="{Binding MenuItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <controls:AntButton
+                        <controls:AntRadioButton
                             Width="80"
                             Height="80"
                             Margin="5"
@@ -101,10 +113,13 @@
                             CommandParameter="{Binding}"
                             Content="{Binding Title}"
                             ContentFontSize="12"
+                            Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColor}}"
+                            GroupName="NaviGroup"
                             Icon="{Binding IconChar}"
                             IconFontFamily="/Assets/Fonts/#iconfont"
                             IconFontSize="36"
-                            IconPlacement="Top" />
+                            IconPlacement="Top"
+                            Type="Link" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
