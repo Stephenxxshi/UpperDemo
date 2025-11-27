@@ -1,0 +1,73 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Plant01.WpfUI.Controls"
+                    xmlns:themes="clr-namespace:Plant01.WpfUI.Themes">
+
+    <Style TargetType="{x:Type controls:AntEmpty}">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+        <Setter Property="FontSize" Value="{DynamicResource {x:Static themes:DesignTokenKeys.FontSize}}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:AntEmpty}">
+                    <StackPanel HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                        
+                        <!-- Image Area -->
+                        <ContentPresenter x:Name="PART_Image" Content="{TemplateBinding Image}" HorizontalAlignment="Center" Margin="0,0,0,8">
+                            <ContentPresenter.Resources>
+                                <Style TargetType="Image">
+                                    <Setter Property="Height" Value="64"/>
+                                    <Setter Property="Stretch" Value="Uniform"/>
+                                </Style>
+                                <Style TargetType="Path">
+                                    <Setter Property="Fill" Value="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}"/>
+                                    <Setter Property="Height" Value="64"/>
+                                    <Setter Property="Stretch" Value="Uniform"/>
+                                </Style>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+
+                        <!-- Default Image (Hidden by default, shown via trigger) -->
+                        <Viewbox x:Name="DefaultImage" Height="64" Visibility="Collapsed" Margin="0,0,0,8">
+                            <Canvas Width="64" Height="41">
+                                <!-- Shadow -->
+                                <Ellipse Width="64" Height="14" Canvas.Left="0" Canvas.Top="26" 
+                                         Fill="{DynamicResource {x:Static themes:DesignTokenKeys.FillColor}}" Opacity="0.5"/>
+                                
+                                <!-- Back Box -->
+                                <Path Data="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
+                                      Fill="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"
+                                      Stroke="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}"
+                                      StrokeThickness="1"/>
+                                
+                                <!-- Front Box -->
+                                <Path Data="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                      Fill="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"
+                                      Stroke="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}"
+                                      StrokeThickness="1"/>
+                            </Canvas>
+                        </Viewbox>
+
+                        <!-- Description -->
+                        <ContentPresenter Content="{TemplateBinding Description}" 
+                                          HorizontalAlignment="Center"
+                                          TextBlock.Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
+
+                        <!-- Footer Content (Buttons etc) -->
+                        <ContentPresenter Content="{TemplateBinding Content}" 
+                                          Margin="0,16,0,0"
+                                          HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Image" Value="{x:Null}">
+                            <Setter TargetName="PART_Image" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="DefaultImage" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

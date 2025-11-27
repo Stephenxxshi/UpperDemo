@@ -106,6 +106,9 @@ namespace wpfuidemo
                 case "DataGrid":
                     MainContent.Content = new DataGridPage();
                     break;
+                case "Empty":
+                    MainContent.Content = new EmptyPage();
+                    break;
                 case "Timeline":
                     MainContent.Content = new TimelinePage();
                     break;

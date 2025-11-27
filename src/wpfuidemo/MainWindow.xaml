@@ -61,6 +61,7 @@
                     Icon="📊"
                     IsExpanded="True">
                     <controls:AntMenuItem Header="DataGrid 表格" Tag="DataGrid" />
+                    <controls:AntMenuItem Header="Empty 空状态" Tag="Empty" />
                     <controls:AntMenuItem Header="Timeline 时间轴" Tag="Timeline" />
                     <controls:AntMenuItem Header="Steps 步骤条" Tag="Steps" />
                 </controls:AntMenuItem>

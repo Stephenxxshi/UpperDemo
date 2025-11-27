@@ -28,6 +28,7 @@
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSteps.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntColorPicker.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntAlert.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntEmpty.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
