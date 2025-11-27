@@ -14,8 +14,19 @@
         
         <TextBlock Text="Text Placement" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
         <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+            <ui:AntSwitch CheckedContent="Inside" UnCheckedContent="Inside" TextPlacement="Inside" Margin="0,0,20,0"/>
             <ui:AntSwitch CheckedContent="Left" UnCheckedContent="Left" TextPlacement="Left" Margin="0,0,20,0"/>
             <ui:AntSwitch CheckedContent="Right" UnCheckedContent="Right" TextPlacement="Right" Margin="0,0,20,0"/>
+        </StackPanel>
+
+        <TextBlock Text="Interactive Placement" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,20" VerticalAlignment="Center">
+            <ui:AntSwitch x:Name="DemoSwitch" CheckedContent="Open" UnCheckedContent="Close" Margin="0,0,20,0"/>
+            <ComboBox SelectionChanged="Placement_SelectionChanged" VerticalContentAlignment="Center" Width="120">
+                <ComboBoxItem Content="Inside" IsSelected="True"/>
+                <ComboBoxItem Content="Left"/>
+                <ComboBoxItem Content="Right"/>
+            </ComboBox>
         </StackPanel>
 
         <TextBlock Text="Loading" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>

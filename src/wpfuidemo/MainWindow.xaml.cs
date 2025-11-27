@@ -89,6 +89,15 @@ namespace wpfuidemo
                 case "Switch":
                     MainContent.Content = new SwitchPage();
                     break;
+                case "Checkbox":
+                    MainContent.Content = new CheckboxPage();
+                    break;
+                case "DatePicker":
+                    MainContent.Content = new DatePickerPage();
+                    break;
+                case "Calendar":
+                    MainContent.Content = new CalendarPage();
+                    break;
                 case "Layout":
                     MainContent.Content = new LayoutPage();
                     break;

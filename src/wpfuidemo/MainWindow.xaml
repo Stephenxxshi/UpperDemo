@@ -22,24 +22,18 @@
                 <controls:AntMenuItem Header="General" Icon="🏠" IsExpanded="True">
                     <controls:AntMenuItem Header="Dashboard" Tag="Dashboard" IsSelected="True"/>
                     <controls:AntMenuItem Header="Button 按钮" Tag="Button"/>
-                    <controls:AntMenuItem Header="Icon 图标"/>
-                    <controls:AntMenuItem Header="Typography 排版"/>
                 </controls:AntMenuItem>
                 <controls:AntMenuItem Header="Layout" Icon="📐" IsExpanded="True">
-                    <controls:AntMenuItem Header="Layout 布局" Tag="Layout"/>
                     <controls:AntMenuItem Header="Space 间距" Tag="Layout"/>
                     <controls:AntMenuItem Header="Divider 分割线" Tag="Layout"/>
                     <controls:AntMenuItem Header="Splitter 分割面板" Tag="Layout"/>
                 </controls:AntMenuItem>
-                <controls:AntMenuItem Header="Navigation" Icon="🧭" IsExpanded="True">
-                    <controls:AntMenuItem Header="Menu 导航菜单"/>
-                    <controls:AntMenuItem Header="Dropdown 下拉菜单"/>
-                    <controls:AntMenuItem Header="Steps 步骤条"/>
-                </controls:AntMenuItem>
                 <controls:AntMenuItem Header="Data Entry" Icon="📝" IsExpanded="True">
                     <controls:AntMenuItem Header="Input 输入框" Tag="Input"/>
+                    <controls:AntMenuItem Header="Checkbox 多选框" Tag="Checkbox"/>
+                    <controls:AntMenuItem Header="DatePicker 日期选择" Tag="DatePicker"/>
+                    <controls:AntMenuItem Header="Calendar 日历" Tag="Calendar"/>
                     <controls:AntMenuItem Header="Switch 开关" Tag="Switch"/>
-                    <controls:AntMenuItem Header="Select 选择器"/>
                 </controls:AntMenuItem>
             </controls:AntMenu>
         </Border>

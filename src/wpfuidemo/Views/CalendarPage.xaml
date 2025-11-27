@@ -1,0 +1,15 @@
+<UserControl x:Class="wpfuidemo.Views.CalendarPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+             xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI">
+    <StackPanel Margin="20">
+        <TextBlock Text="Calendar" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+        
+        <TextBlock Text="Standalone Calendar" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+        <Calendar Style="{DynamicResource AntCalendarStyle}" HorizontalAlignment="Left" Margin="0,0,0,20"/>
+        
+        <TextBlock Text="Note: This is the standalone calendar component used inside DatePicker." 
+                   FontSize="14" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}" Margin="0,0,0,20"/>
+    </StackPanel>
+</UserControl>

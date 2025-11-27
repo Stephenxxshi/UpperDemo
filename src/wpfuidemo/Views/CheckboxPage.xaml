@@ -1,0 +1,26 @@
+<UserControl x:Class="wpfuidemo.Views.CheckboxPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+             xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI">
+    <StackPanel Margin="20">
+        <TextBlock Text="Checkbox" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+        
+        <TextBlock Text="Basic" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+        <ui:AntCheckbox Content="Checkbox" Margin="0,0,0,20"/>
+        
+        <TextBlock Text="States" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+            <ui:AntCheckbox Content="Checked" IsChecked="True" Margin="0,0,20,0"/>
+            <ui:AntCheckbox Content="Unchecked" IsChecked="False" Margin="0,0,20,0"/>
+            <ui:AntCheckbox Content="Indeterminate" IsChecked="{x:Null}" IsThreeState="True" Margin="0,0,20,0"/>
+        </StackPanel>
+
+        <TextBlock Text="Disabled" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+            <ui:AntCheckbox Content="Checked Disabled" IsChecked="True" IsEnabled="False" Margin="0,0,20,0"/>
+            <ui:AntCheckbox Content="Unchecked Disabled" IsChecked="False" IsEnabled="False" Margin="0,0,20,0"/>
+            <ui:AntCheckbox Content="Indeterminate Disabled" IsChecked="{x:Null}" IsThreeState="True" IsEnabled="False" Margin="0,0,20,0"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
