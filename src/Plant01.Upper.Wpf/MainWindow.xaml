@@ -10,8 +10,8 @@
     xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI"
     xmlns:vm="clr-namespace:Plant01.Upper.Presentation.Core.ViewModels;assembly=Plant01.Upper.Presentation.Core"
     x:Name="window"
-    Width="1400"
-    Height="800"
+    Width="1600"
+    Height="900"
     d:DataContext="{d:DesignInstance vm:ShellViewModel,
                                      IsDesignTimeCreatable=True}"
     Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"
@@ -40,6 +40,25 @@
                 VerticalAlignment="Top"
                 Source="/Assets/Images/TitleBackgournd.png" />
 
+            <controls:AntSelect
+                x:Name="DensityCombo"
+                Width="100"
+                VerticalContentAlignment="Center"
+                SelectedIndex="1"
+                SelectionChanged="Density_SelectionChanged">
+                <ComboBoxItem Content="Compact" Tag="Compact" />
+                <ComboBoxItem Content="Default" Tag="Default" />
+                <ComboBoxItem Content="Touch" Tag="Touch" />
+            </controls:AntSelect>
+
+            <StackPanel
+                Margin="0,0,20,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Orientation="Horizontal">
+                <controls:AntColorPicker VerticalAlignment="Center" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+            </StackPanel>
+
         </Grid>
     </controls:AntWindow.NonClientAreaContent>
     <controls:AntWindow.Resources>
@@ -62,40 +81,6 @@
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
-        <!--  LOGO  -->
-        <!--<Grid Grid.Row="0" Grid.Column="0">
-            <Border
-                Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"
-                BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColorSplit}}"
-                BorderThickness="0,0,1,0">
-                <Image
-                    Width="80"
-                    Height="20"
-                    Margin="10"
-                    Source="/Assets/Images/Copyright.png" />
-            </Border>
-        </Grid>-->
-
-        <!--  时间  -->
-        <!--<Grid
-            Grid.Row="0"
-            Grid.Column="1"
-            Background="{DynamicResource {x:Static themes:DesignTokenKeys.BodyBackground}}">
-            <Grid>
-                <TextBlock
-                    Margin="10,0,0,0"
-                    VerticalAlignment="Center"
-                    FontSize="14"
-                    Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"
-                    Text="{Binding Path=CurrentTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss dddd}, ConverterCulture=zh-CN}" />
-                <Button
-                    Command="{Binding Path=OnClosedCommand}"
-                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                    IsTabStop="False"
-                    Style="{StaticResource WindowCloseButtonStyle}" />
-            </Grid>
-        </Grid>-->
-
         <!--  侧边导航栏  -->
         <Grid
             Grid.Row="0"
@@ -105,14 +90,19 @@
             <ItemsControl ItemsSource="{Binding MenuItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <controls:AntRadioButton
+                        <controls:AntButton
+                            Width="80"
+                            Height="80"
                             Margin="5"
+                            BorderThickness="0"
                             Command="{Binding DataContext.NavigateToCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                             CommandParameter="{Binding}"
                             Content="{Binding Title}"
-                            GroupName="NavGroup"
+                            ContentFontSize="12"
                             Icon="{Binding IconChar}"
-                            IconFontFamily="/Assets/Fonts/#iconfont" />
+                            IconFontFamily="/Assets/Fonts/#iconfont"
+                            IconFontSize="36"
+                            IconPlacement="Top" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

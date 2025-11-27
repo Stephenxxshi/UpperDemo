@@ -20,11 +20,11 @@ public partial class ShellViewModel : ObservableObject
     public ObservableCollection<MenuItem> MenuItems { get; } = new()
     {
         new MenuItem{
-            Name = "Dashboard",
+            Name = "DashBoard",
             Description = "Overview of the system",
             IconChar = "&#xe62b;", 
             IconPlacement = "Top",
-            Title = "Dashboard",
+            Title = "仪表盘",
             ViewModelType = typeof(DashboardViewModel)
         },
         new MenuItem
@@ -33,7 +33,7 @@ public partial class ShellViewModel : ObservableObject
             Description = "Application settings",
             IconChar = "&#xe7c6;",
             IconPlacement = "Top",
-            Title = "Settings",
+            Title = "设置",
             ViewModelType = typeof(SettingsViewModel)
         }
     };

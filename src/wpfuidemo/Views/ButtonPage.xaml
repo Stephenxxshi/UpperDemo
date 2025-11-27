@@ -44,6 +44,14 @@
                 </StackPanel>
             </WrapPanel>
 
+            <TextBlock Text="Icon Placement" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntButton Type="Primary" Icon="🔍" Content="Left (Default)" IconPlacement="Left" Margin="0,0,10,10"/>
+                <ui:AntButton Type="Primary" Icon="🔍" Content="Right" IconPlacement="Right" Margin="0,0,10,10"/>
+                <ui:AntButton Type="Primary" Icon="🔍" Content="Top" IconPlacement="Top" Margin="0,0,10,10"/>
+                <ui:AntButton Type="Primary" Icon="🔍" Content="Bottom" IconPlacement="Bottom" Margin="0,0,10,10"/>
+            </WrapPanel>
+
             <TextBlock Text="States &amp; Shadows" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
             <TextBlock Text="Hover, Press, or Focus to see states and shadows." Margin="0,0,0,10" Foreground="Gray"/>
             <WrapPanel Margin="0,0,0,20">

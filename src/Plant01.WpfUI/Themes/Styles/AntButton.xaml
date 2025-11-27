@@ -75,38 +75,88 @@
                                    IsHitTestVisible="False"/>
 
                         <!-- Content Layout -->
-                        <StackPanel Orientation="Horizontal"
+                        <DockPanel LastChildFill="True"
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                     Margin="{TemplateBinding Padding}">
                             
-                            <!-- Loading Icon -->
-                            <Path x:Name="LoadingIcon"
-                                  Style="{StaticResource AntDesign.LoadingSpinner}"
-                                  Fill="{TemplateBinding Foreground}"
-                                  Margin="0,0,8,0"
-                                  Visibility="Collapsed">
-                                 <Path.RenderTransform>
-                                    <RotateTransform Angle="0"/>
-                                </Path.RenderTransform>
-                            </Path>
+                            <StackPanel x:Name="IconPanel" Orientation="Horizontal" DockPanel.Dock="Left" Margin="0,0,8,0">
+                                <!-- Loading Icon -->
+                                <Path x:Name="LoadingIcon"
+                                      Style="{StaticResource AntDesign.LoadingSpinner}"
+                                      Fill="{TemplateBinding Foreground}"
+                                      Margin="0,0,8,0"
+                                      Visibility="Collapsed">
+                                     <Path.RenderTransform>
+                                        <RotateTransform Angle="0"/>
+                                    </Path.RenderTransform>
+                                </Path>
 
-                            <!-- Icon -->
-                            <TextBlock x:Name="IconText"
-                                       Text="{TemplateBinding Icon}"
-                                       FontFamily="{TemplateBinding IconFontFamily}"
-                                       Visibility="{TemplateBinding Icon, Converter={x:Static converters:StringVisibilityConverter.Instance}}"
-                                       Margin="0,0,8,0"
-                                       VerticalAlignment="Center"/>
-
+                                <!-- Icon -->
+                                <TextBlock x:Name="IconText"
+                                           Text="{TemplateBinding Icon}"
+                                           FontFamily="{TemplateBinding IconFontFamily}"
+                                           FontSize="{TemplateBinding IconFontSize, Converter={x:Static converters:NanToUnsetValueConverter.Instance}}"
+                                           Width="{TemplateBinding IconWidth}"
+                                           Height="{TemplateBinding IconHeight}"
+                                           Visibility="{TemplateBinding Icon, Converter={x:Static converters:StringVisibilityConverter.Instance}}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           TextAlignment="Center"/>
+                            </StackPanel>
+                            
                             <!-- Content -->
                             <ContentPresenter x:Name="contentPresenter"
                                               Focusable="False"
                                               RecognizesAccessKey="True"
-                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </StackPanel>
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              Width="{TemplateBinding ContentWidth}"
+                                              Height="{TemplateBinding ContentHeight}"
+                                              Tag="{Binding ContentFontSize, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ContentPresenter.Resources>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="FontSize">
+                                            <Setter.Value>
+                                                <MultiBinding Converter="{x:Static converters:FontSizeChooserConverter.Instance}">
+                                                    <Binding Path="Tag" RelativeSource="{RelativeSource AncestorType=ContentPresenter}"/>
+                                                    <Binding Path="(TextElement.FontSize)" RelativeSource="{RelativeSource AncestorType=ContentPresenter}"/>
+                                                </MultiBinding>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                    <Style TargetType="{x:Type AccessText}">
+                                        <Setter Property="FontSize">
+                                            <Setter.Value>
+                                                <MultiBinding Converter="{x:Static converters:FontSizeChooserConverter.Instance}">
+                                                    <Binding Path="Tag" RelativeSource="{RelativeSource AncestorType=ContentPresenter}"/>
+                                                    <Binding Path="(TextElement.FontSize)" RelativeSource="{RelativeSource AncestorType=ContentPresenter}"/>
+                                                </MultiBinding>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                        </DockPanel>
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <!-- Icon Placement Triggers -->
+                        <Trigger Property="IconPlacement" Value="Right">
+                            <Setter TargetName="IconPanel" Property="DockPanel.Dock" Value="Right"/>
+                            <Setter TargetName="IconPanel" Property="Margin" Value="8,0,0,0"/>
+                        </Trigger>
+                        <Trigger Property="IconPlacement" Value="Top">
+                            <Setter TargetName="IconPanel" Property="DockPanel.Dock" Value="Top"/>
+                            <Setter TargetName="IconPanel" Property="Margin" Value="0,0,0,8"/>
+                            <Setter TargetName="IconPanel" Property="HorizontalAlignment" Value="Center"/>
+                        </Trigger>
+                        <Trigger Property="IconPlacement" Value="Bottom">
+                            <Setter TargetName="IconPanel" Property="DockPanel.Dock" Value="Bottom"/>
+                            <Setter TargetName="IconPanel" Property="Margin" Value="0,8,0,0"/>
+                            <Setter TargetName="IconPanel" Property="HorizontalAlignment" Value="Center"/>
+                        </Trigger>
+
                         <!-- Loading State -->
                         <Trigger Property="Loading" Value="True">
                             <Setter TargetName="LoadingIcon" Property="Visibility" Value="Visible"/>
@@ -116,15 +166,11 @@
 
                         <!-- Icon Only (Adjust margin if no content) -->
                         <Trigger Property="Content" Value="{x:Null}">
-                            <Setter TargetName="IconText" Property="Margin" Value="0"/>
-                            <Setter TargetName="LoadingIcon" Property="Margin" Value="0"/>
+                            <Setter TargetName="IconPanel" Property="Margin" Value="0"/>
                         </Trigger>
                         <Trigger Property="Content" Value="">
-                            <Setter TargetName="IconText" Property="Margin" Value="0"/>
-                            <Setter TargetName="LoadingIcon" Property="Margin" Value="0"/>
-                        </Trigger>
-
-                        <!-- Type: Primary -->
+                            <Setter TargetName="IconPanel" Property="Margin" Value="0"/>
+                        </Trigger>                        <!-- Type: Primary -->
                         <Trigger Property="Type" Value="Primary">
                             <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
                             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />

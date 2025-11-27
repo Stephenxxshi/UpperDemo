@@ -48,6 +48,7 @@
                         IsSelected="True"
                         Tag="Dashboard" />
                     <controls:AntMenuItem Header="Button 按钮" Tag="Button" />
+                    <controls:AntMenuItem Header="ToggleButton 切换按钮" Tag="Toggle" />
                 </controls:AntMenuItem>
                 <controls:AntMenuItem
                     Header="Layout"

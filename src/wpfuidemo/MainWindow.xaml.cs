@@ -101,10 +101,10 @@ namespace wpfuidemo
                 case "Button":
                     MainContent.Content = new ButtonPage();
                     break;
-                case "Input":
-                    MainContent.Content = new InputPage();
+                case "Toggle":
+                    MainContent.Content = new TogglePage();
                     break;
-                case "Radio":
+                              case "Radio":
                     MainContent.Content = new RadioPage();
                     break;
                 case "Switch":

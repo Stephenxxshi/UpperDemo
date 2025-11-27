@@ -1,43 +1,19 @@
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Plant01.WpfUI.Helpers;
 
 namespace Plant01.WpfUI.Controls
 {
-    public enum ButtonType
+    public class AntToggleButton : ToggleButton
     {
-        Default,
-        Primary,
-        Dashed,
-        Text,
-        Link
-    }
-
-    public enum ButtonShape
-    {
-        Default,
-        Circle,
-        Round
-    }
-
-    public enum IconPlacement
-    {
-        Left,
-        Right,
-        Top,
-        Bottom
-    }
-
-    public class AntButton : Button
-    {
-        static AntButton()
+        static AntToggleButton()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(AntButton), new FrameworkPropertyMetadata(typeof(AntButton)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(AntToggleButton), new FrameworkPropertyMetadata(typeof(AntToggleButton)));
         }
 
         public static readonly DependencyProperty TypeProperty = DependencyProperty.Register(
-            nameof(Type), typeof(ButtonType), typeof(AntButton), new PropertyMetadata(ButtonType.Default));
+            nameof(Type), typeof(ButtonType), typeof(AntToggleButton), new PropertyMetadata(ButtonType.Default));
 
         public ButtonType Type
         {
@@ -46,7 +22,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty ShapeProperty = DependencyProperty.Register(
-            nameof(Shape), typeof(ButtonShape), typeof(AntButton), new PropertyMetadata(ButtonShape.Default));
+            nameof(Shape), typeof(ButtonShape), typeof(AntToggleButton), new PropertyMetadata(ButtonShape.Default));
 
         public ButtonShape Shape
         {
@@ -55,7 +31,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty IconProperty = DependencyProperty.Register(
-            nameof(Icon), typeof(string), typeof(AntButton), new PropertyMetadata(null, null, IconHelper.CoerceIcon));
+            nameof(Icon), typeof(string), typeof(AntToggleButton), new PropertyMetadata(null, null, IconHelper.CoerceIcon));
 
         public string Icon
         {
@@ -64,7 +40,7 @@ namespace Plant01.WpfUI.Controls
         }
         
         public static readonly DependencyProperty IconFontFamilyProperty = DependencyProperty.Register(
-            nameof(IconFontFamily), typeof(FontFamily), typeof(AntButton), new PropertyMetadata(new FontFamily("Segoe UI Symbol")));
+            nameof(IconFontFamily), typeof(FontFamily), typeof(AntToggleButton), new PropertyMetadata(new FontFamily("Segoe UI Symbol")));
 
         public FontFamily IconFontFamily
         {
@@ -73,7 +49,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty IconPlacementProperty = DependencyProperty.Register(
-            nameof(IconPlacement), typeof(IconPlacement), typeof(AntButton), new PropertyMetadata(IconPlacement.Left));
+            nameof(IconPlacement), typeof(IconPlacement), typeof(AntToggleButton), new PropertyMetadata(IconPlacement.Left));
 
         public IconPlacement IconPlacement
         {
@@ -82,7 +58,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty IconFontSizeProperty = DependencyProperty.Register(
-            nameof(IconFontSize), typeof(double), typeof(AntButton), new PropertyMetadata(double.NaN));
+            nameof(IconFontSize), typeof(double), typeof(AntToggleButton), new PropertyMetadata(double.NaN));
 
         public double IconFontSize
         {
@@ -91,7 +67,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty IconWidthProperty = DependencyProperty.Register(
-            nameof(IconWidth), typeof(double), typeof(AntButton), new PropertyMetadata(double.NaN));
+            nameof(IconWidth), typeof(double), typeof(AntToggleButton), new PropertyMetadata(double.NaN));
 
         public double IconWidth
         {
@@ -100,7 +76,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty IconHeightProperty = DependencyProperty.Register(
-            nameof(IconHeight), typeof(double), typeof(AntButton), new PropertyMetadata(double.NaN));
+            nameof(IconHeight), typeof(double), typeof(AntToggleButton), new PropertyMetadata(double.NaN));
 
         public double IconHeight
         {
@@ -109,7 +85,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty ContentWidthProperty = DependencyProperty.Register(
-            nameof(ContentWidth), typeof(double), typeof(AntButton), new PropertyMetadata(double.NaN));
+            nameof(ContentWidth), typeof(double), typeof(AntToggleButton), new PropertyMetadata(double.NaN));
 
         public double ContentWidth
         {
@@ -118,7 +94,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty ContentHeightProperty = DependencyProperty.Register(
-            nameof(ContentHeight), typeof(double), typeof(AntButton), new PropertyMetadata(double.NaN));
+            nameof(ContentHeight), typeof(double), typeof(AntToggleButton), new PropertyMetadata(double.NaN));
 
         public double ContentHeight
         {
@@ -127,7 +103,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty ContentFontSizeProperty = DependencyProperty.Register(
-            nameof(ContentFontSize), typeof(double), typeof(AntButton), new FrameworkPropertyMetadata(double.NaN, FrameworkPropertyMetadataOptions.AffectsMeasure));
+            nameof(ContentFontSize), typeof(double), typeof(AntToggleButton), new FrameworkPropertyMetadata(double.NaN, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public double ContentFontSize
         {
@@ -136,7 +112,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty LoadingProperty = DependencyProperty.Register(
-            nameof(Loading), typeof(bool), typeof(AntButton), new PropertyMetadata(false));
+            nameof(Loading), typeof(bool), typeof(AntToggleButton), new PropertyMetadata(false));
 
         public bool Loading
         {
@@ -145,7 +121,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty DangerProperty = DependencyProperty.Register(
-            nameof(Danger), typeof(bool), typeof(AntButton), new PropertyMetadata(false));
+            nameof(Danger), typeof(bool), typeof(AntToggleButton), new PropertyMetadata(false));
 
         public bool Danger
         {
@@ -154,7 +130,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty GhostProperty = DependencyProperty.Register(
-            nameof(Ghost), typeof(bool), typeof(AntButton), new PropertyMetadata(false));
+            nameof(Ghost), typeof(bool), typeof(AntToggleButton), new PropertyMetadata(false));
 
         public bool Ghost
         {
@@ -163,7 +139,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty CornerRadiusProperty = DependencyProperty.Register(
-            nameof(CornerRadius), typeof(CornerRadius), typeof(AntButton), new PropertyMetadata(new CornerRadius(0)));
+            nameof(CornerRadius), typeof(CornerRadius), typeof(AntToggleButton), new PropertyMetadata(new CornerRadius(0)));
 
         public CornerRadius CornerRadius
         {
@@ -172,7 +148,7 @@ namespace Plant01.WpfUI.Controls
         }
 
         public static readonly DependencyProperty SizeProperty = DependencyProperty.Register(
-            nameof(Size), typeof(AntSize), typeof(AntButton), new PropertyMetadata(AntSize.Default));
+            nameof(Size), typeof(AntSize), typeof(AntToggleButton), new PropertyMetadata(AntSize.Default));
 
         public AntSize Size
         {

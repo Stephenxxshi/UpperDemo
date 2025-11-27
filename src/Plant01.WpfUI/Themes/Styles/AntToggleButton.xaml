@@ -4,10 +4,8 @@
                     xmlns:local="clr-namespace:Plant01.WpfUI.Themes"
                     xmlns:converters="clr-namespace:Plant01.WpfUI.Converters">
 
-    <!-- Reuse Loading Spinner from AntButton if possible, or redefine it. 
-         Since it's in AntButton.xaml, it might not be available here unless we merge it or redefine.
-         Safest to redefine or put in a shared dictionary. For now, redefine. -->
-    <Style x:Key="AntDesign.LoadingSpinner.Radio" TargetType="Path">
+    <!-- Reuse Loading Spinner from AntButton if possible, or redefine it. -->
+    <Style x:Key="AntDesign.LoadingSpinner.Toggle" TargetType="Path">
         <Setter Property="RenderTransformOrigin" Value="0.5, 0.5"/>
         <Setter Property="Data" Value="M 7 1 A 6 6 0 1 1 1 7"/>
         <Setter Property="Stroke" Value="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}"/>
@@ -28,7 +26,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="{x:Type controls:AntRadioButton}">
+    <Style TargetType="{x:Type controls:AntToggleButton}">
         <Style.Triggers>
             <Trigger Property="Size" Value="Small">
                 <Setter Property="Height" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlHeightSM}}" />
@@ -55,7 +53,7 @@
         
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:AntRadioButton}">
+                <ControlTemplate TargetType="{x:Type controls:AntToggleButton}">
                     <Grid>
                         <!-- Standard Border -->
                         <Border x:Name="border"
@@ -84,7 +82,7 @@
                             <StackPanel x:Name="IconPanel" Orientation="Horizontal" DockPanel.Dock="Left" Margin="0,0,8,0">
                                 <!-- Loading Icon -->
                                 <Path x:Name="LoadingIcon"
-                                      Style="{StaticResource AntDesign.LoadingSpinner.Radio}"
+                                      Style="{StaticResource AntDesign.LoadingSpinner.Toggle}"
                                       Fill="{TemplateBinding Foreground}"
                                       Margin="0,0,8,0"
                                       Visibility="Collapsed">
@@ -174,7 +172,7 @@
                         </Trigger>
 
                         <!-- ================================================================= -->
-                        <!-- CHECKED STATES (The main difference from AntButton) -->
+                        <!-- CHECKED STATES -->
                         <!-- ================================================================= -->
 
                         <!-- Type: Default (Outline style when checked) -->
@@ -194,8 +192,8 @@
                                 <Condition Property="Type" Value="Primary"/>
                                 <Condition Property="IsChecked" Value="True"/>
                             </MultiTrigger.Conditions>
-                            <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
+                            <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColorActive}}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColorActive}}" />
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.TextOnPrimary}}" />
                             <Setter Property="Panel.ZIndex" Value="1" />
                         </MultiTrigger>
@@ -212,8 +210,15 @@
                         </MultiTrigger>
 
                         <!-- ================================================================= -->
-                        <!-- STANDARD BUTTON STYLES (Adapted for RadioButton) -->
+                        <!-- STANDARD BUTTON STYLES -->
                         <!-- ================================================================= -->
+
+                        <!-- Type: Primary (Base) -->
+                        <Trigger Property="Type" Value="Primary">
+                            <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.TextOnPrimary}}" />
+                        </Trigger>
 
                         <!-- Type: Dashed (Base) -->
                         <Trigger Property="Type" Value="Dashed">

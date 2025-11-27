@@ -57,6 +57,15 @@
                 <controls:AntRadioButton Content="Upload" Icon="⬆" GroupName="G6" Type="Default" Margin="0,0,10,0"/>
             </StackPanel>
 
+            <!-- Icon Placement -->
+            <TextBlock Text="Icon Placement" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                <controls:AntRadioButton Content="Left" Icon="🔍" IconPlacement="Left" GroupName="G7" Type="Default" Margin="0,0,10,0"/>
+                <controls:AntRadioButton Content="Right" Icon="🔍" IconPlacement="Right" GroupName="G7" Type="Default" Margin="0,0,10,0"/>
+                <controls:AntRadioButton Content="Top" Icon="🔍" IconPlacement="Top" GroupName="G7" Type="Default" Margin="0,0,10,0"/>
+                <controls:AntRadioButton Content="Bottom" Icon="🔍" IconPlacement="Bottom" GroupName="G7" Type="Default" Margin="0,0,10,0"/>
+            </StackPanel>
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>

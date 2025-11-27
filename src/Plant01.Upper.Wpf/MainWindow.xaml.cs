@@ -6,6 +6,7 @@ using Plant01.WpfUI.Helpers;
 
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
@@ -21,14 +22,46 @@ public partial class MainWindow : AntWindow
     private Color _primarySeed = Color.FromRgb(0x16, 0x77, 0xff); // Ant Design Blue
 
     public ICommand CloseAppCommand { get; set; }
-    public DateTime CurrentTime { get; set; }
+    public DateTime CurrentTime
+    {
+        get { return (DateTime)GetValue(CurrentTimeProperty); }
+        set { SetValue(CurrentTimeProperty, value); }
+    }
+
+    public static readonly DependencyProperty CurrentTimeProperty =
+        DependencyProperty.Register(
+            nameof(CurrentTime),
+            typeof(DateTime),
+            typeof(MainWindow),
+            new PropertyMetadata(DateTime.Now)
+        );
     public MainWindow(ShellViewModel shellViewModel)
     {
         CloseAppCommand = new RelayCommand(OnCloseApp);
         DataContext = shellViewModel;
-        Clock();
         InitializeComponent();
+        Dispatcher.Invoke(Clock);
+        ApplyTheme();
     }
+
+    private void ApplyTheme()
+    {
+        ThemeManager.ApplyTheme(_primarySeed, _isDark ? ThemeType.Dark : ThemeType.Light, _currentDensity);
+    }
+
+    private void ToggleTheme_Click(object sender, RoutedEventArgs e)
+    {
+        _isDark = !_isDark;
+        ApplyTheme();
+    }
+
+    private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
+    {
+        _primarySeed = e.NewValue;
+        ApplyTheme();
+    }
+
+
     private void OnCloseApp()
     {
         var modal = new AntModal
@@ -46,6 +79,26 @@ public partial class MainWindow : AntWindow
         if (modal.ShowDialog() == true)
         {
             Application.Current.Shutdown();
+        }
+    }
+
+    private void Density_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        if (sender is System.Windows.Controls.ComboBox combo && combo.SelectedItem is System.Windows.Controls.ComboBoxItem item && item.Tag is string density)
+        {
+            switch (density)
+            {
+                case "Compact":
+                    _currentDensity = DensityType.Compact;
+                    break;
+                case "Default":
+                    _currentDensity = DensityType.Default;
+                    break;
+                case "Touch":
+                    _currentDensity = DensityType.Touch;
+                    break;
+            }
+            ApplyTheme();
         }
     }
 

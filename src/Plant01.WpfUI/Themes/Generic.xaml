@@ -9,6 +9,7 @@
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Menu.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Input.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntButton.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntToggleButton.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntRadioButton.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Typography.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSwitch.xaml" />

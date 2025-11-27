@@ -48,6 +48,15 @@ namespace Plant01.WpfUI.Controls
             set => SetValue(IconFontFamilyProperty, value);
         }
 
+        public static readonly DependencyProperty IconPlacementProperty = DependencyProperty.Register(
+            nameof(IconPlacement), typeof(IconPlacement), typeof(AntRadioButton), new PropertyMetadata(IconPlacement.Left));
+
+        public IconPlacement IconPlacement
+        {
+            get => (IconPlacement)GetValue(IconPlacementProperty);
+            set => SetValue(IconPlacementProperty, value);
+        }
+
         public static readonly DependencyProperty LoadingProperty = DependencyProperty.Register(
             nameof(Loading), typeof(bool), typeof(AntRadioButton), new PropertyMetadata(false));
 
@@ -91,6 +100,60 @@ namespace Plant01.WpfUI.Controls
         {
             get => (AntSize)GetValue(SizeProperty);
             set => SetValue(SizeProperty, value);
+        }
+
+        public static readonly DependencyProperty IconFontSizeProperty = DependencyProperty.Register(
+            nameof(IconFontSize), typeof(double), typeof(AntRadioButton), new PropertyMetadata(double.NaN));
+
+        public double IconFontSize
+        {
+            get => (double)GetValue(IconFontSizeProperty);
+            set => SetValue(IconFontSizeProperty, value);
+        }
+
+        public static readonly DependencyProperty IconWidthProperty = DependencyProperty.Register(
+            nameof(IconWidth), typeof(double), typeof(AntRadioButton), new PropertyMetadata(double.NaN));
+
+        public double IconWidth
+        {
+            get => (double)GetValue(IconWidthProperty);
+            set => SetValue(IconWidthProperty, value);
+        }
+
+        public static readonly DependencyProperty IconHeightProperty = DependencyProperty.Register(
+            nameof(IconHeight), typeof(double), typeof(AntRadioButton), new PropertyMetadata(double.NaN));
+
+        public double IconHeight
+        {
+            get => (double)GetValue(IconHeightProperty);
+            set => SetValue(IconHeightProperty, value);
+        }
+
+        public static readonly DependencyProperty ContentWidthProperty = DependencyProperty.Register(
+            nameof(ContentWidth), typeof(double), typeof(AntRadioButton), new PropertyMetadata(double.NaN));
+
+        public double ContentWidth
+        {
+            get => (double)GetValue(ContentWidthProperty);
+            set => SetValue(ContentWidthProperty, value);
+        }
+
+        public static readonly DependencyProperty ContentHeightProperty = DependencyProperty.Register(
+            nameof(ContentHeight), typeof(double), typeof(AntRadioButton), new PropertyMetadata(double.NaN));
+
+        public double ContentHeight
+        {
+            get => (double)GetValue(ContentHeightProperty);
+            set => SetValue(ContentHeightProperty, value);
+        }
+
+        public static readonly DependencyProperty ContentFontSizeProperty = DependencyProperty.Register(
+            nameof(ContentFontSize), typeof(double), typeof(AntRadioButton), new FrameworkPropertyMetadata(double.NaN, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public double ContentFontSize
+        {
+            get => (double)GetValue(ContentFontSizeProperty);
+            set => SetValue(ContentFontSizeProperty, value);
         }
     }
 }

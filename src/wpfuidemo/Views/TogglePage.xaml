@@ -1,0 +1,68 @@
+<UserControl x:Class="wpfuidemo.Views.TogglePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="AntToggleButton" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+
+            <TextBlock Text="Types" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntToggleButton Content="Primary" Type="Primary" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Content="Default" Type="Default" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Content="Dashed" Type="Dashed" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Content="Text" Type="Text" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Content="Link" Type="Link" Margin="0,0,10,10"/>
+            </WrapPanel>
+
+            <TextBlock Text="Checked State" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntToggleButton Content="Primary Checked" Type="Primary" IsChecked="True" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Content="Default Checked" Type="Default" IsChecked="True" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Content="Dashed Checked" Type="Dashed" IsChecked="True" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Content="Text Checked" Type="Text" IsChecked="True" Margin="0,0,10,10"/>
+            </WrapPanel>
+
+            <TextBlock Text="Shapes &amp; Icons" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntToggleButton Type="Primary" Shape="Circle" Icon="🔍" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Type="Primary" Shape="Round" Content="Search" Icon="🔍" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Type="Default" Shape="Circle" Icon="🔍" IsChecked="True" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Type="Dashed" Shape="Round" Content="Dashed" Icon="🔍" IsChecked="True" Margin="0,0,10,10"/>
+            </WrapPanel>
+
+            <TextBlock Text="Icon Placement" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntToggleButton Type="Primary" Icon="🔍" Content="Left" IconPlacement="Left" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Type="Primary" Icon="🔍" Content="Right" IconPlacement="Right" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Type="Primary" Icon="🔍" Content="Top" IconPlacement="Top" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Type="Primary" Icon="🔍" Content="Bottom" IconPlacement="Bottom" Margin="0,0,10,10"/>
+            </WrapPanel>
+
+            <TextBlock Text="Loading" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntToggleButton Type="Primary" Loading="True" Content="Loading" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Type="Default" Loading="True" Content="Loading" IsChecked="True" Margin="0,0,10,10"/>
+            </WrapPanel>
+            
+            <TextBlock Text="Disabled" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntToggleButton Content="Primary(Disabled)" Type="Primary" IsEnabled="False" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Content="Default(Disabled)" Type="Default" IsEnabled="False" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Content="Checked(Disabled)" Type="Primary" IsChecked="True" IsEnabled="False" Margin="0,0,10,10"/>
+            </WrapPanel>
+
+            <TextBlock Text="Danger" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <WrapPanel Margin="0,0,0,20">
+                <ui:AntToggleButton Content="Primary Danger" Type="Primary" Danger="True" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Content="Default Danger" Type="Default" Danger="True" Margin="0,0,10,10"/>
+                <ui:AntToggleButton Content="Checked Danger" Type="Primary" Danger="True" IsChecked="True" Margin="0,0,10,10"/>
+            </WrapPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
