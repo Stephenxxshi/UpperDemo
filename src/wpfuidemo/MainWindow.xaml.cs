@@ -112,6 +112,9 @@ namespace wpfuidemo
                 case "Steps":
                     MainContent.Content = new StepsPage();
                     break;
+                case "Alert":
+                    MainContent.Content = new AlertPage();
+                    break;
                 case "Modal":
                     MainContent.Content = new DialogPage();
                     break;

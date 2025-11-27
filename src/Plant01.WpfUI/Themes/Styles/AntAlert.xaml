@@ -1,0 +1,116 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Plant01.WpfUI.Controls"
+                    xmlns:themes="clr-namespace:Plant01.WpfUI.Themes"
+                    xmlns:converters="clr-namespace:Plant01.WpfUI.Converters">
+
+    <Style TargetType="{x:Type controls:AntAlert}">
+        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontSize" Value="{DynamicResource {x:Static themes:DesignTokenKeys.FontSize}}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:AntAlert}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource {x:Static themes:DesignTokenKeys.BorderRadius}}"
+                            Padding="{TemplateBinding Padding}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Icon -->
+                            <ContentPresenter x:Name="PART_Icon" 
+                                              Content="{TemplateBinding Icon}"
+                                              VerticalAlignment="Top"
+                                              Margin="0,2,8,0"
+                                              Visibility="{TemplateBinding ShowIcon, Converter={x:Static converters:BooleanToVisibilityConverter.Instance}}"/>
+
+                            <!-- Content -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{TemplateBinding Message}" 
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           FontWeight="Medium"/>
+                                <TextBlock Text="{TemplateBinding Description}" 
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"
+                                           Margin="0,4,0,0"
+                                           Visibility="{TemplateBinding Description, Converter={x:Static converters:StringVisibilityConverter.Instance}}"/>
+                            </StackPanel>
+
+                            <!-- Close Button -->
+                            <Button Grid.Column="2"
+                                    Command="{Binding CloseCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Visibility="{TemplateBinding Closable, Converter={x:Static converters:BooleanToVisibilityConverter.Instance}}"
+                                    Style="{DynamicResource AntDesign.Button.Text}"
+                                    Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"
+                                    VerticalAlignment="Top"
+                                    Margin="8,0,0,0"
+                                    Padding="0">
+                                <TextBlock Text="✕" FontSize="12"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!-- Success -->
+                        <Trigger Property="Type" Value="Success">
+                            <Setter Property="Background" Value="#f6ffed"/>
+                            <Setter Property="BorderBrush" Value="#b7eb8f"/>
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <TextBlock Text="✅" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.SuccessColor}}"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <!-- Info -->
+                        <Trigger Property="Type" Value="Info">
+                            <Setter Property="Background" Value="#e6f7ff"/>
+                            <Setter Property="BorderBrush" Value="#91d5ff"/>
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <TextBlock Text="ℹ" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.InfoColor}}"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <!-- Warning -->
+                        <Trigger Property="Type" Value="Warning">
+                            <Setter Property="Background" Value="#fffbe6"/>
+                            <Setter Property="BorderBrush" Value="#ffe58f"/>
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <TextBlock Text="⚠" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.WarningColor}}"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <!-- Error -->
+                        <Trigger Property="Type" Value="Error">
+                            <Setter Property="Background" Value="#fff2f0"/>
+                            <Setter Property="BorderBrush" Value="#ffccc7"/>
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <TextBlock Text="❌" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.ErrorColor}}"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        
+                        <!-- Description Layout Adjustment -->
+                        <Trigger Property="Description" Value="{x:Null}">
+                             <Setter TargetName="PART_Icon" Property="VerticalAlignment" Value="Center"/>
+                             <Setter TargetName="PART_Icon" Property="Margin" Value="0,0,8,0"/>
+                        </Trigger>
+                         <Trigger Property="Description" Value="">
+                             <Setter TargetName="PART_Icon" Property="VerticalAlignment" Value="Center"/>
+                             <Setter TargetName="PART_Icon" Property="Margin" Value="0,0,8,0"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

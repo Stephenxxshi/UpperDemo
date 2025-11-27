@@ -68,6 +68,7 @@
                     Header="Feedback"
                     Icon="💬"
                     IsExpanded="True">
+                    <controls:AntMenuItem Header="Alert 警告提示" Tag="Alert"/>
                     <controls:AntMenuItem Header="Modal 对话框" Tag="Modal" />
                 </controls:AntMenuItem>
                 <controls:AntMenuItem
