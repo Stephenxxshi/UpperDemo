@@ -1,0 +1,255 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Plant01.WpfUI.Controls"
+                    xmlns:local="clr-namespace:Plant01.WpfUI.Themes"
+                    xmlns:converters="clr-namespace:Plant01.WpfUI.Converters">
+
+    <!-- Reuse Loading Spinner from AntButton if possible, or redefine it. 
+         Since it's in AntButton.xaml, it might not be available here unless we merge it or redefine.
+         Safest to redefine or put in a shared dictionary. For now, redefine. -->
+    <Style x:Key="AntDesign.LoadingSpinner.Radio" TargetType="Path">
+        <Setter Property="RenderTransformOrigin" Value="0.5, 0.5"/>
+        <Setter Property="Data" Value="M 7 1 A 6 6 0 1 1 1 7"/>
+        <Setter Property="Stroke" Value="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}"/>
+        <Setter Property="StrokeThickness" Value="1.5"/>
+        <Setter Property="Fill" Value="Transparent"/>
+        <Setter Property="Width" Value="14"/>
+        <Setter Property="Height" Value="14"/>
+        <Setter Property="Stretch" Value="None"/>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                         From="0" To="360" Duration="0:0:1" RepeatBehavior="Forever"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type controls:AntRadioButton}">
+        <Style.Triggers>
+            <Trigger Property="Size" Value="Small">
+                <Setter Property="Height" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlHeightSM}}" />
+                <Setter Property="Padding" Value="{DynamicResource {x:Static local:DesignTokenKeys.PaddingXS}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static local:DesignTokenKeys.FontSize}}" />
+            </Trigger>
+            <Trigger Property="Size" Value="Large">
+                <Setter Property="Height" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlHeightLG}}" />
+                <Setter Property="Padding" Value="{DynamicResource {x:Static local:DesignTokenKeys.PaddingLG}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static local:DesignTokenKeys.FontSizeLG}}" />
+            </Trigger>
+        </Style.Triggers>
+        <Setter Property="Padding" Value="{DynamicResource {x:Static local:DesignTokenKeys.PaddingMD}}" />
+        <Setter Property="FontSize" Value="{DynamicResource {x:Static local:DesignTokenKeys.FontSize}}" />
+        <Setter Property="Height" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlHeight}}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.ComponentBackground}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.BorderColor}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.TextPrimary}}" />
+        <Setter Property="Effect" Value="{DynamicResource {x:Static local:DesignTokenKeys.BoxShadowSmall}}" />
+        
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:AntRadioButton}">
+                    <Grid>
+                        <!-- Standard Border -->
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{DynamicResource {x:Static local:DesignTokenKeys.BorderRadius}}"
+                                SnapsToDevicePixels="True"/>
+
+                        <!-- Dashed Border (Overlay) -->
+                        <Rectangle x:Name="dashedBorder"
+                                   Stroke="{TemplateBinding BorderBrush}"
+                                   StrokeThickness="{TemplateBinding BorderThickness}"
+                                   StrokeDashArray="4 2"
+                                   RadiusX="{DynamicResource {x:Static local:DesignTokenKeys.BorderRadiusBase}}"
+                                   RadiusY="{DynamicResource {x:Static local:DesignTokenKeys.BorderRadiusBase}}"
+                                   Visibility="Collapsed"
+                                   IsHitTestVisible="False"/>
+
+                        <!-- Content Layout -->
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Margin="{TemplateBinding Padding}">
+                            
+                            <!-- Loading Icon -->
+                            <Path x:Name="LoadingIcon"
+                                  Style="{StaticResource AntDesign.LoadingSpinner.Radio}"
+                                  Fill="{TemplateBinding Foreground}"
+                                  Margin="0,0,8,0"
+                                  Visibility="Collapsed">
+                                 <Path.RenderTransform>
+                                    <RotateTransform Angle="0"/>
+                                </Path.RenderTransform>
+                            </Path>
+
+                            <!-- Icon -->
+                            <TextBlock x:Name="IconText"
+                                       Text="{TemplateBinding Icon}"
+                                       FontFamily="{TemplateBinding IconFontFamily}"
+                                       Visibility="{TemplateBinding Icon, Converter={x:Static converters:StringVisibilityConverter.Instance}}"
+                                       Margin="0,0,8,0"
+                                       VerticalAlignment="Center"/>
+
+                            <!-- Content -->
+                            <ContentPresenter x:Name="contentPresenter"
+                                              Focusable="False"
+                                              RecognizesAccessKey="True"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </StackPanel>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <!-- Loading State -->
+                        <Trigger Property="Loading" Value="True">
+                            <Setter TargetName="LoadingIcon" Property="Visibility" Value="Visible"/>
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Setter Property="Opacity" Value="0.7"/>
+                        </Trigger>
+
+                        <!-- Icon Only -->
+                        <Trigger Property="Content" Value="{x:Null}">
+                            <Setter TargetName="IconText" Property="Margin" Value="0"/>
+                            <Setter TargetName="LoadingIcon" Property="Margin" Value="0"/>
+                        </Trigger>
+                        <Trigger Property="Content" Value="">
+                            <Setter TargetName="IconText" Property="Margin" Value="0"/>
+                            <Setter TargetName="LoadingIcon" Property="Margin" Value="0"/>
+                        </Trigger>
+
+                        <!-- ================================================================= -->
+                        <!-- CHECKED STATES (The main difference from AntButton) -->
+                        <!-- ================================================================= -->
+
+                        <!-- Type: Default (Outline style when checked) -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Type" Value="Default"/>
+                                <Condition Property="IsChecked" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
+                            <Setter Property="Panel.ZIndex" Value="1" />
+                        </MultiTrigger>
+
+                        <!-- Type: Primary (Solid style when checked) -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Type" Value="Primary"/>
+                                <Condition Property="IsChecked" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.TextOnPrimary}}" />
+                            <Setter Property="Panel.ZIndex" Value="1" />
+                        </MultiTrigger>
+
+                        <!-- Type: Dashed (Dashed Primary when checked) -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Type" Value="Dashed"/>
+                                <Condition Property="IsChecked" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
+                            <Setter Property="Panel.ZIndex" Value="1" />
+                        </MultiTrigger>
+
+                        <!-- ================================================================= -->
+                        <!-- STANDARD BUTTON STYLES (Adapted for RadioButton) -->
+                        <!-- ================================================================= -->
+
+                        <!-- Type: Dashed (Base) -->
+                        <Trigger Property="Type" Value="Dashed">
+                            <Setter TargetName="border" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="dashedBorder" Property="Visibility" Value="Visible"/>
+                            <Setter Property="Effect" Value="{x:Null}" />
+                        </Trigger>
+                        
+                        <!-- Type: Text -->
+                        <Trigger Property="Type" Value="Text">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Effect" Value="{x:Null}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Type" Value="Text"/>
+                                <Condition Property="IsChecked" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlItemBgActive}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
+                        </MultiTrigger>
+
+                        <!-- Type: Link -->
+                        <Trigger Property="Type" Value="Link">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
+                            <Setter Property="Effect" Value="{x:Null}" />
+                        </Trigger>
+
+                        <!-- Shape: Circle -->
+                        <Trigger Property="Shape" Value="Circle">
+                            <Setter Property="CornerRadius" Value="500"/>
+                            <Setter TargetName="dashedBorder" Property="RadiusX" Value="500"/>
+                            <Setter TargetName="dashedBorder" Property="RadiusY" Value="500"/>
+                            <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}"/>
+                            <Setter Property="Padding" Value="0"/>
+                        </Trigger>
+                        
+                        <!-- Shape: Round -->
+                        <Trigger Property="Shape" Value="Round">
+                            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlHeight}}"/>
+                            <Setter TargetName="dashedBorder" Property="RadiusX" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlHeight}}"/>
+                            <Setter TargetName="dashedBorder" Property="RadiusY" Value="{DynamicResource {x:Static local:DesignTokenKeys.ControlHeight}}"/>
+                        </Trigger>
+
+                        <!-- Disabled State -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                            <Setter Property="Effect" Value="{x:Null}" />
+                        </Trigger>
+
+                        <!-- Focus State -->
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.PrimaryColor}}" />
+                            <Setter Property="Effect" Value="{DynamicResource {x:Static local:DesignTokenKeys.BoxShadow}}" />
+                            <Setter Property="Panel.ZIndex" Value="2" />
+                        </Trigger>
+
+                        <!-- Danger State -->
+                        <Trigger Property="Danger" Value="True">
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.ErrorColor}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.ErrorColor}}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Danger" Value="True"/>
+                                <Condition Property="IsChecked" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{DynamicResource {x:Static local:DesignTokenKeys.ErrorColor}}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.ErrorColor}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static local:DesignTokenKeys.TextOnPrimary}}" />
+                        </MultiTrigger>
+
+                        <!-- Ghost State -->
+                        <Trigger Property="Ghost" Value="True">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

@@ -9,5 +9,6 @@
         <ResourceDictionary Source="Themes/Styles/AntDatePicker.xaml"/>
         <ResourceDictionary Source="Themes/Styles/AntDateRangePicker.xaml"/>
         <ResourceDictionary Source="Themes/Styles/AntTimeline.xaml"/>
+        <ResourceDictionary Source="Themes/Styles/AntWindow.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

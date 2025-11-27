@@ -20,13 +20,13 @@ namespace Plant01.WpfUI.Helpers
 
     public static class ThemeManager
     {
-        public static void ApplyTheme(Color primarySeed, ThemeType themeType, DensityType density = DensityType.Default)
+        public static void ApplyTheme(Color primarySeed, ThemeType themeType, DensityType density = DensityType.Default, Color? bodyBackground = null)
         {
             if (Application.Current == null) return;
-            ApplyThemeToDictionary(Application.Current.Resources, primarySeed, themeType, density);
+            ApplyThemeToDictionary(Application.Current.Resources, primarySeed, themeType, density, bodyBackground);
         }
 
-        public static void ApplyThemeToDictionary(ResourceDictionary resources, Color primarySeed, ThemeType themeType, DensityType density = DensityType.Default)
+        public static void ApplyThemeToDictionary(ResourceDictionary resources, Color primarySeed, ThemeType themeType, DensityType density = DensityType.Default, Color? bodyBackground = null)
         {
             bool isDark = themeType == ThemeType.Dark;
 
@@ -54,7 +54,7 @@ namespace Plant01.WpfUI.Helpers
             // 3. Neutrals
             if (isDark)
             {
-                SetBrush(resources, DesignTokenKeys.BodyBackground, Color.FromRgb(0x00, 0x00, 0x00));
+                SetBrush(resources, DesignTokenKeys.BodyBackground, bodyBackground ?? Color.FromRgb(0x00, 0x00, 0x00));
                 SetBrush(resources, DesignTokenKeys.ComponentBackground, Color.FromRgb(0x14, 0x14, 0x14));
                 SetBrush(resources, DesignTokenKeys.PopoverBackground, Color.FromRgb(0x1f, 0x1f, 0x1f));
                 
@@ -78,7 +78,7 @@ namespace Plant01.WpfUI.Helpers
             }
             else
             {
-                SetBrush(resources, DesignTokenKeys.BodyBackground, Colors.White);
+                SetBrush(resources, DesignTokenKeys.BodyBackground, bodyBackground ?? Colors.White);
                 SetBrush(resources, DesignTokenKeys.ComponentBackground, Colors.White);
                 SetBrush(resources, DesignTokenKeys.PopoverBackground, Colors.White);
 
@@ -151,6 +151,11 @@ namespace Plant01.WpfUI.Helpers
             SetValue(resources, DesignTokenKeys.PaddingMD, new Thickness(basePadding, 4, basePadding, 4));
             SetValue(resources, DesignTokenKeys.PaddingSM, new Thickness(basePadding / 2, 2, basePadding / 2, 2));
             
+            // Modal Paddings (Ant Design 5.x Defaults)
+            SetValue(resources, DesignTokenKeys.ModalContentPadding, new Thickness(24));
+            SetValue(resources, DesignTokenKeys.ModalHeaderPadding, new Thickness(24, 16, 24, 16)); // Left, Top, Right, Bottom
+            SetValue(resources, DesignTokenKeys.ModalFooterPadding, new Thickness(16, 10, 16, 10));
+
             SetValue(resources, DesignTokenKeys.BorderRadius, new CornerRadius(borderRadius));
             SetValue(resources, DesignTokenKeys.BorderRadiusBase, borderRadius);
         }

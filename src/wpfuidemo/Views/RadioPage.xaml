@@ -1,0 +1,62 @@
+<UserControl x:Class="wpfuidemo.Views.RadioPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <ScrollViewer>
+        <StackPanel Margin="20">
+            <TextBlock Text="Radio Button" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+
+            <!-- Basic Radio (Default Button Style) -->
+            <TextBlock Text="Basic Radio (Default Button Style)" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                <controls:AntRadioButton Content="Radio A" GroupName="G1" Margin="0,0,10,0"/>
+                <controls:AntRadioButton Content="Radio B" GroupName="G1" IsChecked="True" Margin="0,0,10,0"/>
+                <controls:AntRadioButton Content="Radio C" GroupName="G1" IsEnabled="False"/>
+            </StackPanel>
+
+            <!-- Button Style (Outline) -->
+            <TextBlock Text="Radio Button (Outline / Default)" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                <controls:AntRadioButton Content="Hangzhou" GroupName="G2" Type="Default" Margin="0,0,0,0"/>
+                <controls:AntRadioButton Content="Shanghai" GroupName="G2" Type="Default" Margin="0,0,0,0"/>
+                <controls:AntRadioButton Content="Beijing" GroupName="G2" Type="Default" Margin="0,0,0,0"/>
+                <controls:AntRadioButton Content="Chengdu" GroupName="G2" Type="Default" Margin="0,0,0,0"/>
+            </StackPanel>
+
+            <!-- Button Style (Solid) -->
+            <TextBlock Text="Radio Button (Solid / Primary)" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                <controls:AntRadioButton Content="Hangzhou" GroupName="G3" Type="Primary" Margin="0,0,10,0"/>
+                <controls:AntRadioButton Content="Shanghai" GroupName="G3" Type="Primary" IsChecked="True" Margin="0,0,10,0"/>
+                <controls:AntRadioButton Content="Beijing" GroupName="G3" Type="Primary" Margin="0,0,10,0"/>
+            </StackPanel>
+
+            <!-- Sizes -->
+            <TextBlock Text="Sizes" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                <controls:AntRadioButton Content="Small" GroupName="G4" Size="Small" Type="Default" Margin="0,0,10,0"/>
+                <controls:AntRadioButton Content="Default" GroupName="G4" Size="Default" Type="Default" IsChecked="True" Margin="0,0,10,0"/>
+                <controls:AntRadioButton Content="Large" GroupName="G4" Size="Large" Type="Default" Margin="0,0,10,0"/>
+            </StackPanel>
+
+            <!-- Disabled -->
+            <TextBlock Text="Disabled" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                <controls:AntRadioButton Content="Disabled Unchecked" GroupName="G5" Type="Default" IsEnabled="False" Margin="0,0,10,0"/>
+                <controls:AntRadioButton Content="Disabled Checked" GroupName="G5" Type="Default" IsChecked="True" IsEnabled="False" Margin="0,0,10,0"/>
+            </StackPanel>
+            
+            <!-- With Icons -->
+             <TextBlock Text="With Icons" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                <controls:AntRadioButton Content="Download" Icon="⬇" GroupName="G6" Type="Default" Margin="0,0,10,0"/>
+                <controls:AntRadioButton Content="Upload" Icon="⬆" GroupName="G6" Type="Default" Margin="0,0,10,0"/>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

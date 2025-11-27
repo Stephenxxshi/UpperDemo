@@ -10,6 +10,7 @@ namespace Plant01.WpfUI.Themes
         private Color _primaryColor = Color.FromRgb(0x16, 0x77, 0xff); // Default Blue
         private ThemeType _themeType = ThemeType.Light;
         private DensityType _density = DensityType.Default;
+        private Color? _bodyBackground = null;
 
         public Color PrimaryColor
         {
@@ -41,6 +42,16 @@ namespace Plant01.WpfUI.Themes
             }
         }
 
+        public Color? BodyBackground
+        {
+            get => _bodyBackground;
+            set
+            {
+                _bodyBackground = value;
+                UpdateTheme();
+            }
+        }
+
         public AntDesignThemeDictionary()
         {
             MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Plant01.WpfUI;component/Themes/Generic.xaml", UriKind.Relative) });
@@ -49,7 +60,7 @@ namespace Plant01.WpfUI.Themes
 
         private void UpdateTheme()
         {
-            ThemeManager.ApplyThemeToDictionary(this, _primaryColor, _themeType, _density);
+            ThemeManager.ApplyThemeToDictionary(this, _primaryColor, _themeType, _density, _bodyBackground);
         }
     }
 }

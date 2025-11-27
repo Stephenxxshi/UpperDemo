@@ -37,14 +37,15 @@
                                 </Grid.RowDefinitions>
 
                                 <!-- Header -->
-                                <Grid Grid.Row="0" Margin="{TemplateBinding Padding, Converter={StaticResource ThicknessSideConverter}, ConverterParameter=header}">
+                                <Grid Grid.Row="0" Margin="{DynamicResource {x:Static themes:DesignTokenKeys.ModalHeaderPadding}}">
                                     <TextBlock Text="{TemplateBinding Title}" 
                                                FontWeight="SemiBold" 
                                                FontSize="{DynamicResource {x:Static themes:DesignTokenKeys.FontSizeLG}}"/>
                                     <Button Command="{x:Static SystemCommands.CloseWindowCommand}"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Top"
-                                            Width="20" Height="20"
+                                            Width="22" Height="22"
+                                            Margin="0,-4,-8,0"
                                             Background="Transparent"
                                             BorderThickness="0"
                                             Padding="0">
@@ -58,13 +59,14 @@
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="Button">
-                                                            <Border Background="{TemplateBinding Background}">
+                                                            <Border Background="{TemplateBinding Background}" CornerRadius="4">
                                                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                             </Border>
                                                             <ControlTemplate.Triggers>
                                                                 <Trigger Property="IsMouseOver" Value="True">
                                                                     <Setter Property="Cursor" Value="Hand"/>
-                                                                    <Setter Property="Opacity" Value="0.7"/>
+                                                                    <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ControlItemBgHover}}"/>
+                                                                    <Setter Property="Opacity" Value="1"/>
                                                                 </Trigger>
                                                             </ControlTemplate.Triggers>
                                                         </ControlTemplate>
@@ -76,14 +78,14 @@
                                 </Grid>
 
                                 <!-- Content -->
-                                <ContentPresenter Grid.Row="1" Margin="{TemplateBinding Padding, Converter={StaticResource ThicknessSideConverter}, ConverterParameter=content}"/>
+                                <ContentPresenter Grid.Row="1" Margin="{DynamicResource {x:Static themes:DesignTokenKeys.ModalContentPadding}}"/>
 
                                 <!-- Footer -->
                                 <Border Grid.Row="2" 
                                         BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColorSplit}}"
-                                        BorderThickness="0,1,0,0"
-                                        Padding="{DynamicResource {x:Static themes:DesignTokenKeys.PaddingMD}}"
-                                        Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"
+                                        BorderThickness="0,0,0,0"
+                                        Padding="{DynamicResource {x:Static themes:DesignTokenKeys.ModalFooterPadding}}"
+                                        Background="Transparent"
                                         CornerRadius="0,0,6,6">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                         <controls:AntButton Content="{TemplateBinding CancelText}" 

@@ -11,6 +11,7 @@
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/IconControls.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Input.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntButton.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntRadioButton.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Typography.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSwitch.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDivider.xaml"/>
@@ -29,6 +30,7 @@
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntColorPicker.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntAlert.xaml"/>
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntEmpty.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntWindow.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
