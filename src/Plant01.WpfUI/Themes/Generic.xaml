@@ -1,36 +1,34 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Plant01.WpfUI"
     xmlns:controls="clr-namespace:Plant01.WpfUI.Controls"
     xmlns:themes="clr-namespace:Plant01.WpfUI.Themes">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Button.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Menu.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/IconControls.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Input.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntButton.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntRadioButton.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Typography.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSwitch.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDivider.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSpace.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSplitter.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntCheckbox.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntCalendar.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDatePicker.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDateRangePicker.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntPagination.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSelect.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDataGrid.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntModal.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntTimeline.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSteps.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntColorPicker.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntAlert.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntEmpty.xaml"/>
-        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntWindow.xaml"/>
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Button.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Menu.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Input.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntButton.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntRadioButton.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/Typography.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSwitch.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDivider.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSpace.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSplitter.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntCheckbox.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntCalendar.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDatePicker.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDateRangePicker.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntPagination.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSelect.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDataGrid.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntModal.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntTimeline.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSteps.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntColorPicker.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntAlert.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntEmpty.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntWindow.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

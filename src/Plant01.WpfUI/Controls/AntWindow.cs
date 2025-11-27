@@ -55,6 +55,47 @@ public class AntWindow : Window
         set => SetValue(CloseCommandProperty, value);
     }
 
+    public static readonly DependencyProperty TitleBarHeightProperty = DependencyProperty.Register(
+        nameof(TitleBarHeight), typeof(double), typeof(AntWindow), new PropertyMetadata(32.0, OnTitleBarHeightChanged));
+
+    public double TitleBarHeight
+    {
+        get => (double)GetValue(TitleBarHeightProperty);
+        set => SetValue(TitleBarHeightProperty, value);
+    }
+
+    private static void OnTitleBarHeightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is AntWindow window)
+        {
+            window.UpdateWindowChromeCaptionHeight((double)e.NewValue);
+        }
+    }
+
+    protected override void OnSourceInitialized(EventArgs e)
+    {
+        base.OnSourceInitialized(e);
+        UpdateWindowChromeCaptionHeight(TitleBarHeight);
+    }
+
+    private void UpdateWindowChromeCaptionHeight(double height)
+    {
+        var chrome = WindowChrome.GetWindowChrome(this);
+        if (chrome != null)
+        {
+            if (chrome.IsFrozen)
+            {
+                chrome = (WindowChrome)chrome.Clone();
+                chrome.CaptionHeight = height;
+                WindowChrome.SetWindowChrome(this, chrome);
+            }
+            else
+            {
+                chrome.CaptionHeight = height;
+            }
+        }
+    }
+
     private void OnCanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
     {
         e.CanExecute = ResizeMode == ResizeMode.CanResize || ResizeMode == ResizeMode.CanResizeWithGrip;

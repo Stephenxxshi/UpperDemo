@@ -8,6 +8,7 @@
     <Style x:Key="WindowButtonStyle" TargetType="Button">
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
         <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Width" Value="46"/>
         <Setter Property="Height" Value="32"/>
@@ -20,10 +21,12 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#E5E5E5"/>
+                            <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ControlItemBgHover}}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="#CACACA"/>
+                            <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ControlItemBgPressed}}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -35,11 +38,11 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ErrorColor}}"/>
-                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextOnPrimary}}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ErrorColorActive}}"/>
-                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextOnPrimary}}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -73,7 +76,7 @@
                             </Grid.RowDefinitions>
 
                             <!-- Title Bar -->
-                            <Grid Grid.Row="0" Height="32" Background="Transparent">
+                            <Grid Grid.Row="0" Height="{TemplateBinding TitleBarHeight}" Background="Transparent">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
@@ -109,8 +112,7 @@
 
                                 <!-- NonClientAreaContent -->
                                 <ContentPresenter Grid.Column="2" 
-                                                  Content="{TemplateBinding NonClientAreaContent}"
-                                                  WindowChrome.IsHitTestVisibleInChrome="True"/>
+                                                  Content="{TemplateBinding NonClientAreaContent}"/>
 
                                 <!-- System Buttons -->
                                 <StackPanel Grid.Column="3" Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
