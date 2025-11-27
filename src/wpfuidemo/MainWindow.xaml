@@ -33,7 +33,11 @@
                     <controls:AntMenuItem Header="Checkbox 多选框" Tag="Checkbox"/>
                     <controls:AntMenuItem Header="DatePicker 日期选择" Tag="DatePicker"/>
                     <controls:AntMenuItem Header="Calendar 日历" Tag="Calendar"/>
+                    <controls:AntMenuItem Header="Select 选择器" Tag="Select"/>
                     <controls:AntMenuItem Header="Switch 开关" Tag="Switch"/>
+                </controls:AntMenuItem>
+                <controls:AntMenuItem Header="Navigation" Icon="🧭" IsExpanded="True">
+                    <controls:AntMenuItem Header="Pagination 分页" Tag="Pagination"/>
                 </controls:AntMenuItem>
             </controls:AntMenu>
         </Border>

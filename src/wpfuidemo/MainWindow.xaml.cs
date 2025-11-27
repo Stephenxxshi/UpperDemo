@@ -98,8 +98,14 @@ namespace wpfuidemo
                 case "Calendar":
                     MainContent.Content = new CalendarPage();
                     break;
+                case "Select":
+                    MainContent.Content = new SelectPage();
+                    break;
                 case "Layout":
                     MainContent.Content = new LayoutPage();
+                    break;
+                case "Pagination":
+                    MainContent.Content = new PaginationPage();
                     break;
                 default:
                     // Keep current content or show placeholder

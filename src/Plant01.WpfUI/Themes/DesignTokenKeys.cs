@@ -11,6 +11,7 @@ public static class DesignTokenKeys
 
     // Brand Colors
     public static ComponentResourceKey PrimaryColor => CreateKey(nameof(PrimaryColor));
+    public static ComponentResourceKey PrimaryColorValue => CreateKey(nameof(PrimaryColorValue)); // Raw Color value
     public static ComponentResourceKey PrimaryColorHover => CreateKey(nameof(PrimaryColorHover));
     public static ComponentResourceKey PrimaryColorActive => CreateKey(nameof(PrimaryColorActive));
     public static ComponentResourceKey PrimaryOutline => CreateKey(nameof(PrimaryOutline));

@@ -38,6 +38,7 @@ namespace Plant01.WpfUI.Helpers
             
             // Primary
             SetBrush(resources, DesignTokenKeys.PrimaryColor, palette[5]);       // Base (6)
+            SetValue(resources, DesignTokenKeys.PrimaryColorValue, palette[5]);  // Raw Color
             SetBrush(resources, DesignTokenKeys.PrimaryColorHover, palette[4]);  // Hover (5)
             SetBrush(resources, DesignTokenKeys.PrimaryColorActive, palette[6]); // Active (7)
             SetBrush(resources, DesignTokenKeys.PrimaryOutline, palette[0]);     // Outline (1)

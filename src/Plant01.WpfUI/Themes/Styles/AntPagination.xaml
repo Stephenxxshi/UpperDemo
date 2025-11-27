@@ -1,0 +1,145 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Plant01.WpfUI.Controls"
+                    xmlns:themes="clr-namespace:Plant01.WpfUI.Themes">
+
+    <Style x:Key="PaginationButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="32"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource {x:Static themes:DesignTokenKeys.BorderRadius}}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColor}}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColor}}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:AntPagination}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:AntPagination}">
+                    <StackPanel Orientation="Horizontal">
+                        <!-- Prev Button -->
+                        <Button Command="{Binding PrevPageCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                                Style="{StaticResource PaginationButtonStyle}"
+                                Margin="0,0,8,0"
+                                Content="&lt;"/>
+
+                        <!-- Page Items -->
+                        <ItemsControl ItemsSource="{Binding PagingSource, RelativeSource={RelativeSource TemplatedParent}}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Width="32" Height="32" Margin="0,0,8,0">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource PaginationButtonStyle}">
+                                                <Setter Property="Command" Value="{Binding PageClickCommand, RelativeSource={RelativeSource AncestorType=controls:AntPagination}}"/>
+                                                <Setter Property="CommandParameter" Value="{Binding Page}"/>
+                                                <Setter Property="Content" Value="{Binding Display}"/>
+                                                
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColor}}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColor}}"/>
+                                                        <Setter Property="FontWeight" Value="Bold"/>
+                                                    </DataTrigger>
+                                                    
+                                                    <!-- Jump Buttons -->
+                                                    <DataTrigger Binding="{Binding Type}" Value="JumpPrev">
+                                                        <Setter Property="Content" Value="..."/>
+                                                        <Setter Property="Command" Value="{Binding JumpPrevCommand, RelativeSource={RelativeSource AncestorType=controls:AntPagination}}"/>
+                                                        <Setter Property="BorderThickness" Value="0"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Type}" Value="JumpNext">
+                                                        <Setter Property="Content" Value="..."/>
+                                                        <Setter Property="Command" Value="{Binding JumpNextCommand, RelativeSource={RelativeSource AncestorType=controls:AntPagination}}"/>
+                                                        <Setter Property="BorderThickness" Value="0"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- Next Button -->
+                        <Button Command="{Binding NextPageCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                                Style="{StaticResource PaginationButtonStyle}"
+                                Content="&gt;"/>
+
+                        <!-- Size Changer -->
+                        <controls:AntSelect ItemsSource="{Binding PageSizeOptions, RelativeSource={RelativeSource TemplatedParent}}"
+                                            SelectedItem="{Binding PageSize, RelativeSource={RelativeSource TemplatedParent}}"
+                                            Margin="8,0,0,0"
+                                            Width="100"
+                                            Height="32"
+                                            VerticalContentAlignment="Center">
+                            <controls:AntSelect.Style>
+                                <Style TargetType="controls:AntSelect">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ShowSizeChanger, RelativeSource={RelativeSource AncestorType=controls:AntPagination}}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </controls:AntSelect.Style>
+                            <controls:AntSelect.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <Run Text="{Binding Mode=OneWay}"/>
+                                        <Run Text=" 条/页"/>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </controls:AntSelect.ItemTemplate>
+                        </controls:AntSelect>
+
+                        <!-- Quick Jumper -->
+                        <StackPanel Orientation="Horizontal" Margin="8,0,0,0">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ShowQuickJumper, RelativeSource={RelativeSource AncestorType=controls:AntPagination}}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock Text="跳至" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+                            <controls:AntInput x:Name="PART_QuickJumper" Width="50" Height="32" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                            <TextBlock Text="页" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
