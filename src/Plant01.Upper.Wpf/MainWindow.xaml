@@ -45,6 +45,7 @@
                 Width="100"
                 VerticalContentAlignment="Center"
                 SelectedIndex="1"
+                WindowChrome.IsHitTestVisibleInChrome="True"
                 SelectionChanged="Density_SelectionChanged">
                 <ComboBoxItem Content="Compact" Tag="Compact" />
                 <ComboBoxItem Content="Default" Tag="Default" />
@@ -55,7 +56,8 @@
                 Margin="0,0,20,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
-                Orientation="Horizontal">
+                Orientation="Horizontal"
+                WindowChrome.IsHitTestVisibleInChrome="True">
                 <controls:AntColorPicker VerticalAlignment="Center" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
             </StackPanel>
 
