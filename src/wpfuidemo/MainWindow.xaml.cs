@@ -104,7 +104,10 @@ namespace wpfuidemo
                 case "Toggle":
                     MainContent.Content = new TogglePage();
                     break;
-                              case "Radio":
+                case "Transition":
+                    MainContent.Content = new TransitioningContentControlPage();
+                    break;
+                case "Radio":
                     MainContent.Content = new RadioPage();
                     break;
                 case "Switch":

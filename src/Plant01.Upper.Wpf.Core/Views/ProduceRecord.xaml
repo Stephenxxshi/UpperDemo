@@ -2,18 +2,23 @@
     x:Class="Plant01.Upper.Wpf.Core.Views.ProduceRecord"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Plant01.Upper.Wpf.Core.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid>
-        <TextBlock
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            FontSize="24"
-            FontWeight="Bold"
-            Text="ProduceRecord View" />
-    </Grid>
+    <controls:TransitioningContentControl>
+
+
+        <Grid>
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="24"
+                FontWeight="Bold"
+                Text="ProduceRecord View" />
+        </Grid>
+    </controls:TransitioningContentControl>
 </UserControl>

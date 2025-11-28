@@ -30,6 +30,7 @@
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntAlert.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntEmpty.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntWindow.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/TransitioningContentControl.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

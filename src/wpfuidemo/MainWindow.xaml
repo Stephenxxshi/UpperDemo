@@ -49,6 +49,7 @@
                         Tag="Dashboard" />
                     <controls:AntMenuItem Header="Button 按钮" Tag="Button" />
                     <controls:AntMenuItem Header="ToggleButton 切换按钮" Tag="Toggle" />
+                    <controls:AntMenuItem Header="Transition 动画容器" Tag="Transition" />
                 </controls:AntMenuItem>
                 <controls:AntMenuItem
                     Header="Layout"
