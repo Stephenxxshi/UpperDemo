@@ -8,6 +8,7 @@
     xmlns:local="clr-namespace:Plant01.Upper.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI"
+    xmlns:views="clr-namespace:Plant01.Upper.Wpf.Views;assembly=Plant01.Upper.Wpf.Core"
     xmlns:vm="clr-namespace:Plant01.Upper.Presentation.Core.ViewModels;assembly=Plant01.Upper.Presentation.Core"
     x:Name="window"
     Width="1600"
@@ -75,13 +76,7 @@
 
         </Grid>
     </controls:AntWindow.NonClientAreaContent>
-    <controls:AntWindow.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/NavigateDataTemplate.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </controls:AntWindow.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
@@ -93,74 +88,12 @@
         </Grid.RowDefinitions>
 
         <!--  侧边导航栏  -->
-        <Grid
+        <views:SideBar
             Grid.Row="0"
             Grid.Column="0"
             Panel.ZIndex="10"
-            Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
-            <ListBox
-                Background="Transparent"
-                BorderThickness="0"
-                ItemsSource="{Binding NavigateItems}"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                SelectedItem="{Binding SelectedMenuItem}">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Width" Value="80" />
-                        <Setter Property="Height" Value="80" />
-                        <Setter Property="Margin" Value="5" />
-                        <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="Cursor" Value="Hand" />
-                        <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <Border
-                                        x:Name="bd"
-                                        Background="{TemplateBinding Background}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        CornerRadius="{DynamicResource {x:Static themes:DesignTokenKeys.BorderRadius}}">
-                                        <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ControlItemBgHover}}" />
-                                        </Trigger>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ControlItemBgActive}}" />
-                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColor}}" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <controls:AntButton
-                            Height="Auto"
-                            Padding="0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Command="{Binding DataContext.NavigateToCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{Binding Title}"
-                            ContentFontSize="12"
-                            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
-                            Icon="{Binding IconChar}"
-                            IconFontFamily="/Assets/Fonts/#iconfont"
-                            IconFontSize="36"
-                            IconPlacement="Top"
-                            IsHitTestVisible="False"
-                            Type="Link" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
+            Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}" />
+
 
         <!--  主内容  -->
         <Grid

@@ -9,12 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\Fonts\iconfont.ttf" />
-    <None Remove="Assets\Images\Copyright.png" />
-    <None Remove="Assets\Images\TitleBackgournd.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="HandyControl" Version="3.5.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
@@ -22,14 +16,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Plant01.Upper.Presentation.Core\Plant01.Upper.Presentation.Core.csproj" />
+    <ProjectReference Include="..\Plant01.Upper.Wpf.Core\Plant01.Upper.Wpf.Core.csproj" />
     <ProjectReference Include="..\Plant01.WpfUI\Plant01.WpfUI.csproj" />
     <ProjectReference Include="..\Plant01.Upper.Presentation.Bootstrapper\Plant01.Upper.Presentation.Bootstrapper.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Assets\Fonts\iconfont.ttf" />
-    <Resource Include="Assets\Images\Copyright.png" />
-    <Resource Include="Assets\Images\TitleBackgournd.png" />
   </ItemGroup>
 
 </Project>

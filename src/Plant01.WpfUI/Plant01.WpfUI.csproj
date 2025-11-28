@@ -11,4 +11,10 @@
     <Folder Include="Styels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Resource Include="Assets\Fonts\iconfont.ttf" />
+    <Resource Include="Assets\Images\Copyright.png" />
+    <Resource Include="Assets\Images\TitleBackgournd.png" />
+  </ItemGroup>
+
 </Project>
