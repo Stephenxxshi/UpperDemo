@@ -1,13 +1,14 @@
 ﻿namespace Plant01.Upper.Presentation.Core.Models
 {
-    public class MenuItem
+    /// <summary>
+    /// 导航菜单项
+    /// </summary>
+    public class NavigateItem
     {
-        // 实现该类的属性和方法
-        public string Name { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string IconChar { get; set; } = string.Empty;
-        public string IconPlacement { get; set; } = "Left";
-        public string Title { get; set; } = string.Empty;
+        public string IconPlacement { get; set; } = "Top";
         public Type ViewModelType { get; set; } = default!;
     }
 }

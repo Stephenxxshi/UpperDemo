@@ -2,6 +2,7 @@
     x:Class="Plant01.Upper.Wpf.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:Plant01.WpfUI.Converters;assembly=Plant01.WpfUI"
     xmlns:helpers="clr-namespace:Plant01.WpfUI.Helpers;assembly=Plant01.WpfUI"
     xmlns:local="clr-namespace:Plant01.Upper.Wpf"
     xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI">
@@ -14,10 +15,11 @@
                     PrimaryColor="#23333a"
                     ThemeType="Light" />
 
-                <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Generic.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+                <!--<ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Generic.xaml" />-->
+                <!--<ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
+            <converters:ColorToHexConverter x:Key="ColorToHexConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

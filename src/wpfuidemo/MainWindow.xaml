@@ -10,9 +10,9 @@
     Width="1200"
     Height="900"
     Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"
+    CloseCommand="{Binding CloseAppCommand, RelativeSource={RelativeSource Self}}"
     ShowMaximizeButton="True"
     ShowMinimizeButton="True"
-    CloseCommand="{Binding CloseAppCommand, RelativeSource={RelativeSource Self}}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <controls:AntWindow.NonClientAreaContent>

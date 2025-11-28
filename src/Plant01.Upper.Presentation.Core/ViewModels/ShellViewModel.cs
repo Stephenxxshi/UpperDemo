@@ -17,19 +17,25 @@ public partial class ShellViewModel : ObservableObject
     private string _title = "Plant01.Upper Application";
 
     // 对应 ItemsSource
-    public ObservableCollection<MenuItem> MenuItems { get; } = new()
+    public ObservableCollection<NavigateItem> NavigateItems { get; } = new()
     {
-        new MenuItem{
-            Name = "DashBoard",
+        new NavigateItem{
+            Title = "仪表盘",
             Description = "Overview of the system",
             IconChar = "&#xe62b;", 
             IconPlacement = "Top",
-            Title = "仪表盘",
             ViewModelType = typeof(DashboardViewModel)
         },
-        new MenuItem
+        new NavigateItem
         {
-            Name = "Settings",
+            Title = "产品记录",
+            Description = "View product records",
+            IconChar = "&#xe663;",
+            IconPlacement = "Top",
+            ViewModelType = typeof(ProduceRecordViewModel)
+        },
+        new NavigateItem
+        {
             Description = "Application settings",
             IconChar = "&#xe7c6;",
             IconPlacement = "Top",
@@ -40,6 +46,17 @@ public partial class ShellViewModel : ObservableObject
 
     [ObservableProperty]
     private string _statusMessage = "Ready";
+
+    [ObservableProperty]
+    private NavigateItem? _selectedMenuItem;
+
+    partial void OnSelectedMenuItemChanged(NavigateItem? value)
+    {
+        if (value is not null)
+        {
+            NavigateTo(value);
+        }
+    }
 
     [ObservableProperty]
     public object _currentView = new DashboardViewModel();
@@ -54,7 +71,7 @@ public partial class ShellViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public void NavigateTo(MenuItem item)
+    public void NavigateTo(NavigateItem item)
     {
         if (item == null) return;
 

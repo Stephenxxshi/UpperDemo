@@ -19,9 +19,10 @@ namespace Plant01.Upper.Presentation.Bootstrapper
         {
             // 注册通用的 ViewModel
             services.AddSingleton<ShellViewModel>();
-            services.AddTransient<DashboardViewModel>();
-            services.AddTransient<SettingsViewModel>();
-            
+            services.AddSingleton<DashboardViewModel>();
+            services.AddSingleton<SettingsViewModel>();
+            services.AddSingleton<ProduceRecordViewModel>();    
+
             // 这里可以继续注册其他通用服务，例如 HTTP Client, AutoMapper 等
         }
     }

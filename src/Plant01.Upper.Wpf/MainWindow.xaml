@@ -82,9 +82,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </controls:AntWindow.Resources>
-    <controls:AntWindow.DataContext>
-        <vm:ShellViewModel />
-    </controls:AntWindow.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
@@ -101,28 +98,68 @@
             Grid.Column="0"
             Panel.ZIndex="10"
             Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
-            <ItemsControl ItemsSource="{Binding MenuItems}">
-                <ItemsControl.ItemTemplate>
+            <ListBox
+                Background="Transparent"
+                BorderThickness="0"
+                ItemsSource="{Binding NavigateItems}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                SelectedItem="{Binding SelectedMenuItem}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Width" Value="80" />
+                        <Setter Property="Height" Value="80" />
+                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Cursor" Value="Hand" />
+                        <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border
+                                        x:Name="bd"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="{DynamicResource {x:Static themes:DesignTokenKeys.BorderRadius}}">
+                                        <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ControlItemBgHover}}" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ControlItemBgActive}}" />
+                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColor}}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <controls:AntRadioButton
-                            Width="80"
-                            Height="80"
-                            Margin="5"
+                        <controls:AntButton
+                            Height="Auto"
+                            Padding="0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Background="Transparent"
                             BorderThickness="0"
                             Command="{Binding DataContext.NavigateToCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                            CommandParameter="{Binding}"
                             Content="{Binding Title}"
                             ContentFontSize="12"
-                            Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColor}}"
-                            GroupName="NaviGroup"
+                            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
                             Icon="{Binding IconChar}"
                             IconFontFamily="/Assets/Fonts/#iconfont"
                             IconFontSize="36"
                             IconPlacement="Top"
+                            IsHitTestVisible="False"
                             Type="Link" />
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
 
         <!--  主内容  -->

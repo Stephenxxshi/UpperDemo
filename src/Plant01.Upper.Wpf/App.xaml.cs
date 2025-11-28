@@ -43,9 +43,6 @@ public partial class App : System.Windows.Application
 
         RegisterEvents();
 
-        // Initialize Theme (Ant Design Blue)
-        // ThemeManager.ApplyTheme(Color.FromRgb(0x16, 0x77, 0xff), ThemeType.Light);
-
         await Host.StartAsync();
 
         var mainWindow = Host.Services.GetRequiredService<MainWindow>();
