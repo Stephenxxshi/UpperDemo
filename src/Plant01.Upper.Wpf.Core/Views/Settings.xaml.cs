@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Plant01.Upper.Wpf.Views
+namespace Plant01.Upper.Wpf.Core.Views
 {
     /// <summary>
     /// Interaction logic for Settings.xaml

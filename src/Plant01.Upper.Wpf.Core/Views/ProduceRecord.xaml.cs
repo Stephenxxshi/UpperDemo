@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Plant01.Upper.Wpf.Views;
+namespace Plant01.Upper.Wpf.Core.Views;
 
 /// <summary>
 /// Interaction logic for UserControl1.xaml

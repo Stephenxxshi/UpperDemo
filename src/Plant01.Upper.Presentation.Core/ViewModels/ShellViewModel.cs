@@ -16,6 +16,12 @@ public partial class ShellViewModel : ObservableObject
     [ObservableProperty]
     private string _title = "Plant01.Upper Application";
 
+    [ObservableProperty]
+    private string _statusMessage = "Ready";
+
+    [ObservableProperty]
+    private NavigateItem? _selectedMenuItem;
+
     // 对应 ItemsSource
     public ObservableCollection<NavigateItem> NavigateItems { get; } = new()
     {
@@ -44,19 +50,6 @@ public partial class ShellViewModel : ObservableObject
         }
     };
 
-    [ObservableProperty]
-    private string _statusMessage = "Ready";
-
-    [ObservableProperty]
-    private NavigateItem? _selectedMenuItem;
-
-    partial void OnSelectedMenuItemChanged(NavigateItem? value)
-    {
-        if (value is not null)
-        {
-            NavigateTo(value);
-        }
-    }
 
     [ObservableProperty]
     public object _currentView = new DashboardViewModel();
@@ -68,6 +61,14 @@ public partial class ShellViewModel : ObservableObject
     public ShellViewModel(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
+    }
+
+    partial void OnSelectedMenuItemChanged(NavigateItem? value)
+    {
+        if (value is not null)
+        {
+            NavigateTo(value);
+        }
     }
 
     [RelayCommand]

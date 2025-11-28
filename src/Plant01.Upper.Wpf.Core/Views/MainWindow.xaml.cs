@@ -7,10 +7,9 @@ using Plant01.WpfUI.Helpers;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
-namespace Plant01.Upper.Wpf;
+namespace Plant01.Upper.Wpf.Core;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

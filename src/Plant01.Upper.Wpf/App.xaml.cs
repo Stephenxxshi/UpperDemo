@@ -7,6 +7,7 @@ using Plant01.WpfUI.Helpers;
 using System.Windows.Media;
 
 using System.Windows;
+using Plant01.Upper.Wpf.Core;
 
 namespace Plant01.Upper.Wpf;
 
