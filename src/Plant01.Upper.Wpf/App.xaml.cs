@@ -7,6 +7,8 @@ using Plant01.WpfUI.Helpers;
 using System.Windows.Media;
 
 using System.Windows;
+using Plant01.Upper.Presentation.Core.Services;
+using Plant01.Upper.Wpf.Services;
 using Plant01.Upper.Wpf.Core;
 
 namespace Plant01.Upper.Wpf;
@@ -29,6 +31,7 @@ public partial class App : System.Windows.Application
             .ConfigureServices((context, services) =>
             {
                 services.AddSingleton<MainWindow>();
+                services.AddSingleton<IDialogService, Plant01.Upper.Wpf.Services.DialogService>();
             });
     }
 

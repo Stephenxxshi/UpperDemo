@@ -94,6 +94,12 @@
                     IsExpanded="True">
                     <controls:AntMenuItem Header="Pagination 分页" Tag="Pagination" />
                 </controls:AntMenuItem>
+                <controls:AntMenuItem
+                    Header="Templates"
+                    Icon="📋"
+                    IsExpanded="True">
+                    <controls:AntMenuItem Header="Generic List 通用列表" Tag="ProductList" />
+                </controls:AntMenuItem>
             </controls:AntMenu>
         </Border>
 

@@ -152,6 +152,9 @@ namespace wpfuidemo
                 case "Modal":
                     MainContent.Content = new DialogPage();
                     break;
+                case "ProductList":
+                    MainContent.Content = new ProductListPage();
+                    break;
                 default:
                     // Keep current content or show placeholder
                     break;

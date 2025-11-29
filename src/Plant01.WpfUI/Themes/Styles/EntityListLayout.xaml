@@ -1,0 +1,109 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Plant01.WpfUI.Controls"
+                    xmlns:themes="clr-namespace:Plant01.WpfUI.Themes">
+
+    <Style TargetType="{x:Type controls:EntityListLayout}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:EntityListLayout}">
+                    <ControlTemplate.Resources>
+                        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                        
+                        <Style x:Key="AntToggleButtonPrimaryStyle" TargetType="ToggleButton">
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColor}}"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColorHover}}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColorActive}}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ControlTemplate.Resources>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <!-- Filter & Action -->
+                            <RowDefinition Height="*"/>    <!-- Content -->
+                            <RowDefinition Height="Auto"/> <!-- Pagination -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Top Area -->
+                        <Grid Grid.Row="0" Margin="0,0,0,16">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/> <!-- Basic Filter & Action -->
+                                <RowDefinition Height="Auto"/> <!-- Advanced Filter -->
+                            </Grid.RowDefinitions>
+
+                            <!-- Basic Filter & Action Row -->
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/> <!-- Expand Button -->
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Basic Filter -->
+                                <ContentPresenter Grid.Column="0" 
+                                                  Content="{TemplateBinding FilterContent}" 
+                                                  Name="PART_FilterArea"
+                                                  Margin="0,0,16,0"/>
+
+                                <!-- Action Area -->
+                                <ContentPresenter Grid.Column="1" 
+                                                  Content="{TemplateBinding ActionContent}"
+                                                  Name="PART_ActionArea"
+                                                  VerticalAlignment="Top"/>
+                                
+                                <!-- Expand Button (Only visible if AdvancedFilterContent is set) -->
+                                <ToggleButton Grid.Column="2"
+                                              x:Name="PART_ExpandButton"
+                                              Content="高级筛选"
+                                              Margin="8,0,0,0"
+                                              VerticalAlignment="Top"
+                                              Style="{StaticResource AntToggleButtonPrimaryStyle}"/>
+                            </Grid>
+
+                            <!-- Advanced Filter Row -->
+                            <ContentPresenter Grid.Row="1"
+                                              Content="{TemplateBinding AdvancedFilterContent}"
+                                              Visibility="{Binding IsChecked, ElementName=PART_ExpandButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                              Margin="0,16,0,0"/>
+                        </Grid>
+
+                        <!-- Content Area -->
+                        <ContentPresenter Grid.Row="1" Name="PART_Content"/>
+
+                        <!-- Pagination Area -->
+                        <controls:AntPagination Grid.Row="2" 
+                                                Margin="0,16,0,0"
+                                                Name="PART_Pagination"
+                                                Total="{Binding TotalCount, RelativeSource={RelativeSource TemplatedParent}}"
+                                                Current="{Binding PageIndex, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                PageSize="{Binding PageSize, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                ShowSizeChanger="True"
+                                                HorizontalAlignment="Right"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding AdvancedFilterContent, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                            <Setter TargetName="PART_ExpandButton" Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
