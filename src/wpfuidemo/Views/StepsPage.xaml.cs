@@ -1,5 +1,5 @@
-using System.Windows;
 using System.Windows.Controls;
+using Plant01.WpfUI.Controls;
 
 namespace wpfuidemo.Views
 {
@@ -10,20 +10,72 @@ namespace wpfuidemo.Views
             InitializeComponent();
         }
 
-        private void Next_Click(object sender, RoutedEventArgs e)
+        private void StatusCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (InteractiveSteps.Current < InteractiveSteps.Items.Count - 1)
+            if (DemoSteps == null || StatusCombo.SelectedItem is not ComboBoxItem item) return;
+
+            var content = item.Content.ToString();
+            DemoSteps.Status = content switch
             {
-                InteractiveSteps.Current++;
-            }
+                "Process" => AntStepStatus.Process,
+                "Wait" => AntStepStatus.Wait,
+                "Finish" => AntStepStatus.Finish,
+                "Error" => AntStepStatus.Error,
+                _ => AntStepStatus.Process
+            };
         }
 
-        private void Prev_Click(object sender, RoutedEventArgs e)
+        private void SizeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (InteractiveSteps.Current > 0)
+            if (DemoSteps == null || SizeCombo.SelectedItem is not ComboBoxItem item) return;
+
+            var content = item.Content.ToString();
+            DemoSteps.Size = content switch
             {
-                InteractiveSteps.Current--;
-            }
+                "Small" => AntSize.Small,
+                "Default" => AntSize.Default,
+                "Large" => AntSize.Large,
+                _ => AntSize.Default
+            };
+        }
+
+        private void DirectionCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DemoSteps == null || DirectionCombo.SelectedItem is not ComboBoxItem item) return;
+
+            var content = item.Content.ToString();
+            DemoSteps.Direction = content switch
+            {
+                "Horizontal" => Orientation.Horizontal,
+                "Vertical" => Orientation.Vertical,
+                _ => Orientation.Horizontal
+            };
+        }
+
+        private void LabelPlacementCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DemoSteps == null || LabelPlacementCombo.SelectedItem is not ComboBoxItem item) return;
+
+            var content = item.Content.ToString();
+            DemoSteps.LabelPlacement = content switch
+            {
+                "Horizontal" => AntStepLabelPlacement.Horizontal,
+                "Vertical" => AntStepLabelPlacement.Vertical,
+                _ => AntStepLabelPlacement.Horizontal
+            };
+        }
+
+        private void TypeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DemoSteps == null || TypeCombo.SelectedItem is not ComboBoxItem item) return;
+
+            var content = item.Content.ToString();
+            DemoSteps.Type = content switch
+            {
+                "Default" => AntStepType.Default,
+                "Navigation" => AntStepType.Navigation,
+                _ => AntStepType.Default
+            };
         }
     }
 }

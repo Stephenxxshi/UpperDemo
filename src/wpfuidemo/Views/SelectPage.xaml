@@ -7,34 +7,53 @@
              xmlns:ui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="20">
-            <TextBlock Text="AntSelect" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <TextBlock Text="Basic Usage" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <ui:AntSelect Width="200" Margin="0,0,0,20" AllowClear="True">
-                <ComboBoxItem Content="Jack"/>
-                <ComboBoxItem Content="Lucy"/>
-                <ComboBoxItem Content="Disabled" IsEnabled="False"/>
-                <ComboBoxItem Content="Yiminghe"/>
-            </ui:AntSelect>
+        <TextBlock Text="AntSelect" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Grid.ColumnSpan="2"/>
 
-            <TextBlock Text="With Data Binding" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <ui:AntSelect Width="200" Margin="0,0,0,20" 
-                          ItemsSource="{Binding Options}" 
-                          AllowClear="True"
-                          Placeholder="Select from list"/>
+        <!-- Preview Area -->
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="White">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ui:AntSelect x:Name="DemoSelect" Width="200" Placeholder="Please select">
+                    <ComboBoxItem Content="Jack"/>
+                    <ComboBoxItem Content="Lucy"/>
+                    <ComboBoxItem Content="Tom"/>
+                    <ComboBoxItem Content="Jerry"/>
+                </ui:AntSelect>
+            </Grid>
+        </Border>
 
-            <TextBlock Text="Disabled" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <ui:AntSelect Width="200" Margin="0,0,0,20" IsEnabled="False" Placeholder="Disabled" Text="Lucy"/>
+        <!-- Settings Panel -->
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E8E8E8" BorderThickness="1" Padding="15" CornerRadius="4" Background="White">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Configuration" FontWeight="Bold" Margin="0,0,0,15" FontSize="16"/>
 
-            <TextBlock Text="Sizes" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <ui:AntSelect Width="200" Margin="0,0,10,0" Size="Small" Placeholder="Small"/>
-                <ui:AntSelect Width="200" Margin="0,0,10,0" Size="Default" Placeholder="Default"/>
-                <ui:AntSelect Width="200" Margin="0,0,10,0" Size="Large" Placeholder="Large"/>
-            </StackPanel>
+                    <!-- Placeholder -->
+                    <TextBlock Text="Placeholder" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBox Text="{Binding ElementName=DemoSelect, Path=Placeholder, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
 
-        </StackPanel>
-    </ScrollViewer>
+                    <!-- Size -->
+                    <TextBlock Text="Size" Margin="0,0,0,5" Foreground="#666"/>
+                    <ComboBox x:Name="SizeCombo" SelectedIndex="1" Margin="0,0,0,15" SelectionChanged="SizeCombo_SelectionChanged">
+                        <ComboBoxItem Content="Small"/>
+                        <ComboBoxItem Content="Default"/>
+                        <ComboBoxItem Content="Large"/>
+                    </ComboBox>
+
+                    <!-- Toggles -->
+                    <CheckBox Content="Allow Clear" IsChecked="{Binding ElementName=DemoSelect, Path=AllowClear}" Margin="0,0,0,10"/>
+                    <CheckBox Content="Disabled" Margin="0,0,0,10" Checked="DisabledCheck_Changed" Unchecked="DisabledCheck_Changed"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
 </UserControl>

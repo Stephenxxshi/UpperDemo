@@ -1,0 +1,179 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Plant01.WpfUI.Controls"
+                    xmlns:themes="clr-namespace:Plant01.WpfUI.Themes"
+                    xmlns:models="clr-namespace:Plant01.WpfUI.Models"
+                    xmlns:converters="clr-namespace:Plant01.WpfUI.Converters">
+
+    <Style TargetType="{x:Type controls:AntLog}">
+        <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:AntLog}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Toolbar -->
+                            <Border Grid.Row="0" Padding="8" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColorSplit}}" BorderThickness="0,0,0,1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <!-- Search -->
+                                    <controls:AntInput Placeholder="Search logs..." 
+                                                       Text="{Binding FilterText, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
+                                                       Margin="0,0,16,0"/>
+
+                                    <!-- Filters -->
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <controls:AntButton Content="Clear" Command="{Binding ClearCommand, RelativeSource={RelativeSource TemplatedParent}}" Type="Text" Margin="0,0,8,0"/>
+                                        
+                                        <Border Width="1" Height="16" Background="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColorSplit}}" Margin="0,0,8,0"/>
+
+                                        <TextBlock Text="Pause" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
+                                        <controls:AntSwitch IsChecked="{Binding IsPaused, RelativeSource={RelativeSource TemplatedParent}}" Margin="0,0,16,0"/>
+
+                                        <TextBlock Text="Wrap" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
+                                        <controls:AntSwitch IsChecked="{Binding IsWordWrap, RelativeSource={RelativeSource TemplatedParent}}" Margin="0,0,16,0"/>
+
+                                        <controls:AntCheckbox Content="Time" IsChecked="{Binding ShowTimestamp, RelativeSource={RelativeSource TemplatedParent}}" Margin="0,0,16,0"/>
+
+                                        <Border Width="1" Height="16" Background="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColorSplit}}" Margin="0,0,16,0"/>
+
+                                        <controls:AntCheckbox Content="Info" IsChecked="{Binding ShowInfo, RelativeSource={RelativeSource TemplatedParent}}" Margin="0,0,8,0"/>
+                                        <controls:AntCheckbox Content="Debug" IsChecked="{Binding ShowDebug, RelativeSource={RelativeSource TemplatedParent}}" Margin="0,0,8,0"/>
+                                        <controls:AntCheckbox Content="Warn" IsChecked="{Binding ShowWarning, RelativeSource={RelativeSource TemplatedParent}}" Margin="0,0,8,0"/>
+                                        <controls:AntCheckbox Content="Error" IsChecked="{Binding ShowError, RelativeSource={RelativeSource TemplatedParent}}" Margin="0,0,16,0"/>
+                                        
+                                        <Border Width="1" Height="16" Background="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColorSplit}}" Margin="0,0,16,0"/>
+                                        
+                                        <TextBlock Text="Auto Scroll" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
+                                        <controls:AntSwitch IsChecked="{Binding AutoScroll, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Log List -->
+                            <ListBox x:Name="PART_ListBox" Grid.Row="1" 
+                                     ItemsSource="{TemplateBinding ItemsSource}"
+                                     Tag="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.Resources>
+                                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                                    <converters:DateTimeFormatConverter x:Key="DateTimeFormatConverter"/>
+                                </ListBox.Resources>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Padding" Value="8,4"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="ContextMenu">
+                                            <Setter.Value>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Copy" Command="{Binding CopyCommand, RelativeSource={RelativeSource AncestorType=controls:AntLog}}" CommandParameter="{Binding}"/>
+                                                    <MenuItem Header="View Details" Command="{Binding ViewDetailCommand, RelativeSource={RelativeSource AncestorType=controls:AntLog}}" CommandParameter="{Binding}"/>
+                                                </ContextMenu>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.FillColor}}"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColorValue}}"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type models:LogItem}">
+                                        <Grid>
+                                            <Grid.InputBindings>
+                                                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ViewDetailCommand, RelativeSource={RelativeSource AncestorType=controls:AntLog}}" CommandParameter="{Binding}"/>
+                                            </Grid.InputBindings>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="60"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <Label Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextTertiary}}"
+                                                   FontFamily="Consolas, Courier New, Monospace"
+                                                   Padding="0,0,8,0"
+                                                   VerticalAlignment="Top"
+                                                   Visibility="{Binding Tag.ShowTimestamp, RelativeSource={RelativeSource AncestorType=ListBox}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <Label.Content>
+                                                    <MultiBinding Converter="{StaticResource DateTimeFormatConverter}">
+                                                        <Binding Path="Timestamp" />
+                                                        <Binding Path="Tag.DateFormat" RelativeSource="{RelativeSource AncestorType=ListBox}" />
+                                                    </MultiBinding>
+                                                </Label.Content>
+                                            </Label>
+                                            
+                                            <TextBlock Grid.Column="1" Text="{Binding Severity}" FontWeight="Bold" VerticalAlignment="Top">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Severity}" Value="Info">
+                                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.InfoColor}}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Severity}" Value="Debug">
+                                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Severity}" Value="Warning">
+                                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.WarningColor}}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Severity}" Value="Error">
+                                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ErrorColor}}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            
+                                            <TextBlock Grid.Column="2" Text="{Binding Message}" VerticalAlignment="Top"
+                                                       Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="TextWrapping" Value="NoWrap"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsWordWrap, RelativeSource={RelativeSource AncestorType=controls:AntLog}}" Value="True">
+                                                                <Setter Property="TextWrapping" Value="Wrap"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

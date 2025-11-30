@@ -64,6 +64,7 @@
                     Icon="📝"
                     IsExpanded="True">
                     <controls:AntMenuItem Header="Input 输入框" Tag="Input" />
+                    <controls:AntMenuItem Header="Virtual Keyboard 虚拟键盘" Tag="VirtualKeyboard" />
                     <controls:AntMenuItem Header="Radio 单选框" Tag="Radio" />
                     <controls:AntMenuItem Header="Checkbox 多选框" Tag="Checkbox" />
                     <controls:AntMenuItem Header="ColorPicker 颜色选择器" Tag="ColorPicker" />
@@ -80,6 +81,7 @@
                     <controls:AntMenuItem Header="Empty 空状态" Tag="Empty" />
                     <controls:AntMenuItem Header="Timeline 时间轴" Tag="Timeline" />
                     <controls:AntMenuItem Header="Steps 步骤条" Tag="Steps" />
+                    <controls:AntMenuItem Header="Log 日志" Tag="Log" />
                 </controls:AntMenuItem>
                 <controls:AntMenuItem
                     Header="Feedback"

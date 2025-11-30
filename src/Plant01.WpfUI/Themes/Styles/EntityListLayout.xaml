@@ -1,7 +1,8 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:Plant01.WpfUI.Controls"
-                    xmlns:themes="clr-namespace:Plant01.WpfUI.Themes">
+                    xmlns:themes="clr-namespace:Plant01.WpfUI.Themes"
+                    xmlns:converters="clr-namespace:Plant01.WpfUI.Converters">
 
     <Style TargetType="{x:Type controls:EntityListLayout}">
         <Setter Property="Template">
@@ -9,6 +10,7 @@
                 <ControlTemplate TargetType="{x:Type controls:EntityListLayout}">
                     <ControlTemplate.Resources>
                         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                        <converters:StringVisibilityConverter x:Key="StringVisibilityConverter"/>
                         
                         <Style x:Key="AntToggleButtonPrimaryStyle" TargetType="ToggleButton">
                             <Setter Property="Cursor" Value="Hand"/>
@@ -36,53 +38,103 @@
                     </ControlTemplate.Resources>
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/> <!-- Filter & Action -->
+                            <RowDefinition Height="Auto"/> <!-- Header & Toolbar -->
                             <RowDefinition Height="*"/>    <!-- Content -->
                             <RowDefinition Height="Auto"/> <!-- Pagination -->
                         </Grid.RowDefinitions>
 
-                        <!-- Top Area -->
-                        <Grid Grid.Row="0" Margin="0,0,0,16">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/> <!-- Basic Filter & Action -->
-                                <RowDefinition Height="Auto"/> <!-- Advanced Filter -->
-                            </Grid.RowDefinitions>
+                        <!-- Header & Toolbar -->
+                        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                            <!-- Title -->
+                            <TextBlock Text="{TemplateBinding Title}" 
+                                       FontSize="{DynamicResource {x:Static themes:DesignTokenKeys.FontSizeHeading4}}" 
+                                       FontWeight="Bold" 
+                                       Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"
+                                       Margin="0,0,0,16"
+                                       Visibility="{TemplateBinding Title, Converter={StaticResource StringVisibilityConverter}}"/>
 
-                            <!-- Basic Filter & Action Row -->
-                            <Grid Grid.Row="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/> <!-- Expand Button -->
-                                </Grid.ColumnDefinitions>
+                            <!-- Toolbars Container -->
+                            <Grid>
+                                <!-- Normal Toolbar -->
+                                <Grid x:Name="NormalToolbar" Visibility="Collapsed">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/> <!-- Basic Filter & Action -->
+                                        <RowDefinition Height="Auto"/> <!-- Advanced Filter -->
+                                    </Grid.RowDefinitions>
 
-                                <!-- Basic Filter -->
-                                <ContentPresenter Grid.Column="0" 
-                                                  Content="{TemplateBinding FilterContent}" 
-                                                  Name="PART_FilterArea"
-                                                  Margin="0,0,16,0"/>
+                                    <!-- Basic Filter & Action Row -->
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/> <!-- Refresh -->
+                                            <ColumnDefinition Width="Auto"/> <!-- View Settings -->
+                                            <ColumnDefinition Width="Auto"/> <!-- Expand Button -->
+                                        </Grid.ColumnDefinitions>
 
-                                <!-- Action Area -->
-                                <ContentPresenter Grid.Column="1" 
-                                                  Content="{TemplateBinding ActionContent}"
-                                                  Name="PART_ActionArea"
-                                                  VerticalAlignment="Top"/>
-                                
-                                <!-- Expand Button (Only visible if AdvancedFilterContent is set) -->
-                                <ToggleButton Grid.Column="2"
-                                              x:Name="PART_ExpandButton"
-                                              Content="高级筛选"
-                                              Margin="8,0,0,0"
-                                              VerticalAlignment="Top"
-                                              Style="{StaticResource AntToggleButtonPrimaryStyle}"/>
+                                        <!-- Basic Filter -->
+                                        <ContentPresenter Grid.Column="0" 
+                                                          Content="{TemplateBinding FilterContent}" 
+                                                          Name="PART_FilterArea"
+                                                          Margin="0,0,16,0"/>
+
+                                        <!-- Action Area -->
+                                        <ContentPresenter Grid.Column="1" 
+                                                          Content="{TemplateBinding ActionContent}"
+                                                          Name="PART_ActionArea"
+                                                          VerticalAlignment="Center"/>
+
+                                        <!-- Refresh Button -->
+                                        <Button Grid.Column="2" x:Name="RefreshButton"
+                                                Margin="8,0,0,0"
+                                                Command="{TemplateBinding RefreshCommand}"
+                                                Content="↻"
+                                                ToolTip="刷新"
+                                                Width="32" Height="32"
+                                                Background="Transparent" BorderThickness="1"
+                                                BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}"/>
+
+                                        <!-- View Settings -->
+                                        <ContentPresenter Grid.Column="3" 
+                                                          Content="{TemplateBinding ViewSettingsContent}"
+                                                          Margin="8,0,0,0"
+                                                          VerticalAlignment="Center"/>
+                                        
+                                        <!-- Expand Button (Only visible if AdvancedFilterContent is set) -->
+                                        <ToggleButton Grid.Column="4"
+                                                      x:Name="PART_ExpandButton"
+                                                      Content="高级筛选"
+                                                      Margin="8,0,0,0"
+                                                      VerticalAlignment="Center"
+                                                      Style="{StaticResource AntToggleButtonPrimaryStyle}"/>
+                                    </Grid>
+
+                                    <!-- Advanced Filter Row -->
+                                    <ContentPresenter Grid.Row="1"
+                                                      Content="{TemplateBinding AdvancedFilterContent}"
+                                                      Visibility="{Binding IsChecked, ElementName=PART_ExpandButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                      Margin="0,16,0,0"/>
+                                </Grid>
+
+                                <!-- Batch Action Toolbar (Overlay) -->
+                                <Border x:Name="BatchToolbar" 
+                                        Background="{DynamicResource {x:Static themes:DesignTokenKeys.ColorPrimaryBg}}" 
+                                        BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColor}}" 
+                                        BorderThickness="1" 
+                                        CornerRadius="{DynamicResource {x:Static themes:DesignTokenKeys.BorderRadius}}" 
+                                        Padding="12,8"
+                                        Visibility="Visible">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="已选择" VerticalAlignment="Center" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+                                        <TextBlock Text="{Binding SelectedCount, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                   Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColor}}" 
+                                                   FontWeight="Bold" Margin="4,0"/>
+                                        <TextBlock Text="项" VerticalAlignment="Center" Margin="0,0,16,0" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+                                        <ContentPresenter Content="{TemplateBinding BatchActionContent}"/>
+                                    </StackPanel>
+                                </Border>
                             </Grid>
-
-                            <!-- Advanced Filter Row -->
-                            <ContentPresenter Grid.Row="1"
-                                              Content="{TemplateBinding AdvancedFilterContent}"
-                                              Visibility="{Binding IsChecked, ElementName=PART_ExpandButton, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                              Margin="0,16,0,0"/>
-                        </Grid>
+                        </StackPanel>
 
                         <!-- Content Area -->
                         <ContentPresenter Grid.Row="1" Name="PART_Content"/>
@@ -98,6 +150,21 @@
                                                 HorizontalAlignment="Right"/>
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="RefreshCommand" Value="{x:Null}">
+                            <Setter TargetName="RefreshButton" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        
+                        <!-- Default State (SelectedCount != 0): Batch Visible, Normal Hidden -->
+                        <!-- We set this via the trigger logic below. 
+                             Actually, since default SelectedCount is 0, the trigger for 0 will be active initially.
+                             So we set the XAML properties to the "Active" state (Batch Visible), 
+                             and the trigger switches to "Inactive" state (Normal Visible).
+                        -->
+                        
+                        <DataTrigger Binding="{Binding SelectedCount, RelativeSource={RelativeSource Self}}" Value="0">
+                            <Setter TargetName="BatchToolbar" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="NormalToolbar" Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding AdvancedFilterContent, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
                             <Setter TargetName="PART_ExpandButton" Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>

@@ -32,7 +32,7 @@
                             <Grid>
                                 <!-- Number -->
                                 <TextBlock x:Name="NumberText"
-                                           Text="{Binding Index, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static converters:AddOneConverter.Instance}}"
+                                           Text="{TemplateBinding DisplayIndex}"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            Foreground="{DynamicResource {x:Static local:DesignTokenKeys.TextSecondary}}"/>
@@ -61,7 +61,7 @@
                         </Border>
 
                         <!-- Content Area -->
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <StackPanel x:Name="ContentPanel" Grid.Column="1" VerticalAlignment="Center">
                             <TextBlock x:Name="TitleText"
                                        Text="{TemplateBinding Title}"
                                        FontSize="{DynamicResource {x:Static local:DesignTokenKeys.FontSizeLG}}"
@@ -147,10 +147,57 @@
                             <Setter TargetName="Line" Property="Margin" Value="20,0,0,0"/>
                         </Trigger>
 
+                        <!-- Progress Dot -->
+                        <Trigger Property="ProgressDot" Value="True">
+                            <Setter TargetName="NumberText" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="IconBorder" Property="Width" Value="8"/>
+                            <Setter TargetName="IconBorder" Property="Height" Value="8"/>
+                            <Setter TargetName="IconBorder" Property="CornerRadius" Value="4"/>
+                            <Setter TargetName="CheckIcon" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="ErrorIcon" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="Line" Property="Margin" Value="4,0,0,0"/>
+                        </Trigger>
+
+                        <!-- Label Placement: Vertical -->
+                        <Trigger Property="LabelPlacement" Value="Vertical">
+                            <Setter TargetName="ContentPanel" Property="Grid.Row" Value="1"/>
+                            <Setter TargetName="ContentPanel" Property="Grid.Column" Value="0"/>
+                            <Setter TargetName="ContentPanel" Property="Grid.ColumnSpan" Value="2"/>
+                            <Setter TargetName="ContentPanel" Property="HorizontalAlignment" Value="Center"/>
+                            <Setter TargetName="ContentPanel" Property="Margin" Value="0,8,0,0"/>
+                            <Setter TargetName="TitleText" Property="TextAlignment" Value="Center"/>
+                            <Setter TargetName="DescText" Property="TextAlignment" Value="Center"/>
+                            <Setter TargetName="Line" Property="Grid.Column" Value="1"/>
+                            <Setter TargetName="Line" Property="Grid.Row" Value="0"/>
+                            <Setter TargetName="Line" Property="Margin" Value="0,0,0,0"/>
+                        </Trigger>
+
+                        <!-- Type: Navigation -->
+                        <Trigger Property="Type" Value="Navigation">
+                            <Setter TargetName="IconBorder" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="ContentPanel" Property="Margin" Value="12,0,20,0"/>
+                            <Setter TargetName="Line" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Line" Property="Height" Value="32"/>
+                            <Setter TargetName="Line" Property="Margin" Value="0,0,-16,0"/>
+                            <Setter TargetName="Line" Property="Background" Value="Transparent"/>
+                            <Setter TargetName="Line" Property="BorderBrush" Value="{DynamicResource {x:Static local:DesignTokenKeys.BorderColorSplit}}"/>
+                            <Setter TargetName="Line" Property="BorderThickness" Value="0,0,1,0"/>
+                            <Setter TargetName="Line" Property="RenderTransform">
+                                <Setter.Value>
+                                    <SkewTransform AngleX="-20"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsClickable, RelativeSource={RelativeSource AncestorType=controls:AntSteps}}" Value="True">
+                <Setter Property="Cursor" Value="Hand"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="{x:Type controls:AntSteps}">

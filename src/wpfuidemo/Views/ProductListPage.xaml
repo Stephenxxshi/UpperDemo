@@ -11,7 +11,10 @@
     <ui:EntityListLayout TotalCount="{Binding TotalCount}"
                          PageIndex="{Binding PageIndex, Mode=TwoWay}"
                          PageSize="{Binding PageSize, Mode=TwoWay}"
-                         IsLoading="{Binding IsLoading}">
+                         IsLoading="{Binding IsLoading}"
+                         Title="产品列表"
+                         SelectedCount="{Binding SelectedCount}"
+                         RefreshCommand="{Binding RefreshCommand}">
         <!-- Basic Filter -->
         <ui:EntityListLayout.FilterContent>
             <WrapPanel>
@@ -46,9 +49,22 @@
             <ui:AntButton Content="新建产品" Type="Primary" Command="{Binding CreateCommand}"/>
         </ui:EntityListLayout.ActionContent>
 
+        <!-- Batch Actions -->
+        <ui:EntityListLayout.BatchActionContent>
+            <ui:AntButton Content="批量删除" Type="Primary" Danger="True" Command="{Binding BatchDeleteCommand}"/>
+        </ui:EntityListLayout.BatchActionContent>
+
         <!-- Content -->
         <ui:AntDataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
+                <DataGridTemplateColumn Width="40">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ui:AntCheckbox IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
                 <DataGridTextColumn Header="名称" Binding="{Binding Name}" Width="*"/>
                 <DataGridTextColumn Header="分类" Binding="{Binding Category}" Width="100"/>

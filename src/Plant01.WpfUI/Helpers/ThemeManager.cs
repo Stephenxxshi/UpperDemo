@@ -37,14 +37,26 @@ public static class ThemeManager
         // 2. Map Palette to Semantic Tokens
         // Palette is 0-indexed (0 = Step 1, 5 = Step 6 Base)
 
-        // Primary Æ·ÅÆÉ«
+        // Ant Design 5.x Algorithm Mapping
+        SetBrush(resources, DesignTokenKeys.ColorPrimaryBg, palette[0]);          // Step 1
+        SetBrush(resources, DesignTokenKeys.ColorPrimaryBgHover, palette[1]);     // Step 2
+        SetBrush(resources, DesignTokenKeys.ColorPrimaryBorder, palette[2]);      // Step 3
+        SetBrush(resources, DesignTokenKeys.ColorPrimaryBorderHover, palette[3]); // Step 4
+        SetBrush(resources, DesignTokenKeys.ColorPrimaryHover, palette[4]);       // Step 5
+        // Step 6 is Base
+        SetBrush(resources, DesignTokenKeys.ColorPrimaryActive, palette[6]);      // Step 7
+        SetBrush(resources, DesignTokenKeys.ColorPrimaryTextHover, palette[7]);   // Step 8
+        SetBrush(resources, DesignTokenKeys.ColorPrimaryText, palette[8]);        // Step 9
+        SetBrush(resources, DesignTokenKeys.ColorPrimaryTextActive, palette[9]);  // Step 10
+
+        // Legacy / Semantic Mapping
         SetBrush(resources, DesignTokenKeys.PrimaryColor, palette[5]);       // Base (6)
         SetValue(resources, DesignTokenKeys.PrimaryColorValue, palette[5]);  // Raw Color
         SetBrush(resources, DesignTokenKeys.PrimaryColorHover, palette[4]);  // Hover (5)
         SetBrush(resources, DesignTokenKeys.PrimaryColorActive, palette[6]); // Active (7)
         SetBrush(resources, DesignTokenKeys.PrimaryOutline, palette[0]);     // Outline (1)
 
-        // Functional Colors (Fixed seeds for now) ¹¦ÄÜÉ«
+        // Functional Colors (Fixed seeds for now) ï¿½ï¿½ï¿½ï¿½É«
         SetBrush(resources, DesignTokenKeys.SuccessColor, Color.FromRgb(0x52, 0xc4, 0x1a));
         SetBrush(resources, DesignTokenKeys.WarningColor, Color.FromRgb(0xfa, 0xad, 0x14));
         SetBrush(resources, DesignTokenKeys.ErrorColor, Color.FromRgb(0xff, 0x4d, 0x4f));
@@ -52,7 +64,7 @@ public static class ThemeManager
         SetBrush(resources, DesignTokenKeys.ErrorColorActive, Color.FromRgb(0xd9, 0x36, 0x3e));
         SetBrush(resources, DesignTokenKeys.InfoColor, Color.FromRgb(0x16, 0x77, 0xff));
 
-        // 3. Neutrals ÖÐÐÔÉ«
+        // 3. Neutrals ï¿½ï¿½ï¿½ï¿½É«
         if (isDark)
         {
             SetBrush(resources, DesignTokenKeys.BodyBackground, bodyBackground ?? Color.FromRgb(0x00, 0x00, 0x00));
@@ -182,7 +194,7 @@ public static class ThemeManager
     }
 
     /// <summary>
-    /// ÉèÖÃDataGrid±í¸ñÏà¹ØÑÕÉ«
+    /// ï¿½ï¿½ï¿½ï¿½DataGridï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«
     /// </summary>
     /// <param name="resources"></param>
     /// <param name="palette"></param>

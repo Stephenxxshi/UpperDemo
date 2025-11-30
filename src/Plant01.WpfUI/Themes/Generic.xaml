@@ -17,6 +17,7 @@
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSpace.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntSplitter.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntCheckbox.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntLog.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntCalendar.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDatePicker.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntDateRangePicker.xaml" />
@@ -32,6 +33,7 @@
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntWindow.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/TransitioningContentControl.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/EntityListLayout.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntVirtualKeyboard.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

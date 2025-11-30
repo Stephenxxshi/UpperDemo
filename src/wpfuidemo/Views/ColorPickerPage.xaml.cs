@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Controls;
 
 namespace wpfuidemo.Views
@@ -7,6 +8,14 @@ namespace wpfuidemo.Views
         public ColorPickerPage()
         {
             InitializeComponent();
+        }
+
+        private void DisabledCheck_Changed(object sender, RoutedEventArgs e)
+        {
+            if (DemoColorPicker != null && sender is CheckBox checkBox)
+            {
+                DemoColorPicker.IsEnabled = checkBox.IsChecked != true;
+            }
         }
     }
 }

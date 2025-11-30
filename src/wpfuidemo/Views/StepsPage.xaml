@@ -6,50 +6,86 @@
              xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <ScrollViewer>
-        <StackPanel Margin="20">
-            <TextBlock Text="Basic Steps" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
-            
-            <controls:AntSteps Current="1" Margin="0,0,0,40">
-                <controls:AntStepItem Title="Finished" Description="This is a description."/>
-                <controls:AntStepItem Title="In Progress" Description="This is a description."/>
-                <controls:AntStepItem Title="Waiting" Description="This is a description."/>
-            </controls:AntSteps>
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <TextBlock Text="Small Size" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
-            <controls:AntSteps Current="1" Size="Small" Margin="0,0,0,40">
-                <controls:AntStepItem Title="Finished"/>
-                <controls:AntStepItem Title="In Progress"/>
-                <controls:AntStepItem Title="Waiting"/>
-            </controls:AntSteps>
+        <TextBlock Text="AntSteps" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Grid.ColumnSpan="2"/>
 
-            <TextBlock Text="Large Size" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
-            <controls:AntSteps Current="1" Size="Large" Margin="0,0,0,40">
-                <controls:AntStepItem Title="Finished" Description="This is a description."/>
-                <controls:AntStepItem Title="In Progress" Description="This is a description."/>
-                <controls:AntStepItem Title="Waiting" Description="This is a description."/>
-            </controls:AntSteps>
-
-            <TextBlock Text="With Error" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
-            <controls:AntSteps Current="1" Status="Error" Margin="0,0,0,40">
-                <controls:AntStepItem Title="Finished" Description="This is a description."/>
-                <controls:AntStepItem Title="Error" Description="This is a description."/>
-                <controls:AntStepItem Title="Waiting" Description="This is a description."/>
-            </controls:AntSteps>
-
-            <TextBlock Text="Interactive Control" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
-            <StackPanel>
-                <controls:AntSteps x:Name="InteractiveSteps" Current="0" Margin="0,0,0,20">
-                    <controls:AntStepItem Title="Step 1" Description="First step."/>
-                    <controls:AntStepItem Title="Step 2" Description="Second step."/>
-                    <controls:AntStepItem Title="Step 3" Description="Third step."/>
+        <!-- Preview Area -->
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="White">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Width="400">
+                <controls:AntSteps x:Name="DemoSteps" Current="1">
+                    <controls:AntStepItem Title="Finished" Description="This is a description."/>
+                    <controls:AntStepItem Title="In Progress" Description="This is a description."/>
+                    <controls:AntStepItem Title="Waiting" Description="This is a description."/>
                 </controls:AntSteps>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Content="Previous" Click="Prev_Click" Margin="0,0,10,0" Width="80"/>
-                    <Button Content="Next" Click="Next_Click" Width="80"/>
-                </StackPanel>
-            </StackPanel>
+            </Grid>
+        </Border>
 
-        </StackPanel>
-    </ScrollViewer>
+        <!-- Settings Panel -->
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E8E8E8" BorderThickness="1" Padding="15" CornerRadius="4" Background="White">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Configuration" FontWeight="Bold" Margin="0,0,0,15" FontSize="16"/>
+
+                    <!-- Current -->
+                    <TextBlock Text="Current Step" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBox Text="{Binding ElementName=DemoSteps, Path=Current, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
+
+                    <!-- Status -->
+                    <TextBlock Text="Status" Margin="0,0,0,5" Foreground="#666"/>
+                    <ComboBox x:Name="StatusCombo" SelectedIndex="0" Margin="0,0,0,15" SelectionChanged="StatusCombo_SelectionChanged">
+                        <ComboBoxItem Content="Process"/>
+                        <ComboBoxItem Content="Wait"/>
+                        <ComboBoxItem Content="Finish"/>
+                        <ComboBoxItem Content="Error"/>
+                    </ComboBox>
+
+                    <!-- Size -->
+                    <TextBlock Text="Size" Margin="0,0,0,5" Foreground="#666"/>
+                    <ComboBox x:Name="SizeCombo" SelectedIndex="1" Margin="0,0,0,15" SelectionChanged="SizeCombo_SelectionChanged">
+                        <ComboBoxItem Content="Small"/>
+                        <ComboBoxItem Content="Default"/>
+                        <ComboBoxItem Content="Large"/>
+                    </ComboBox>
+
+                    <!-- Direction -->
+                    <TextBlock Text="Direction" Margin="0,0,0,5" Foreground="#666"/>
+                    <ComboBox x:Name="DirectionCombo" SelectedIndex="0" Margin="0,0,0,15" SelectionChanged="DirectionCombo_SelectionChanged">
+                        <ComboBoxItem Content="Horizontal"/>
+                        <ComboBoxItem Content="Vertical"/>
+                    </ComboBox>
+
+                    <!-- Label Placement -->
+                    <TextBlock Text="Label Placement" Margin="0,0,0,5" Foreground="#666"/>
+                    <ComboBox x:Name="LabelPlacementCombo" SelectedIndex="0" Margin="0,0,0,15" SelectionChanged="LabelPlacementCombo_SelectionChanged">
+                        <ComboBoxItem Content="Horizontal"/>
+                        <ComboBoxItem Content="Vertical"/>
+                    </ComboBox>
+
+                    <!-- Type -->
+                    <TextBlock Text="Type" Margin="0,0,0,5" Foreground="#666"/>
+                    <ComboBox x:Name="TypeCombo" SelectedIndex="0" Margin="0,0,0,15" SelectionChanged="TypeCombo_SelectionChanged">
+                        <ComboBoxItem Content="Default"/>
+                        <ComboBoxItem Content="Navigation"/>
+                    </ComboBox>
+
+                    <!-- Start Index -->
+                    <TextBlock Text="Start Index" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBox Text="{Binding ElementName=DemoSteps, Path=StartIndex, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
+
+                    <!-- Toggles -->
+                    <CheckBox Content="Is Clickable" IsChecked="{Binding ElementName=DemoSteps, Path=IsClickable}" Margin="0,0,0,10"/>
+                    <CheckBox Content="Progress Dot" IsChecked="{Binding ElementName=DemoSteps, Path=ProgressDot}" Margin="0,0,0,10"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
 </UserControl>

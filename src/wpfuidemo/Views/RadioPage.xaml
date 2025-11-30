@@ -3,69 +3,55 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+             xmlns:ui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <ScrollViewer>
-        <StackPanel Margin="20">
-            <TextBlock Text="Radio Button" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <!-- Basic Radio (Default Button Style) -->
-            <TextBlock Text="Basic Radio (Default Button Style)" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <controls:AntRadioButton Content="Radio A" GroupName="G1" Margin="0,0,10,0"/>
-                <controls:AntRadioButton Content="Radio B" GroupName="G1" IsChecked="True" Margin="0,0,10,0"/>
-                <controls:AntRadioButton Content="Radio C" GroupName="G1" IsEnabled="False"/>
-            </StackPanel>
+        <TextBlock Text="AntRadioButton" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Grid.ColumnSpan="2"/>
 
-            <!-- Button Style (Outline) -->
-            <TextBlock Text="Radio Button (Outline / Default)" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <controls:AntRadioButton Content="Hangzhou" GroupName="G2" Type="Default" Margin="0,0,0,0"/>
-                <controls:AntRadioButton Content="Shanghai" GroupName="G2" Type="Default" Margin="0,0,0,0"/>
-                <controls:AntRadioButton Content="Beijing" GroupName="G2" Type="Default" Margin="0,0,0,0"/>
-                <controls:AntRadioButton Content="Chengdu" GroupName="G2" Type="Default" Margin="0,0,0,0"/>
+        <!-- Preview Area -->
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="White">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
+                <ui:AntRadioButton x:Name="DemoRadio1" Content="Radio 1" GroupName="DemoGroup" IsChecked="True"/>
+                <ui:AntRadioButton x:Name="DemoRadio2" Content="Radio 2" GroupName="DemoGroup" Margin="10,0,0,0"/>
+                <ui:AntRadioButton x:Name="DemoRadio3" Content="Radio 3" GroupName="DemoGroup" Margin="10,0,0,0"/>
             </StackPanel>
+        </Border>
 
-            <!-- Button Style (Solid) -->
-            <TextBlock Text="Radio Button (Solid / Primary)" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <controls:AntRadioButton Content="Hangzhou" GroupName="G3" Type="Primary" Margin="0,0,10,0"/>
-                <controls:AntRadioButton Content="Shanghai" GroupName="G3" Type="Primary" IsChecked="True" Margin="0,0,10,0"/>
-                <controls:AntRadioButton Content="Beijing" GroupName="G3" Type="Primary" Margin="0,0,10,0"/>
-            </StackPanel>
+        <!-- Settings Panel -->
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E8E8E8" BorderThickness="1" Padding="15" CornerRadius="4" Background="White">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Configuration" FontWeight="Bold" Margin="0,0,0,15" FontSize="16"/>
 
-            <!-- Sizes -->
-            <TextBlock Text="Sizes" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <controls:AntRadioButton Content="Small" GroupName="G4" Size="Small" Type="Default" Margin="0,0,10,0"/>
-                <controls:AntRadioButton Content="Default" GroupName="G4" Size="Default" Type="Default" IsChecked="True" Margin="0,0,10,0"/>
-                <controls:AntRadioButton Content="Large" GroupName="G4" Size="Large" Type="Default" Margin="0,0,10,0"/>
-            </StackPanel>
+                    <!-- Type -->
+                    <TextBlock Text="Type" Margin="0,0,0,5" Foreground="#666"/>
+                    <ComboBox x:Name="TypeCombo" SelectedIndex="0" Margin="0,0,0,15" SelectionChanged="TypeCombo_SelectionChanged">
+                        <ComboBoxItem Content="Default"/>
+                        <ComboBoxItem Content="Primary"/>
+                    </ComboBox>
 
-            <!-- Disabled -->
-            <TextBlock Text="Disabled" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <controls:AntRadioButton Content="Disabled Unchecked" GroupName="G5" Type="Default" IsEnabled="False" Margin="0,0,10,0"/>
-                <controls:AntRadioButton Content="Disabled Checked" GroupName="G5" Type="Default" IsChecked="True" IsEnabled="False" Margin="0,0,10,0"/>
-            </StackPanel>
-            
-            <!-- With Icons -->
-             <TextBlock Text="With Icons" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <controls:AntRadioButton Content="Download" Icon="⬇" GroupName="G6" Type="Default" Margin="0,0,10,0"/>
-                <controls:AntRadioButton Content="Upload" Icon="⬆" GroupName="G6" Type="Default" Margin="0,0,10,0"/>
-            </StackPanel>
+                    <!-- Size -->
+                    <TextBlock Text="Size" Margin="0,0,0,5" Foreground="#666"/>
+                    <ComboBox x:Name="SizeCombo" SelectedIndex="1" Margin="0,0,0,15" SelectionChanged="SizeCombo_SelectionChanged">
+                        <ComboBoxItem Content="Small"/>
+                        <ComboBoxItem Content="Default"/>
+                        <ComboBoxItem Content="Large"/>
+                    </ComboBox>
 
-            <!-- Icon Placement -->
-            <TextBlock Text="Icon Placement" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <controls:AntRadioButton Content="Left" Icon="🔍" IconPlacement="Left" GroupName="G7" Type="Default" Margin="0,0,10,0"/>
-                <controls:AntRadioButton Content="Right" Icon="🔍" IconPlacement="Right" GroupName="G7" Type="Default" Margin="0,0,10,0"/>
-                <controls:AntRadioButton Content="Top" Icon="🔍" IconPlacement="Top" GroupName="G7" Type="Default" Margin="0,0,10,0"/>
-                <controls:AntRadioButton Content="Bottom" Icon="🔍" IconPlacement="Bottom" GroupName="G7" Type="Default" Margin="0,0,10,0"/>
-            </StackPanel>
-
-        </StackPanel>
-    </ScrollViewer>
+                    <!-- Toggles -->
+                    <CheckBox Content="Disabled" Margin="0,0,0,10" Checked="DisabledCheck_Changed" Unchecked="DisabledCheck_Changed"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
 </UserControl>

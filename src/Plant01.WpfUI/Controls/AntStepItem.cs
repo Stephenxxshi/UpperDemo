@@ -72,5 +72,59 @@ namespace Plant01.WpfUI.Controls
             get => (AntSize)GetValue(SizeProperty);
             set => SetValue(SizeProperty, value);
         }
+
+        public static readonly DependencyProperty ProgressDotProperty = DependencyProperty.Register(
+            nameof(ProgressDot), typeof(bool), typeof(AntStepItem), new PropertyMetadata(false));
+
+        public bool ProgressDot
+        {
+            get => (bool)GetValue(ProgressDotProperty);
+            set => SetValue(ProgressDotProperty, value);
+        }
+
+        public static readonly DependencyProperty LabelPlacementProperty = DependencyProperty.Register(
+            nameof(LabelPlacement), typeof(AntStepLabelPlacement), typeof(AntStepItem), new PropertyMetadata(AntStepLabelPlacement.Horizontal));
+
+        public AntStepLabelPlacement LabelPlacement
+        {
+            get => (AntStepLabelPlacement)GetValue(LabelPlacementProperty);
+            set => SetValue(LabelPlacementProperty, value);
+        }
+
+        public static readonly DependencyProperty TypeProperty = DependencyProperty.Register(
+            nameof(Type), typeof(AntStepType), typeof(AntStepItem), new PropertyMetadata(AntStepType.Default));
+
+        public AntStepType Type
+        {
+            get => (AntStepType)GetValue(TypeProperty);
+            set => SetValue(TypeProperty, value);
+        }
+
+        public static readonly DependencyProperty DisplayIndexProperty = DependencyProperty.Register(
+            nameof(DisplayIndex), typeof(int), typeof(AntStepItem), new PropertyMetadata(1));
+
+        public int DisplayIndex
+        {
+            get => (int)GetValue(DisplayIndexProperty);
+            set => SetValue(DisplayIndexProperty, value);
+        }
+
+        public static readonly DependencyProperty FinishIconProperty = DependencyProperty.Register(
+            nameof(FinishIcon), typeof(object), typeof(AntStepItem), new PropertyMetadata(null));
+
+        public object FinishIcon
+        {
+            get => GetValue(FinishIconProperty);
+            set => SetValue(FinishIconProperty, value);
+        }
+
+        public static readonly DependencyProperty ErrorIconProperty = DependencyProperty.Register(
+            nameof(ErrorIcon), typeof(object), typeof(AntStepItem), new PropertyMetadata(null));
+
+        public object ErrorIcon
+        {
+            get => GetValue(ErrorIconProperty);
+            set => SetValue(ErrorIconProperty, value);
+        }
     }
 }

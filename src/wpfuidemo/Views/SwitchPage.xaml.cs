@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Controls;
 using Plant01.WpfUI.Controls;
 
@@ -29,6 +30,14 @@ namespace wpfuidemo.Views
                         DemoSwitch.TextPlacement = SwitchTextPlacement.Right;
                         break;
                 }
+            }
+        }
+
+        private void DisabledCheck_Changed(object sender, RoutedEventArgs e)
+        {
+            if (DemoSwitch != null && sender is CheckBox checkBox)
+            {
+                DemoSwitch.IsEnabled = checkBox.IsChecked != true;
             }
         }
     }

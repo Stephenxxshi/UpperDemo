@@ -1,6 +1,7 @@
 using Plant01.WpfUI.Controls;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Plant01.WpfUI.Controls
 {
@@ -64,6 +65,51 @@ namespace Plant01.WpfUI.Controls
         {
             get => GetValue(AdvancedFilterContentProperty);
             set => SetValue(AdvancedFilterContentProperty, value);
+        }
+
+        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
+            nameof(Title), typeof(string), typeof(EntityListLayout), new PropertyMetadata(null));
+
+        public string Title
+        {
+            get => (string)GetValue(TitleProperty);
+            set => SetValue(TitleProperty, value);
+        }
+
+        public static readonly DependencyProperty SelectedCountProperty = DependencyProperty.Register(
+            nameof(SelectedCount), typeof(int), typeof(EntityListLayout), new PropertyMetadata(0));
+
+        public int SelectedCount
+        {
+            get => (int)GetValue(SelectedCountProperty);
+            set => SetValue(SelectedCountProperty, value);
+        }
+
+        public static readonly DependencyProperty BatchActionContentProperty = DependencyProperty.Register(
+            nameof(BatchActionContent), typeof(object), typeof(EntityListLayout), new PropertyMetadata(null));
+
+        public object BatchActionContent
+        {
+            get => GetValue(BatchActionContentProperty);
+            set => SetValue(BatchActionContentProperty, value);
+        }
+
+        public static readonly DependencyProperty RefreshCommandProperty = DependencyProperty.Register(
+            nameof(RefreshCommand), typeof(ICommand), typeof(EntityListLayout), new PropertyMetadata(null));
+
+        public ICommand RefreshCommand
+        {
+            get => (ICommand)GetValue(RefreshCommandProperty);
+            set => SetValue(RefreshCommandProperty, value);
+        }
+
+        public static readonly DependencyProperty ViewSettingsContentProperty = DependencyProperty.Register(
+            nameof(ViewSettingsContent), typeof(object), typeof(EntityListLayout), new PropertyMetadata(null));
+
+        public object ViewSettingsContent
+        {
+            get => GetValue(ViewSettingsContentProperty);
+            set => SetValue(ViewSettingsContentProperty, value);
         }
     }
 }

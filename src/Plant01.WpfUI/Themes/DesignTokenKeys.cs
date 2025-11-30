@@ -31,6 +31,45 @@ public static class DesignTokenKeys
     /// </summary>
     public static ComponentResourceKey PrimaryOutline => CreateKey(nameof(PrimaryOutline));
 
+    // Ant Design 5.x Map Tokens
+    /// <summary>
+    /// 品牌主色背景 (Index 1)
+    /// </summary>
+    public static ComponentResourceKey ColorPrimaryBg => CreateKey(nameof(ColorPrimaryBg));
+    /// <summary>
+    /// 品牌主色背景悬停 (Index 2)
+    /// </summary>
+    public static ComponentResourceKey ColorPrimaryBgHover => CreateKey(nameof(ColorPrimaryBgHover));
+    /// <summary>
+    /// 品牌主色边框 (Index 3)
+    /// </summary>
+    public static ComponentResourceKey ColorPrimaryBorder => CreateKey(nameof(ColorPrimaryBorder));
+    /// <summary>
+    /// 品牌主色边框悬停 (Index 4)
+    /// </summary>
+    public static ComponentResourceKey ColorPrimaryBorderHover => CreateKey(nameof(ColorPrimaryBorderHover));
+    /// <summary>
+    /// 品牌主色悬停 (Index 5)
+    /// </summary>
+    public static ComponentResourceKey ColorPrimaryHover => CreateKey(nameof(ColorPrimaryHover));
+    // ColorPrimary is Index 6
+    /// <summary>
+    /// 品牌主色激活 (Index 7)
+    /// </summary>
+    public static ComponentResourceKey ColorPrimaryActive => CreateKey(nameof(ColorPrimaryActive));
+    /// <summary>
+    /// 品牌主色文本悬停 (Index 8)
+    /// </summary>
+    public static ComponentResourceKey ColorPrimaryTextHover => CreateKey(nameof(ColorPrimaryTextHover));
+    /// <summary>
+    /// 品牌主色文本 (Index 9)
+    /// </summary>
+    public static ComponentResourceKey ColorPrimaryText => CreateKey(nameof(ColorPrimaryText));
+    /// <summary>
+    /// 品牌主色文本激活 (Index 10)
+    /// </summary>
+    public static ComponentResourceKey ColorPrimaryTextActive => CreateKey(nameof(ColorPrimaryTextActive));
+
     // Functional Colors
     /// <summary>
     /// 成功状态颜色（如成功提示、完成图标）。
@@ -155,6 +194,26 @@ public static class DesignTokenKeys
     /// 小号字体大小（默认 12px）。
     /// </summary>
     public static ComponentResourceKey FontSizeSM => CreateKey(nameof(FontSizeSM));
+    /// <summary>
+    /// 标题1字体大小。
+    /// </summary>
+    public static ComponentResourceKey FontSizeHeading1 => CreateKey(nameof(FontSizeHeading1));
+    /// <summary>
+    /// 标题2字体大小。
+    /// </summary>
+    public static ComponentResourceKey FontSizeHeading2 => CreateKey(nameof(FontSizeHeading2));
+    /// <summary>
+    /// 标题3字体大小。
+    /// </summary>
+    public static ComponentResourceKey FontSizeHeading3 => CreateKey(nameof(FontSizeHeading3));
+    /// <summary>
+    /// 标题4字体大小。
+    /// </summary>
+    public static ComponentResourceKey FontSizeHeading4 => CreateKey(nameof(FontSizeHeading4));
+    /// <summary>
+    /// 标题5字体大小。
+    /// </summary>
+    public static ComponentResourceKey FontSizeHeading5 => CreateKey(nameof(FontSizeHeading5));
 
     /// <summary>
     /// 极小内边距。

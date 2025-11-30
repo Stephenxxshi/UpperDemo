@@ -7,62 +7,57 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800">
 
-    <ScrollViewer>
-        <StackPanel Margin="20">
-            <TextBlock Text="Basic Timeline" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
-            
-            <controls:AntTimeline Margin="0,0,0,40">
-                <controls:AntTimelineItem>
-                    <TextBlock Text="Create a services site 2015-09-01"/>
-                </controls:AntTimelineItem>
-                <controls:AntTimelineItem>
-                    <TextBlock Text="Solve initial network problems 2015-09-01"/>
-                </controls:AntTimelineItem>
-                <controls:AntTimelineItem>
-                    <TextBlock Text="Technical testing 2015-09-01"/>
-                </controls:AntTimelineItem>
-                <controls:AntTimelineItem>
-                    <TextBlock Text="Network problems being solved 2015-09-01"/>
-                </controls:AntTimelineItem>
-            </controls:AntTimeline>
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <TextBlock Text="Color Timeline" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+        <TextBlock Text="AntTimeline" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Grid.ColumnSpan="2"/>
 
-            <controls:AntTimeline Margin="0,0,0,40">
-                <controls:AntTimelineItem Color="Green">
-                    <TextBlock Text="Create a services site 2015-09-01"/>
-                </controls:AntTimelineItem>
-                <controls:AntTimelineItem Color="Green">
-                    <TextBlock Text="Solve initial network problems 2015-09-01"/>
-                </controls:AntTimelineItem>
-                <controls:AntTimelineItem Color="Red">
-                    <StackPanel>
+        <!-- Preview Area -->
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="White">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                <controls:AntTimeline x:Name="DemoTimeline">
+                    <controls:AntTimelineItem Color="Green">
+                        <TextBlock Text="Create a services site 2015-09-01"/>
+                    </controls:AntTimelineItem>
+                    <controls:AntTimelineItem Color="Blue">
+                        <TextBlock Text="Solve initial network problems 2015-09-01"/>
+                    </controls:AntTimelineItem>
+                    <controls:AntTimelineItem Color="Red">
                         <TextBlock Text="Technical testing 2015-09-01"/>
-                        <TextBlock Text="Error occurred during testing." Foreground="Red"/>
-                    </StackPanel>
-                </controls:AntTimelineItem>
-                <controls:AntTimelineItem Color="Blue">
-                    <TextBlock Text="Network problems being solved 2015-09-01"/>
-                </controls:AntTimelineItem>
-            </controls:AntTimeline>
+                    </controls:AntTimelineItem>
+                    <controls:AntTimelineItem Color="Gray">
+                        <TextBlock Text="Network problems being solved 2015-09-01"/>
+                    </controls:AntTimelineItem>
+                </controls:AntTimeline>
+            </Grid>
+        </Border>
 
-            <TextBlock Text="Custom Dot Timeline" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+        <!-- Settings Panel -->
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E8E8E8" BorderThickness="1" Padding="15" CornerRadius="4" Background="White">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Configuration" FontWeight="Bold" Margin="0,0,0,15" FontSize="16"/>
 
-            <controls:AntTimeline>
-                <controls:AntTimelineItem>
-                    <TextBlock Text="Create a services site 2015-09-01"/>
-                </controls:AntTimelineItem>
-                <controls:AntTimelineItem>
-                    <controls:AntTimelineItem.Dot>
-                        <TextBlock Text="⏰" FontSize="16" Foreground="Orange"/>
-                    </controls:AntTimelineItem.Dot>
-                    <TextBlock Text="Solve initial network problems 2015-09-01"/>
-                </controls:AntTimelineItem>
-                <controls:AntTimelineItem>
-                    <TextBlock Text="Technical testing 2015-09-01"/>
-                </controls:AntTimelineItem>
-            </controls:AntTimeline>
+                    <!-- Mode -->
+                    <TextBlock Text="Mode" Margin="0,0,0,5" Foreground="#666"/>
+                    <ComboBox x:Name="ModeCombo" SelectedIndex="0" Margin="0,0,0,15" SelectionChanged="ModeCombo_SelectionChanged">
+                        <ComboBoxItem Content="Left"/>
+                        <ComboBoxItem Content="Right"/>
+                        <ComboBoxItem Content="Alternate"/>
+                    </ComboBox>
 
-        </StackPanel>
-    </ScrollViewer>
+                    <!-- Toggles -->
+                    <CheckBox Content="Reverse" IsChecked="{Binding ElementName=DemoTimeline, Path=Reverse}" Margin="0,0,0,10"/>
+                    <CheckBox Content="Pending" IsChecked="{Binding ElementName=DemoTimeline, Path=Pending}" Margin="0,0,0,10"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
 </UserControl>

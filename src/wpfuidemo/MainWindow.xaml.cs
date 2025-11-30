@@ -98,6 +98,12 @@ namespace wpfuidemo
                 case "Dashboard":
                     MainContent.Content = new DashboardPage();
                     break;
+                case "Input":
+                    MainContent.Content = new InputPage();
+                    break;
+                case "VirtualKeyboard":
+                    MainContent.Content = new VirtualKeyboardPage();
+                    break;
                 case "Button":
                     MainContent.Content = new ButtonPage();
                     break;
@@ -145,6 +151,9 @@ namespace wpfuidemo
                     break;
                 case "Steps":
                     MainContent.Content = new StepsPage();
+                    break;
+                case "Log":
+                    MainContent.Content = new LogPage();
                     break;
                 case "Alert":
                     MainContent.Content = new AlertPage();

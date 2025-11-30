@@ -1,0 +1,76 @@
+<UserControl x:Class="wpfuidemo.Views.VirtualKeyboardPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+             xmlns:helpers="clr-namespace:Plant01.WpfUI.Helpers;assembly=Plant01.WpfUI"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Virtual Keyboard" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Grid.ColumnSpan="2"/>
+
+        <!-- Preview Area -->
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="White">
+            <Grid>
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="Click to open keyboard" Margin="0,0,0,10" Foreground="#888" HorizontalAlignment="Center"/>
+                    
+                    <TextBox x:Name="DemoInput" 
+                             Width="300" 
+                             Height="40" 
+                             FontSize="16"
+                             VerticalContentAlignment="Center"
+                             helpers:VirtualKeyboardHelper.IsEnabled="True"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Settings Panel -->
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E8E8E8" BorderThickness="1" Padding="15" CornerRadius="4" Background="White">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Configuration" FontWeight="Bold" Margin="0,0,0,15" FontSize="16"/>
+
+                    <!-- IsEnabled -->
+                    <TextBlock Text="Status" Margin="0,0,0,5" Foreground="#666"/>
+                    <CheckBox x:Name="EnabledCheck" Content="Enable Virtual Keyboard" IsChecked="True" 
+                              Checked="EnabledCheck_Checked" Unchecked="EnabledCheck_Unchecked" Margin="0,0,0,15"/>
+
+                    <!-- Mode -->
+                    <TextBlock Text="Keyboard Mode" Margin="0,0,0,5" Foreground="#666"/>
+                    <ComboBox x:Name="ModeCombo" SelectedIndex="0" Margin="0,0,0,15" SelectionChanged="ModeCombo_SelectionChanged">
+                        <ComboBoxItem Content="Full Keyboard"/>
+                        <ComboBoxItem Content="Numeric Keypad"/>
+                    </ComboBox>
+
+                    <!-- Key Height -->
+                    <TextBlock Text="Key Height" Margin="0,0,0,5" Foreground="#666"/>
+                    <Slider x:Name="HeightSlider" Minimum="30" Maximum="80" Value="40" TickFrequency="5" IsSnapToTickEnabled="True" Margin="0,0,0,5" ValueChanged="HeightSlider_ValueChanged"/>
+                    <TextBlock Text="{Binding ElementName=HeightSlider, Path=Value}" HorizontalAlignment="Right" Margin="0,0,0,15"/>
+
+                    <!-- Key Font Size -->
+                    <TextBlock Text="Key Font Size" Margin="0,0,0,5" Foreground="#666"/>
+                    <Slider x:Name="FontSizeSlider" Minimum="10" Maximum="30" Value="14" TickFrequency="1" IsSnapToTickEnabled="True" Margin="0,0,0,5" ValueChanged="FontSizeSlider_ValueChanged"/>
+                    <TextBlock Text="{Binding ElementName=FontSizeSlider, Path=Value}" HorizontalAlignment="Right" Margin="0,0,0,15"/>
+
+                    <!-- Key Margin -->
+                    <TextBlock Text="Key Margin" Margin="0,0,0,5" Foreground="#666"/>
+                    <Slider x:Name="MarginSlider" Minimum="0" Maximum="10" Value="2" TickFrequency="1" IsSnapToTickEnabled="True" Margin="0,0,0,5" ValueChanged="MarginSlider_ValueChanged"/>
+                    <TextBlock Text="{Binding ElementName=MarginSlider, Path=Value}" HorizontalAlignment="Right" Margin="0,0,0,15"/>
+
+                    <controls:AntAlert Type="Info" Message="Note: The keyboard mode can also be switched by the user using the '123' or 'ABC' key on the virtual keyboard itself." Margin="0,10,0,0"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

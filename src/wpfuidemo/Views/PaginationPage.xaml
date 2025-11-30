@@ -7,50 +7,57 @@
              xmlns:ui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="20">
-            <TextBlock Text="AntPagination" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <TextBlock Text="Basic" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <ui:AntPagination Total="50" Current="1" Margin="0,0,0,20"/>
+        <TextBlock Text="AntPagination" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Grid.ColumnSpan="2"/>
 
-            <TextBlock Text="More Pages" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <ui:AntPagination Total="500" Current="1" Margin="0,0,0,20"/>
+        <!-- Preview Area -->
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="White">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ui:AntPagination x:Name="DemoPagination" Total="500" Current="1"/>
+            </Grid>
+        </Border>
 
-            <TextBlock Text="Change Page Size (Not Implemented yet, just showing property)" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <ui:AntPagination Total="500" Current="1" PageSize="20" Margin="0,0,0,20"/>
+        <!-- Settings Panel -->
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E8E8E8" BorderThickness="1" Padding="15" CornerRadius="4" Background="White">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Configuration" FontWeight="Bold" Margin="0,0,0,15" FontSize="16"/>
 
-            <TextBlock Text="Quick Jumper" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <ui:AntPagination Total="500" Current="1" ShowQuickJumper="True" Margin="0,0,0,20"/>
+                    <!-- Total -->
+                    <TextBlock Text="Total Items" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBox Text="{Binding ElementName=DemoPagination, Path=Total, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
 
-            <TextBlock Text="Sizes" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <StackPanel Margin="0,0,0,20">
-                <TextBlock Text="Small" Margin="0,0,0,5"/>
-                <ui:AntPagination Total="50" Size="Small" Margin="0,0,0,10"/>
-                <TextBlock Text="Default" Margin="0,0,0,5"/>
-                <ui:AntPagination Total="50" Size="Default" Margin="0,0,0,10"/>
-                <TextBlock Text="Large" Margin="0,0,0,5"/>
-                <ui:AntPagination Total="50" Size="Large" Margin="0,0,0,10"/>
-            </StackPanel>
+                    <!-- Current -->
+                    <TextBlock Text="Current Page" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBox Text="{Binding ElementName=DemoPagination, Path=Current, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
 
-            <TextBlock Text="Real Data Example" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <ui:AntDataGrid x:Name="DemoGrid" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10">
-                <ui:AntDataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
-                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="150"/>
-                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200"/>
-                    <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="100"/>
-                </ui:AntDataGrid.Columns>
-            </ui:AntDataGrid>
-            
-            <ui:AntPagination x:Name="DataPagination"
-                              Total="{Binding TotalItems}"
-                              Current="{Binding CurrentPage, Mode=TwoWay}"
-                              PageSize="{Binding PageSize, Mode=TwoWay}"
-                              ShowSizeChanger="True"
-                              ShowQuickJumper="True"
-                              PageChanged="DataPagination_PageChanged"/>
-            
-        </StackPanel>
-    </ScrollViewer>
+                    <!-- PageSize -->
+                    <TextBlock Text="Page Size" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBox Text="{Binding ElementName=DemoPagination, Path=PageSize, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
+
+                    <!-- Size -->
+                    <TextBlock Text="Size" Margin="0,0,0,5" Foreground="#666"/>
+                    <ComboBox x:Name="SizeCombo" SelectedIndex="1" Margin="0,0,0,15" SelectionChanged="SizeCombo_SelectionChanged">
+                        <ComboBoxItem Content="Small"/>
+                        <ComboBoxItem Content="Default"/>
+                        <ComboBoxItem Content="Large"/>
+                    </ComboBox>
+
+                    <!-- Toggles -->
+                    <CheckBox Content="Show Quick Jumper" IsChecked="{Binding ElementName=DemoPagination, Path=ShowQuickJumper}" Margin="0,0,0,10"/>
+                    <CheckBox Content="Show Size Changer" IsChecked="{Binding ElementName=DemoPagination, Path=ShowSizeChanger}" Margin="0,0,0,10"/>
+                    <CheckBox Content="Disabled" Margin="0,0,0,10" Checked="DisabledCheck_Changed" Unchecked="DisabledCheck_Changed"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
 </UserControl>
