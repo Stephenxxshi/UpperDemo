@@ -137,6 +137,9 @@ namespace wpfuidemo
                 case "PropertyGrid":
                     MainContent.Content = new PropertyGridPage();
                     break;
+                case "Descriptions":
+                    MainContent.Content = new DescriptionsPage();
+                    break;
                 case "Layout":
                     MainContent.Content = new LayoutPage();
                     break;

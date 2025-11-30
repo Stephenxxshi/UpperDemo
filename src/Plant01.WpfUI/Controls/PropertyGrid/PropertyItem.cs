@@ -7,6 +7,11 @@ namespace Plant01.WpfUI.Controls;
 
 public class PropertyItem : ContentControl
 {
+    static PropertyItem()
+    {
+        DefaultStyleKeyProperty.OverrideMetadata(typeof(PropertyItem), new FrameworkPropertyMetadata(typeof(PropertyItem)));
+    }
+
     public static readonly DependencyProperty CategoryProperty = DependencyProperty.Register(
         nameof(Category), typeof(string), typeof(PropertyItem), new PropertyMetadata(default(string)));
 

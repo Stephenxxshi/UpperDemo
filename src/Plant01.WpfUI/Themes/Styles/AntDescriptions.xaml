@@ -1,0 +1,130 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Plant01.WpfUI.Controls"
+                    xmlns:themes="clr-namespace:Plant01.WpfUI.Themes"
+                    xmlns:converters="clr-namespace:Plant01.WpfUI.Converters">
+
+    <converters:StringVisibilityConverter x:Key="StringVisibilityConverter"/>
+
+    <Style TargetType="{x:Type controls:AntDescriptionsItem}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="16,12"/>
+        <Setter Property="Margin" Value="{Binding RelativeSource={RelativeSource AncestorType=controls:AntDescriptions}, Path=ItemMargin}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:AntDescriptionsItem}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColorSplit}}"
+                            BorderThickness="0,0,1,1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType=controls:AntDescriptions}, Path=LabelWidth}" SharedSizeGroup="LabelGroup"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Bordered Mode Elements -->
+                            <Border x:Name="BorderedLabel"
+                                    Grid.Column="0"
+                                    Background="{DynamicResource {x:Static themes:DesignTokenKeys.ColorFillAlter}}"
+                                    Padding="{TemplateBinding Padding}"
+                                    BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColorSplit}}"
+                                    BorderThickness="0,0,1,0"
+                                    Visibility="Collapsed">
+                                <ContentPresenter Content="{TemplateBinding Label}"
+                                                  HorizontalAlignment="{Binding RelativeSource={RelativeSource AncestorType=controls:AntDescriptions}, Path=LabelHorizontalAlignment}"
+                                                  TextBlock.FontWeight="SemiBold"
+                                                  TextBlock.Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
+                            </Border>
+                            <Border x:Name="BorderedContent"
+                                    Grid.Column="1"
+                                    Padding="{TemplateBinding Padding}"
+                                    Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"
+                                    Visibility="Collapsed">
+                                <ContentPresenter Content="{TemplateBinding Content}"
+                                                  TextBlock.Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
+                            </Border>
+
+                            <!-- Non-Bordered Mode Elements -->
+                            <ContentPresenter x:Name="NonBorderedLabel"
+                                              Grid.Column="0"
+                                              Content="{TemplateBinding Label}"
+                                              ContentStringFormat="{}{0}: "
+                                              HorizontalAlignment="{Binding RelativeSource={RelativeSource AncestorType=controls:AntDescriptions}, Path=LabelHorizontalAlignment}"
+                                              TextBlock.Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"
+                                              Margin="{TemplateBinding Padding}"
+                                              Visibility="Visible"/>
+                            <ContentPresenter x:Name="NonBorderedContent"
+                                              Grid.Column="1"
+                                              Content="{TemplateBinding Content}"
+                                              TextBlock.Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"
+                                              Margin="{TemplateBinding Padding}"
+                                              Visibility="Visible"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=controls:AntDescriptions}, Path=Bordered}" Value="True">
+                            <Setter TargetName="NonBorderedLabel" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="NonBorderedContent" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="BorderedLabel" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="BorderedContent" Property="Visibility" Value="Visible"/>
+                            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=controls:AntDescriptions}, Path=Bordered}" Value="False">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Padding" Value="0,0,16,8"/>
+                            <!-- Adjust margin for Non-Bordered to match padding logic -->
+                            <!-- We used Margin="{TemplateBinding Padding}" on ContentPresenters -->
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:AntDescriptions}">
+        <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColorSplit}}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:AntDescriptions}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource {x:Static themes:DesignTokenKeys.BorderRadius}}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <!-- Title -->
+                            <TextBlock Text="{TemplateBinding Title}"
+                                       FontSize="{DynamicResource {x:Static themes:DesignTokenKeys.FontSizeHeading5}}"
+                                       FontWeight="Bold"
+                                       Margin="0,0,0,16"
+                                       Visibility="{TemplateBinding Title, Converter={StaticResource StringVisibilityConverter}}"/>
+
+                            <!-- Items -->
+                            <ItemsPresenter Grid.Row="1"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Bordered" Value="True">
+                            <Setter Property="BorderThickness" Value="1,1,0,0"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <controls:DescriptionsPanel Column="{Binding RelativeSource={RelativeSource AncestorType=controls:AntDescriptions}, Path=Column}"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

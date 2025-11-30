@@ -24,6 +24,11 @@ public class PropertyGrid : Control
     public static RoutedCommand SortByCategoryCommand = new RoutedCommand(nameof(SortByCategoryCommand), typeof(PropertyGrid));
     public static RoutedCommand SortByNameCommand = new RoutedCommand(nameof(SortByNameCommand), typeof(PropertyGrid));
 
+    static PropertyGrid()
+    {
+        DefaultStyleKeyProperty.OverrideMetadata(typeof(PropertyGrid), new FrameworkPropertyMetadata(typeof(PropertyGrid)));
+    }
+
     public PropertyGrid()
     {
         CommandBindings.Add(new CommandBinding(SortByCategoryCommand, SortByCategory, (s, e) => e.CanExecute = ShowSortButton));

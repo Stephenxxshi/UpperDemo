@@ -125,6 +125,11 @@ public static class DesignTokenKeys
     public static ComponentResourceKey FillColor => CreateKey(nameof(FillColor)); // New Token for neutral fills (Switch off, etc.)
 
     /// <summary>
+    /// 交替填充颜色，常用于表格头、Descriptions Label 背景等。
+    /// </summary>
+    public static ComponentResourceKey ColorFillAlter => CreateKey(nameof(ColorFillAlter));
+
+    /// <summary>
     /// 主要文本颜色（标题、正文）。
     /// </summary>
     public static ComponentResourceKey TextPrimary => CreateKey(nameof(TextPrimary));

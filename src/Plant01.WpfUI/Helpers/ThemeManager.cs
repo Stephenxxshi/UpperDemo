@@ -74,6 +74,7 @@ public static class ThemeManager
             SetBrush(resources, DesignTokenKeys.BorderColor, Color.FromRgb(0x42, 0x42, 0x42));
             SetBrush(resources, DesignTokenKeys.BorderColorSplit, Color.FromRgb(0x30, 0x30, 0x30));
             SetBrush(resources, DesignTokenKeys.FillColor, Color.FromRgb(0x6b, 0x6b, 0x6b)); // Dark Mode Neutral Fill
+            SetBrush(resources, DesignTokenKeys.ColorFillAlter, Color.FromRgb(0x1D, 0x1D, 0x1D)); // Dark Mode Fill Alter
 
             SetBrush(resources, DesignTokenKeys.TextPrimary, Color.FromArgb(217, 255, 255, 255)); // 85%
             SetBrush(resources, DesignTokenKeys.TextSecondary, Color.FromArgb(115, 255, 255, 255)); // 45%
@@ -97,6 +98,7 @@ public static class ThemeManager
 
             SetBrush(resources, DesignTokenKeys.BorderColor, Color.FromRgb(0xd9, 0xd9, 0xd9));
             SetBrush(resources, DesignTokenKeys.BorderColorSplit, Color.FromRgb(0xf0, 0xf0, 0xf0));
+            SetBrush(resources, DesignTokenKeys.ColorFillAlter, Color.FromRgb(0xFA, 0xFA, 0xFA)); // Light Mode Fill Alter
             SetBrush(resources, DesignTokenKeys.FillColor, Color.FromRgb(0x80, 0x80, 0x80)); // Light Mode Neutral Fill (Visible Gray)
 
             SetBrush(resources, DesignTokenKeys.TextPrimary, Color.FromArgb(224, 0, 0, 0)); // 88%

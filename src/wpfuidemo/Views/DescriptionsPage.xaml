@@ -1,0 +1,91 @@
+<UserControl x:Class="wpfuidemo.Views.DescriptionsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <ScrollViewer>
+        <StackPanel Margin="20">
+            <TextBlock Text="Descriptions 描述列表" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+
+            <TextBlock Text="Basic Usage" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <controls:AntDescriptions Title="User Info">
+                <controls:AntDescriptionsItem Label="UserName">Zhou Maomao</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Telephone">1810000000</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Live">Hangzhou, Zhejiang</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Remark">Empty</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Address">No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China</controls:AntDescriptionsItem>
+            </controls:AntDescriptions>
+
+            <Separator Margin="0,20"/>
+
+            <TextBlock Text="Bordered" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <controls:AntDescriptions Title="User Info Bordered" Bordered="True">
+                <controls:AntDescriptionsItem Label="Product">Cloud Database</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Billing Mode">Prepaid</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Automatic Renewal">YES</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Order time">2018-04-24 18:00:00</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Usage Time" Span="2">2019-04-24 18:00:00</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Status" Span="3">
+                    <controls:AntButton Type="Primary" Content="Running" Height="24" Padding="8,0"/>
+                </controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Negotiated Amount">$80.00</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Discount">$20.00</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Official Receipts">$60.00</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Config Info">
+                    <TextBlock>
+                        Data disk type: MongoDB
+                        <LineBreak/>
+                        Database version: 3.4
+                        <LineBreak/>
+                        Package: dds.mongo.mid
+                    </TextBlock>
+                </controls:AntDescriptionsItem>
+            </controls:AntDescriptions>
+
+            <Separator Margin="0,20"/>
+
+            <TextBlock Text="Column = 2" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <controls:AntDescriptions Title="Custom Column" Bordered="True" Column="2">
+                <controls:AntDescriptionsItem Label="Product">Cloud Database</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Billing">Prepaid</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Time">18:00:00</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Amount">$80.00</controls:AntDescriptionsItem>
+            </controls:AntDescriptions>
+
+            <Separator Margin="0,20"/>
+
+            <TextBlock Text="Advanced Layout (Right Align, Fixed Label Width, Item Margin)" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <controls:AntDescriptions Title="Advanced Layout" 
+                                      Bordered="True" 
+                                      Column="3"
+                                      LabelHorizontalAlignment="Right"
+                                      LabelWidth="120"
+                                      ItemMargin="0">
+                <controls:AntDescriptionsItem Label="UserName">Zhou Maomao</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Telephone">1810000000</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Live">Hangzhou, Zhejiang</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Remark">Empty</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Address" Span="2">
+                    No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China
+                </controls:AntDescriptionsItem>
+            </controls:AntDescriptions>
+
+            <Separator Margin="0,20"/>
+
+            <TextBlock Text="Custom Item Margin (Non-Bordered)" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <controls:AntDescriptions Title="Custom Margin" 
+                                      Column="2"
+                                      ItemMargin="0,0,20,10">
+                <controls:AntDescriptionsItem Label="Product">Cloud Database</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Billing">Prepaid</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Time">18:00:00</controls:AntDescriptionsItem>
+                <controls:AntDescriptionsItem Label="Amount">$80.00</controls:AntDescriptionsItem>
+            </controls:AntDescriptions>
+
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
