@@ -82,6 +82,7 @@
                     <controls:AntMenuItem Header="Timeline 时间轴" Tag="Timeline" />
                     <controls:AntMenuItem Header="Steps 步骤条" Tag="Steps" />
                     <controls:AntMenuItem Header="Log 日志" Tag="Log" />
+                    <controls:AntMenuItem Header="FlipClock 翻页时钟" Tag="FlipClock" />
                 </controls:AntMenuItem>
                 <controls:AntMenuItem
                     Header="Feedback"

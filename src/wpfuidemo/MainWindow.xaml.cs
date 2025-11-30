@@ -155,6 +155,9 @@ namespace wpfuidemo
                 case "Log":
                     MainContent.Content = new LogPage();
                     break;
+                case "FlipClock":
+                    MainContent.Content = new FlipClockPage();
+                    break;
                 case "Alert":
                     MainContent.Content = new AlertPage();
                     break;
