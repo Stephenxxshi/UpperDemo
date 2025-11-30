@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
@@ -10,6 +11,11 @@ namespace Plant01.WpfUI.Controls
 {
     public class AntFlipNumber : Viewport3D
     {
+        static AntFlipNumber()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(AntFlipNumber), new FrameworkPropertyMetadata(typeof(AntFlipNumber)));
+        }
+
         private bool _isLoaded;
 
         private TextBlock? _page1TextDown;
@@ -243,7 +249,6 @@ namespace Plant01.WpfUI.Controls
             textBlock = new TextBlock
             {
                 RenderTransformOrigin = new Point(0.5, 0.5),
-                Foreground = Foreground,
                 FontSize = FontSize,
                 FontFamily = FontFamily,
                 FontWeight = FontWeight,
@@ -255,16 +260,17 @@ namespace Plant01.WpfUI.Controls
                 RenderTransform = rotateTransform,
                 Margin = new Thickness(0, 0, 0, -quarterHeight)
             };
+            BindingOperations.SetBinding(textBlock, TextBlock.ForegroundProperty, new Binding(nameof(Foreground)) { Source = this });
 
             var border = new Border
             {
                 ClipToBounds = true,
                 CornerRadius = new CornerRadius(CornerRadius.TopLeft, CornerRadius.TopRight, 0, 0),
-                Background = Background,
                 Width = halfWidth,
                 Height = quarterHeight,
                 Child = textBlock
             };
+            BindingOperations.SetBinding(border, Border.BackgroundProperty, new Binding(nameof(Background)) { Source = this });
 
             var positions = new Point3DCollection
             {

@@ -1,0 +1,53 @@
+<UserControl x:Class="wpfuidemo.Views.PropertyGridPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+      xmlns:viewModels="clr-namespace:wpfuidemo.ViewModels"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.DataContext>
+        <viewModels:PropertyGridViewModel/>
+    </UserControl.DataContext>
+
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0">
+            <TextBlock Text="PropertyGrid Demo" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+            <TextBlock Text="Edit the properties on the right to see changes here:" Margin="0,0,0,10"/>
+            
+            <Border BorderBrush="Gray" BorderThickness="1" Padding="10" CornerRadius="4">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="Name: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedPerson.Name}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="Age: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedPerson.Age}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="Active: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedPerson.IsActive}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="Department: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedPerson.Department}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <controls:PropertyGrid Grid.Column="2" 
+                               SelectedObject="{Binding SelectedPerson}"
+                               MaxTitleWidth="120"
+                               MinTitleWidth="80"/>
+    </Grid>
+</UserControl>

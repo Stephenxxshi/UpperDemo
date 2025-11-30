@@ -72,6 +72,7 @@
                     <controls:AntMenuItem Header="Calendar 日历" Tag="Calendar" />
                     <controls:AntMenuItem Header="Select 选择器" Tag="Select" />
                     <controls:AntMenuItem Header="Switch 开关" Tag="Switch" />
+                    <controls:AntMenuItem Header="PropertyGrid 属性编辑器" Tag="PropertyGrid" />
                 </controls:AntMenuItem>
                 <controls:AntMenuItem
                     Header="Data Display"

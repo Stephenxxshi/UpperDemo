@@ -35,6 +35,7 @@
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/EntityListLayout.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntVirtualKeyboard.xaml" />
         <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/AntFlipNumber.xaml" />
+        <ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Styles/PropertyGrid.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

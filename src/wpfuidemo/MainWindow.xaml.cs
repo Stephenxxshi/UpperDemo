@@ -134,6 +134,9 @@ namespace wpfuidemo
                 case "Select":
                     MainContent.Content = new SelectPage();
                     break;
+                case "PropertyGrid":
+                    MainContent.Content = new PropertyGridPage();
+                    break;
                 case "Layout":
                     MainContent.Content = new LayoutPage();
                     break;
