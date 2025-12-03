@@ -21,7 +21,7 @@
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="测试" />
             <Grid Grid.Row="1">
-                <controls:AntLog Grid.Row="1" ItemsSource="{Binding}" />
+                <controls:AntLog Grid.Row="1" ItemsSource="{Binding Logs}" />
             </Grid>
         </Grid>
     </controls:TransitioningContentControl>

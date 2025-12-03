@@ -22,6 +22,7 @@ namespace Plant01.Upper.Presentation.Core.ViewModels
             _dispatcherService = dispatcherService;
 
             _logStore.LogAdded += _logStore_LogAdded;
+            _logger.LogInformation("DashboardViewModel initialized.");
         }
 
         private void _logStore_LogAdded(LogModel model)

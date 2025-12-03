@@ -6,12 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Plant01.Upper.Presentation.Core.Models;
 
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Plant01.Upper.Presentation.Core.ViewModels;
 
 public partial class ShellViewModel : ObservableObject
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceProvider? _serviceProvider;
 
     [ObservableProperty]
     private string _title = "Plant01.Upper Application";
@@ -50,17 +51,29 @@ public partial class ShellViewModel : ObservableObject
         }
     };
 
-
     [ObservableProperty]
-    public object _currentView = new DashboardViewModel();
+    private object? _currentView;
 
     public ShellViewModel()
     {
-
+        CurrentView = new DashboardViewModel();
     }
+
     public ShellViewModel(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
+        InitializeDefaultView();
+    }
+
+    private void InitializeDefaultView()
+    {
+        if (_serviceProvider == null) return;
+
+        // Resolve the default dashboard from DI so it receives ILogger/ILogStore
+        CurrentView = _serviceProvider.GetRequiredService<DashboardViewModel>();
+
+        // Highlight the first menu entry to keep UI state in sync
+        SelectedMenuItem = NavigateItems.FirstOrDefault();
     }
 
     partial void OnSelectedMenuItemChanged(NavigateItem? value)
@@ -75,6 +88,8 @@ public partial class ShellViewModel : ObservableObject
     public void NavigateTo(NavigateItem item)
     {
         if (item == null) return;
+
+        if (_serviceProvider == null) return;
 
         try
         {

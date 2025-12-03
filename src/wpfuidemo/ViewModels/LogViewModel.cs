@@ -5,8 +5,9 @@ using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Plant01.Infrastructure.Shared.Logging;
-using Plant01.WpfUI.Models;
+using Plant01.Upper.Application.Models.Logging;
+using UiLogItem = Plant01.WpfUI.Models.LogItem;
+using UiLogSeverity = Plant01.WpfUI.Models.LogSeverity;
 
 namespace wpfuidemo.ViewModels
 {
@@ -16,7 +17,7 @@ namespace wpfuidemo.ViewModels
         private readonly ILogStore _logStore;
         private readonly DispatcherTimer _timer;
 
-        public ObservableCollection<LogItem> Logs { get; } = new();
+        public ObservableCollection<UiLogItem> Logs { get; } = new();
 
         [ObservableProperty]
         private bool _isPaused;
@@ -56,7 +57,7 @@ namespace wpfuidemo.ViewModels
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                Logs.Add(new LogItem
+                Logs.Add(new UiLogItem
                 {
                     Timestamp = model.Timestamp,
                     Severity = MapSeverity(model.Level),
@@ -70,15 +71,15 @@ namespace wpfuidemo.ViewModels
             });
         }
 
-        private LogSeverity MapSeverity(LogLevel level)
+        private UiLogSeverity MapSeverity(LogLevel level)
         {
             return level switch
             {
-                LogLevel.Trace or LogLevel.Debug => LogSeverity.Debug,
-                LogLevel.Information => LogSeverity.Info,
-                LogLevel.Warning => LogSeverity.Warning,
-                LogLevel.Error or LogLevel.Critical => LogSeverity.Error,
-                _ => LogSeverity.Info
+                LogLevel.Trace or LogLevel.Debug => UiLogSeverity.Debug,
+                LogLevel.Information => UiLogSeverity.Info,
+                LogLevel.Warning => UiLogSeverity.Warning,
+                LogLevel.Error or LogLevel.Critical => UiLogSeverity.Error,
+                _ => UiLogSeverity.Info
             };
         }
 

@@ -33,6 +33,11 @@ public partial class App : System.Windows.Application
 
                 // 注册 Dispatcher 服务
                 services.AddSingleton<IDispatcherService,WpfDispatcherService>();
+
+                services.AddLogging(configure =>
+                {
+                    configure.AddDebug();
+                });
             });
     }
 

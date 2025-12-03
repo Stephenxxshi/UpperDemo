@@ -1,7 +1,7 @@
 using System.Windows.Controls;
-using wpfuidemo.ViewModels;
-using Plant01.Infrastructure.Shared.Logging;
 using Microsoft.Extensions.Logging;
+using Plant01.Upper.Application.Models.Logging;
+using wpfuidemo.ViewModels;
 
 namespace wpfuidemo.Views
 {
