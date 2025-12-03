@@ -1,7 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Plant01.Core.Logging;
+
+using Plant01.Upper.Application.Models.Logging;
 using Plant01.Upper.Presentation.Core.ViewModels;
 
 namespace Plant01.Upper.Presentation.Bootstrapper;

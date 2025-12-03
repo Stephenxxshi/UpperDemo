@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Plant01.Upper.Wpf.Core\Plant01.Upper.Wpf.Core.csproj" />
     <ProjectReference Include="..\Plant01.WpfUI\Plant01.WpfUI.csproj" />
     <ProjectReference Include="..\Plant01.Upper.Presentation.Bootstrapper\Plant01.Upper.Presentation.Bootstrapper.csproj" />
   </ItemGroup>

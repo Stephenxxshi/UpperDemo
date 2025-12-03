@@ -23,13 +23,13 @@ public class DialogService : IDialogService
     {
         var tcs = new TaskCompletionSource<TResult>();
 
-        Application.Current.Dispatcher.Invoke(() =>
+        System.Windows.Application.Current.Dispatcher.Invoke(() =>
         {
             var modal = new AntModal
             {
                 Title = title,
                 Content = viewModel,
-                Owner = Application.Current.MainWindow,
+                Owner = System.Windows.Application.Current.MainWindow,
                 // Auto-size or default size
                 SizeToContent = SizeToContent.WidthAndHeight
             };

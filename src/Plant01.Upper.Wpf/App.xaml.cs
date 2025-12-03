@@ -3,13 +3,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Presentation.Bootstrapper;
-using Plant01.WpfUI.Helpers;
-using System.Windows.Media;
-
-using System.Windows;
 using Plant01.Upper.Presentation.Core.Services;
 using Plant01.Upper.Wpf.Services;
-using Plant01.Upper.Wpf.Core;
+using Plant01.Upper.Wpf.Views;
+
+using System.Windows;
 
 namespace Plant01.Upper.Wpf;
 
@@ -32,6 +30,9 @@ public partial class App : System.Windows.Application
             {
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<IDialogService, Plant01.Upper.Wpf.Services.DialogService>();
+
+                // 注册 Dispatcher 服务
+                services.AddSingleton<IDispatcherService,WpfDispatcherService>();
             });
     }
 
