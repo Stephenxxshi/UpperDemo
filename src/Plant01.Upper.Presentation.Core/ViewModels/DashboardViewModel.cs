@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Application.Models.Logging;
 using Plant01.Upper.Presentation.Core.Services;
@@ -7,11 +10,14 @@ using System.Collections.ObjectModel;
 
 namespace Plant01.Upper.Presentation.Core.ViewModels
 {
-    public class DashboardViewModel
+    public partial class DashboardViewModel : ObservableObject
     {
         private readonly ILogger<DashboardViewModel> _logger;
         private readonly ILogStore _logStore;
         private readonly IDispatcherService _dispatcherService;
+
+        [ObservableProperty]
+        private bool _isPaused;
 
         public ObservableCollection<LogItem> Logs { get; } = new();
         public DashboardViewModel() { }
@@ -40,6 +46,12 @@ namespace Plant01.Upper.Presentation.Core.ViewModels
                     Source = model.Category
                 });
             });
+        }
+
+        [RelayCommand]
+        private void Clear()
+        {
+            _dispatcherService.Invoke(() => Logs.Clear());
         }
     }
 }
