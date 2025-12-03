@@ -9,10 +9,14 @@
     xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI"
     xmlns:views="clr-namespace:Plant01.Upper.Wpf.Views"
     xmlns:vm="clr-namespace:Plant01.Upper.Presentation.Core.ViewModels;assembly=Plant01.Upper.Presentation.Core"
+    xmlns:converters="clr-namespace:Plant01.Upper.Wpf.Converters"
     d:DataContext="{d:DesignInstance vm:DashboardViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:LogCollectionConverter x:Key="LogCollectionConverter" />
+    </UserControl.Resources>
     <controls:TransitioningContentControl RunTransitionOnLoaded="True" TransitionMode="SlideLeft">
         <Grid>
             <Grid.RowDefinitions>
@@ -21,7 +25,7 @@
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="测试" />
             <Grid Grid.Row="1">
-                <controls:AntLog Grid.Row="1" ItemsSource="{Binding Logs}" />
+                <controls:AntLog Grid.Row="1" ItemsSource="{Binding Logs, Converter={StaticResource LogCollectionConverter}}" />
             </Grid>
         </Grid>
     </controls:TransitioningContentControl>

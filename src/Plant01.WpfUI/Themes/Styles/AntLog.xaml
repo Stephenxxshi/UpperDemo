@@ -225,6 +225,7 @@
                                             <TextBlock
                                                 Grid.Column="2"
                                                 VerticalAlignment="Top"
+                                                FontFamily="Consolas, Courier New, Monospace"
                                                 Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"
                                                 Text="{Binding Message}">
                                                 <TextBlock.Style>

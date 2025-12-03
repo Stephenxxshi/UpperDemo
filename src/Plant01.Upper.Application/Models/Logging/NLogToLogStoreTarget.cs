@@ -15,6 +15,7 @@ public class NLogToLogStoreTarget : TargetWithLayout
     {
         _logStore = logStore;
         Name = "LogStore"; // Default name
+        Layout = "${message}"; // Default to just message to avoid duplication of timestamp/level
     }
 
     protected override void Write(LogEventInfo logEvent)
