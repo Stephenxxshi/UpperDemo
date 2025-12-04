@@ -3,23 +3,25 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Plant01.Upper.Application.Interfaces;
 using System.Collections.ObjectModel;
+using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Plant01.Upper.Presentation.Core.ViewModels;
 
 /// <summary>
-/// MES ½Ó¿Úµ÷ÊÔ ViewModel
+/// MES æ¥å£è°ƒè¯• ViewModel
 /// </summary>
 public partial class MesDebugViewModel : ObservableObject
 {
     private readonly IMesService _mesService;
     private readonly IMesWebApi _mesWebApi;
     private readonly ILogger<MesDebugViewModel> _logger;
+    private readonly SynchronizationContext? _uiContext;
 
     #region Observable Properties
 
-    // MesService (ÈñÅÉ½Ó¿Ú) ²ÎÊı
+    // MesService (ç”Ÿæˆæ¥å£) å‚æ•°
     [ObservableProperty]
     private string _agvDeviceCode = "AGV001";
 
@@ -47,7 +49,7 @@ public partial class MesDebugViewModel : ObservableObject
     [ObservableProperty]
     private decimal _quantity2 = 30;
 
-    // ÈñÅÉ½Ó¿ÚÃÜÔ¿²ÎÊı
+    // ç”Ÿæˆæ¥å£å¯†é’¥å‚æ•°
     [ObservableProperty]
     private string _corpNo = "020";
 
@@ -57,7 +59,7 @@ public partial class MesDebugViewModel : ObservableObject
     [ObservableProperty]
     private string _revopacAuthKey = string.Empty;
 
-    // MesWebApi (¹¤µ¥½Ó¿Ú) ²ÎÊı
+    // MesWebApi (å·¥å•æ¥å£) å‚æ•°
     [ObservableProperty]
     private string _workOrderCode = "WO20240101001";
 
@@ -71,10 +73,10 @@ public partial class MesDebugViewModel : ObservableObject
     private string _productCode = "P001";
 
     [ObservableProperty]
-    private string _productName = "²úÆ·A";
+    private string _productName = "äº§å“A";
 
     [ObservableProperty]
-    private string _productSpec = "¹æ¸ñĞÍºÅA";
+    private string _productSpec = "è§„æ ¼å‹å·A";
 
     [ObservableProperty]
     private decimal _workOrderQuantity = 1000;
@@ -91,19 +93,22 @@ public partial class MesDebugViewModel : ObservableObject
     [ObservableProperty]
     private int _status = 1;
 
-    // Basic ÈÏÖ¤²ÎÊı
+    // Basic è®¤è¯å‚æ•°
     [ObservableProperty]
     private string _username = "admin";
 
     [ObservableProperty]
     private string _password = "123456";
 
-    // ÈÕÖ¾
+    // æ—¥å¿—
     [ObservableProperty]
     private ObservableCollection<string> _logs = new();
 
     [ObservableProperty]
-    private string _statusMessage = "¾ÍĞ÷";
+    private string _statusMessage = "å°±ç»ª";
+
+    [ObservableProperty]
+    private bool _isServerRunning;
 
     #endregion
 
@@ -117,9 +122,30 @@ public partial class MesDebugViewModel : ObservableObject
         _mesService = mesService;
         _mesWebApi = mesWebApi;
         _logger = logger;
+        _uiContext = SynchronizationContext.Current;
 
-        AddLog("MES ½Ó¿Úµ÷ÊÔ¹¤¾ßÒÑÆô¶¯");
-        _logger.LogInformation("MES ½Ó¿Úµ÷ÊÔ¹¤¾ßÒÑÆô¶¯");
+        _mesWebApi.OnWorkOrderReceived += OnWorkOrderReceivedHandler;
+
+        AddLog("MES æ¥å£è°ƒè¯•å·¥å…·åˆå§‹åŒ–å®Œæˆ");
+        _logger.LogInformation("MES æ¥å£è°ƒè¯•å·¥å…·åˆå§‹åŒ–å®Œæˆ");
+    }
+
+    #endregion
+
+    #region Event Handlers
+
+    private Task<WorkOrderResponse> OnWorkOrderReceivedHandler(WorkOrderRequest request)
+    {
+        RunOnUiThread(() =>
+        {
+            AddLog($"æ”¶åˆ°å·¥å•æ¨é€: {request.Code}");
+            AddLog($"  äº§å“: {request.ProductName} ({request.ProductCode})");
+            AddLog($"  æ•°é‡: {request.Quantity} {request.Unit}");
+            AddLog($"  çŠ¶æ€: {request.Status}");
+            _logger.LogInformation("æ”¶åˆ°å·¥å•æ¨é€: {Code}", request.Code);
+        });
+
+        return Task.FromResult(new WorkOrderResponse { ErrorCode = 0, ErrorMsg = "æ¥æ”¶æˆåŠŸ" });
     }
 
     #endregion
@@ -127,39 +153,76 @@ public partial class MesDebugViewModel : ObservableObject
     #region Command Methods
 
     [RelayCommand]
+    private async Task StartServerAsync()
+    {
+        try
+        {
+            StatusMessage = "æ­£åœ¨å¯åŠ¨ Web API æœåŠ¡...";
+            await _mesWebApi.StartAsync();
+            IsServerRunning = true;
+            StatusMessage = "Web API æœåŠ¡å·²å¯åŠ¨";
+            AddLog("Web API æœåŠ¡å·²å¯åŠ¨");
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"å¯åŠ¨å¤±è´¥: {ex.Message}";
+            AddLog($"å¯åŠ¨å¤±è´¥: {ex.Message}");
+            _logger.LogError(ex, "å¯åŠ¨ Web API æœåŠ¡å¤±è´¥");
+        }
+    }
+
+    [RelayCommand]
+    private async Task StopServerAsync()
+    {
+        try
+        {
+            StatusMessage = "æ­£åœ¨åœæ­¢ Web API æœåŠ¡...";
+            await _mesWebApi.StopAsync();
+            IsServerRunning = false;
+            StatusMessage = "Web API æœåŠ¡å·²åœæ­¢";
+            AddLog("Web API æœåŠ¡å·²åœæ­¢");
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"åœæ­¢å¤±è´¥: {ex.Message}";
+            AddLog($"åœæ­¢å¤±è´¥: {ex.Message}");
+        }
+    }
+
+    [RelayCommand]
     private void GenerateRevopacAuthKey()
     {
         try
         {
-            AddLog("========== Éú³ÉÈñÅÉÃÜÔ¿ ==========");
+            AddLog("========== ç”Ÿæˆè®¤è¯å¯†é’¥ ==========");
             AddLog($"CorpNo: {CorpNo}");
             AddLog($"CorpId: {CorpId}");
 
-            // »ñÈ¡µ±Ç°Ê±¼ä´Á£¨10Î»Êı×Ö£¬¾«È·µ½Ãë£©
+            // è·å–å½“å‰æ—¶é—´æˆ³ï¼ˆ10ä½æ•°å­—ï¼Œç²¾ç¡®åˆ°ç§’ï¼‰
             var authSysTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            AddLog($"Ê±¼ä´Á: {authSysTime}");
+            AddLog($"æ—¶é—´æˆ³: {authSysTime}");
 
-            // Éú³ÉÇ©Ãû×Ö·û´®£ºauth_sys_time&Corpid
+            // æ„é€ ç­¾åå­—ç¬¦ä¸²ï¼šauth_sys_time&Corpid
             var signString = $"{authSysTime}&{CorpId}";
-            AddLog($"Ç©ÃûÔ­ÎÄ: {signString}");
+            AddLog($"ç­¾ååŸä¸²: {signString}");
 
-            // MD5 ¼ÓÃÜ
+            // MD5 åŠ å¯†
             var authSignCode = ComputeMd5Hash(signString);
-            AddLog($"MD5Ç©Ãû: {authSignCode}");
+            AddLog($"MD5ç­¾å: {authSignCode}");
 
-            // ×éºÏ×îÖÕÃÜÔ¿£ºCorpNo&auth_sys_time&auth_sign_code
+            // ç”Ÿæˆæœ€ç»ˆå¯†é’¥ï¼šCorpNo&auth_sys_time&auth_sign_code
             RevopacAuthKey = $"{CorpNo}&{authSysTime}&{authSignCode}";
-            AddLog($"? Éú³ÉµÄÃÜÔ¿: {RevopacAuthKey}");
-            AddLog($"? ÃÜÔ¿ÓĞĞ§ÆÚ: 2·ÖÖÓ");
+            AddLog($"âœ… ç”Ÿæˆçš„å¯†é’¥: {RevopacAuthKey}");
+            AddLog($"â„¹ï¸ å¯†é’¥æœ‰æ•ˆæœŸ: 2åˆ†é’Ÿ");
 
-            StatusMessage = "? ÈñÅÉÃÜÔ¿ÒÑÉú³É";
-            _logger.LogInformation("ÈñÅÉÃÜÔ¿ÒÑÉú³É£¬CorpNo: {CorpNo}, Ê±¼ä´Á: {Timestamp}", CorpNo, authSysTime);
+            StatusMessage = "âœ… å¯†é’¥ç”ŸæˆæˆåŠŸ";
+            _logger.LogInformation("ç”Ÿæˆå¯†é’¥æˆåŠŸï¼ŒCorpNo: {CorpNo}, æ—¶é—´æˆ³: {Timestamp}", CorpNo, authSysTime);
         }
         catch (Exception ex)
         {
-            StatusMessage = $"? Éú³ÉÃÜÔ¿Ê§°Ü: {ex.Message}";
-            AddLog($"? Òì³££º{ex.Message}");
-            _logger.LogError(ex, "Éú³ÉÈñÅÉÃÜÔ¿Òì³£");
+            StatusMessage = $"âŒ ç”Ÿæˆå¯†é’¥å¤±è´¥: {ex.Message}";
+            AddLog($"âŒ å¼‚å¸¸ï¼š{ex.Message}");
+            _logger.LogError(ex, "ç”Ÿæˆè®¤è¯å¯†é’¥å¼‚å¸¸");
         }
 
         AddLog("=====================================");
@@ -171,16 +234,16 @@ public partial class MesDebugViewModel : ObservableObject
     {
         try
         {
-            StatusMessage = "ÕıÔÚµ÷ÓÃÈñÅÉÂë¶âÍê³É½Ó¿Ú...";
-            AddLog("========== ÈñÅÉÂë¶âÍê³É ==========");
-            AddLog($"ÈÏÖ¤ÃÜÔ¿: {RevopacAuthKey}");
-            AddLog($"AGVÉè±¸: {AgvDeviceCode}");
-            AddLog($"ÍĞÅÌID: {PalletId}");
-            AddLog($"Éè±¸±àºÅ: {DeviceCode}");
-            AddLog($"ÈÎÎñID: {JobId}");
-            AddLog($"´ò°üÃ÷Ï¸: [{BagNum1}:{Quantity1}, {BagNum2}:{Quantity2}]");
+            StatusMessage = "æ­£åœ¨è°ƒç”¨å®Œå·¥å›ä¼ æ¥å£...";
+            AddLog("========== å®Œå·¥å›ä¼  ==========");
+            AddLog($"è®¤è¯å¯†é’¥: {RevopacAuthKey}");
+            AddLog($"AGVè®¾å¤‡: {AgvDeviceCode}");
+            AddLog($"æ‰˜ç›˜ID: {PalletId}");
+            AddLog($"è®¾å¤‡ç : {DeviceCode}");
+            AddLog($"ä»»åŠ¡ID: {JobId}");
+            AddLog($"åŒ…è£…æ˜ç»†: [{BagNum1}:{Quantity1}, {BagNum2}:{Quantity2}]");
 
-            _logger.LogInformation("¿ªÊ¼µ÷ÓÃÈñÅÉÂë¶âÍê³É½Ó¿Ú");
+            _logger.LogInformation("å¼€å§‹è°ƒç”¨å®Œå·¥å›ä¼ æ¥å£");
 
             var request = new FinishPalletizingRequest
             {
@@ -199,22 +262,22 @@ public partial class MesDebugViewModel : ObservableObject
 
             if (response.IsSuccess)
             {
-                StatusMessage = "? ÈñÅÉÂë¶âÍê³É½Ó¿Úµ÷ÓÃ³É¹¦";
-                AddLog($"? ³É¹¦£º{response.ErrorMsg}");
-                _logger.LogInformation("ÈñÅÉÂë¶âÍê³É½Ó¿Úµ÷ÓÃ³É¹¦");
+                StatusMessage = "âœ… å®Œå·¥å›ä¼ æ¥å£è°ƒç”¨æˆåŠŸ";
+                AddLog($"âœ… æˆåŠŸï¼š{response.ErrorMsg}");
+                _logger.LogInformation("å®Œå·¥å›ä¼ æ¥å£è°ƒç”¨æˆåŠŸ");
             }
             else
             {
-                StatusMessage = $"? ÈñÅÉÂë¶âÍê³É½Ó¿Úµ÷ÓÃÊ§°Ü: {response.ErrorMsg}";
-                AddLog($"? Ê§°Ü£º[{response.ErrorCode}] {response.ErrorMsg}");
-                _logger.LogWarning("ÈñÅÉÂë¶âÍê³É½Ó¿Úµ÷ÓÃÊ§°Ü: {ErrorMsg}", response.ErrorMsg);
+                StatusMessage = $"âŒ å®Œå·¥å›ä¼ æ¥å£è°ƒç”¨å¤±è´¥: {response.ErrorMsg}";
+                AddLog($"âŒ å¤±è´¥ï¼š[{response.ErrorCode}] {response.ErrorMsg}");
+                _logger.LogWarning("å®Œå·¥å›ä¼ æ¥å£è°ƒç”¨å¤±è´¥: {ErrorMsg}", response.ErrorMsg);
             }
         }
         catch (Exception ex)
         {
-            StatusMessage = $"? Òì³£: {ex.Message}";
-            AddLog($"? Òì³££º{ex.Message}");
-            _logger.LogError(ex, "ÈñÅÉÂë¶âÍê³É½Ó¿Úµ÷ÓÃÒì³£");
+            StatusMessage = $"âŒ å¼‚å¸¸: {ex.Message}";
+            AddLog($"âŒ å¼‚å¸¸ï¼š{ex.Message}");
+            _logger.LogError(ex, "å®Œå·¥å›ä¼ æ¥å£è°ƒç”¨å¼‚å¸¸");
         }
 
         AddLog("=====================================");
@@ -226,13 +289,13 @@ public partial class MesDebugViewModel : ObservableObject
     {
         try
         {
-            StatusMessage = "ÕıÔÚµ÷ÓÃÈñÅÉÍĞÅÌÈ±ÉÙ½Ó¿Ú...";
-            AddLog("========== ÈñÅÉÍĞÅÌÈ±ÉÙ ==========");
-            AddLog($"ÈÏÖ¤ÃÜÔ¿: {RevopacAuthKey}");
-            AddLog($"AGVÉè±¸: {AgvDeviceCode}");
-            AddLog($"ÍĞÅÌÀàĞÍ: {PalletType} ({(PalletType == 1 ? "Ä¸ÍĞÅÌ" : "×ÓÍĞÅÌ")})");
+            StatusMessage = "æ­£åœ¨è°ƒç”¨ç¼ºæ‰˜ç›˜æ¥å£...";
+            AddLog("========== ç¼ºæ‰˜ç›˜ ==========");
+            AddLog($"è®¤è¯å¯†é’¥: {RevopacAuthKey}");
+            AddLog($"AGVè®¾å¤‡: {AgvDeviceCode}");
+            AddLog($"æ‰˜ç›˜ç±»å‹: {PalletType} ({(PalletType == 1 ? "æ¯æ‰˜ç›˜" : "å­æ‰˜ç›˜")})");
 
-            _logger.LogInformation("¿ªÊ¼µ÷ÓÃÈñÅÉÍĞÅÌÈ±ÉÙ½Ó¿Ú");
+            _logger.LogInformation("å¼€å§‹è°ƒç”¨ç¼ºæ‰˜ç›˜æ¥å£");
 
             var request = new LackPalletRequest
             {
@@ -244,22 +307,22 @@ public partial class MesDebugViewModel : ObservableObject
 
             if (response.IsSuccess)
             {
-                StatusMessage = "? ÈñÅÉÍĞÅÌÈ±ÉÙ½Ó¿Úµ÷ÓÃ³É¹¦";
-                AddLog($"? ³É¹¦£º{response.ErrorMsg}");
-                _logger.LogInformation("ÈñÅÉÍĞÅÌÈ±ÉÙ½Ó¿Úµ÷ÓÃ³É¹¦");
+                StatusMessage = "âœ… ç¼ºæ‰˜ç›˜æ¥å£è°ƒç”¨æˆåŠŸ";
+                AddLog($"âœ… æˆåŠŸï¼š{response.ErrorMsg}");
+                _logger.LogInformation("ç¼ºæ‰˜ç›˜æ¥å£è°ƒç”¨æˆåŠŸ");
             }
             else
             {
-                StatusMessage = $"? ÈñÅÉÍĞÅÌÈ±ÉÙ½Ó¿Úµ÷ÓÃÊ§°Ü: {response.ErrorMsg}";
-                AddLog($"? Ê§°Ü£º[{response.ErrorCode}] {response.ErrorMsg}");
-                _logger.LogWarning("ÈñÅÉÍĞÅÌÈ±ÉÙ½Ó¿Úµ÷ÓÃÊ§°Ü: {ErrorMsg}", response.ErrorMsg);
+                StatusMessage = $"âŒ ç¼ºæ‰˜ç›˜æ¥å£è°ƒç”¨å¤±è´¥: {response.ErrorMsg}";
+                AddLog($"âŒ å¤±è´¥ï¼š[{response.ErrorCode}] {response.ErrorMsg}");
+                _logger.LogWarning("ç¼ºæ‰˜ç›˜æ¥å£è°ƒç”¨å¤±è´¥: {ErrorMsg}", response.ErrorMsg);
             }
         }
         catch (Exception ex)
         {
-            StatusMessage = $"? Òì³£: {ex.Message}";
-            AddLog($"? Òì³££º{ex.Message}");
-            _logger.LogError(ex, "ÈñÅÉÍĞÅÌÈ±ÉÙ½Ó¿Úµ÷ÓÃÒì³£");
+            StatusMessage = $"âŒ å¼‚å¸¸: {ex.Message}";
+            AddLog($"âŒ å¼‚å¸¸ï¼š{ex.Message}");
+            _logger.LogError(ex, "ç¼ºæ‰˜ç›˜æ¥å£è°ƒç”¨å¼‚å¸¸");
         }
 
         AddLog("=====================================");
@@ -267,89 +330,64 @@ public partial class MesDebugViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task CreateWorkOrderAsync()
+    private async Task SimulatePushAsync()
     {
         try
         {
-            StatusMessage = "ÕıÔÚµ÷ÓÃ¹¤µ¥ÍÆËÍ½Ó¿Ú...";
-            AddLog("========== MES ¹¤µ¥ÍÆËÍ ==========");
-            AddLog($"¹¤µ¥ºÅ: {WorkOrderCode}");
-            AddLog($"¹¤µ¥ÈÕÆÚ: {OrderDate:yyyy-MM-dd}");
-            AddLog($"²úÏß±àºÅ: {LineNo}");
-            AddLog($"²úÆ·: {ProductCode} - {ProductName}");
-            AddLog($"¹æ¸ñ: {ProductSpec}");
-            AddLog($"ÊıÁ¿: {WorkOrderQuantity} {Unit}");
-            AddLog($"ÅúºÅ: {BatchNumber}");
-            AddLog($"×´Ì¬: {Status} ({(Status == 1 ? "¿ª¹¤" : "Íê¹¤")})");
+            StatusMessage = "æ­£åœ¨æ¨¡æ‹Ÿå·¥å•æ¨é€...";
+            AddLog("========== æ¨¡æ‹Ÿå·¥å•æ¨é€ (Client -> Localhost) ==========");
+            AddLog($"å·¥å•å·: {WorkOrderCode}");
+            AddLog($"ç›®æ ‡åœ°å€: http://localhost:5000/api/work_order/create");
 
-            _logger.LogInformation("¿ªÊ¼µ÷ÓÃ¹¤µ¥ÍÆËÍ½Ó¿Ú");
-
-            var request = new WorkOrderRequest
+            using var client = new HttpClient();
+            
+            // æ·»åŠ  Basic è®¤è¯
+            if (!string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password))
             {
-                Code = WorkOrderCode,
-                OrderDate = OrderDate,
-                LineNo = LineNo,
-                ProductCode = ProductCode,
-                ProductName = ProductName,
-                ProductSpec = ProductSpec,
-                Quantity = WorkOrderQuantity,
-                Unit = Unit,
-                BatchNumber = BatchNumber,
-                LabelTemplateCode = LabelTemplateCode,
-                Status = Status,
-                OrderData = new List<OrderDataItem>
+                var authValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Username}:{Password}"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authValue);
+            }
+
+            var request = new
+            {
+                code = WorkOrderCode,
+                orderDate = OrderDate.ToString("yyyy-MM-dd"),
+                lineNo = LineNo,
+                productCode = ProductCode,
+                productName = ProductName,
+                productSpec = ProductSpec,
+                quantity = WorkOrderQuantity,
+                unit = Unit,
+                batchNumber = BatchNumber,
+                labelTemplateCode = LabelTemplateCode,
+                status = Status,
+                orderData = new[]
                 {
-                    new() { Key = "key1", Name = "Ãû³Æ1", Value = "Öµ1" },
-                    new() { Key = "key2", Name = "Ãû³Æ2", Value = "Öµ2" }
+                    new { key = "key1", name = "å±æ€§1", value = "å€¼1" },
+                    new { key = "key2", name = "å±æ€§2", value = "å€¼2" }
                 }
             };
 
-            var response = await _mesWebApi.CreateWorkOrderAsync(request);
+            var response = await client.PostAsJsonAsync("http://localhost:5000/api/work_order/create", request);
+            var result = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccess)
+            if (response.IsSuccessStatusCode)
             {
-                StatusMessage = "? ¹¤µ¥ÍÆËÍ½Ó¿Úµ÷ÓÃ³É¹¦";
-                AddLog($"? ³É¹¦£º{response.ErrorMsg}");
-                _logger.LogInformation("¹¤µ¥ÍÆËÍ½Ó¿Úµ÷ÓÃ³É¹¦");
+                StatusMessage = "âœ… æ¨¡æ‹Ÿæ¨é€å‘é€æˆåŠŸ";
+                AddLog($"âœ… å‘é€æˆåŠŸ: {response.StatusCode}");
+                AddLog($"   å“åº”: {result}");
             }
             else
             {
-                StatusMessage = $"? ¹¤µ¥ÍÆËÍ½Ó¿Úµ÷ÓÃÊ§°Ü: {response.ErrorMsg}";
-                AddLog($"? Ê§°Ü£º[{response.ErrorCode}] {response.ErrorMsg}");
-                _logger.LogWarning("¹¤µ¥ÍÆËÍ½Ó¿Úµ÷ÓÃÊ§°Ü: {ErrorMsg}", response.ErrorMsg);
+                StatusMessage = $"âŒ æ¨¡æ‹Ÿæ¨é€å‘é€å¤±è´¥: {response.StatusCode}";
+                AddLog($"âŒ å‘é€å¤±è´¥: {response.StatusCode}");
+                AddLog($"   å“åº”: {result}");
             }
         }
         catch (Exception ex)
         {
-            StatusMessage = $"? Òì³£: {ex.Message}";
-            AddLog($"? Òì³££º{ex.Message}");
-            _logger.LogError(ex, "¹¤µ¥ÍÆËÍ½Ó¿Úµ÷ÓÃÒì³£");
-        }
-
-        AddLog("=====================================");
-        AddLog("");
-    }
-
-    [RelayCommand]
-    private void SetBasicAuth()
-    {
-        try
-        {
-            AddLog("========== ÉèÖÃ Basic ÈÏÖ¤ ==========");
-            AddLog($"ÓÃ»§Ãû: {Username}");
-            AddLog($"ÃÜÂë: {new string('*', Password.Length)}");
-
-            _mesWebApi.SetBasicAuth(Username, Password);
-
-            StatusMessage = "? Basic ÈÏÖ¤ÒÑÉèÖÃ";
-            AddLog("? Basic ÈÏÖ¤ÒÑÉèÖÃ");
-            _logger.LogInformation("Basic ÈÏÖ¤ÒÑÉèÖÃ£¬ÓÃ»§Ãû: {Username}", Username);
-        }
-        catch (Exception ex)
-        {
-            StatusMessage = $"? ÉèÖÃÈÏÖ¤Ê§°Ü: {ex.Message}";
-            AddLog($"? Òì³££º{ex.Message}");
-            _logger.LogError(ex, "ÉèÖÃ Basic ÈÏÖ¤Òì³£");
+            StatusMessage = $"âŒ å¼‚å¸¸: {ex.Message}";
+            AddLog($"âŒ å¼‚å¸¸ï¼š{ex.Message}");
         }
 
         AddLog("=====================================");
@@ -360,8 +398,8 @@ public partial class MesDebugViewModel : ObservableObject
     private void ClearLogs()
     {
         Logs.Clear();
-        StatusMessage = "ÈÕÖ¾ÒÑÇå¿Õ";
-        _logger.LogInformation("ÈÕÖ¾ÒÑÇå¿Õ");
+        StatusMessage = "æ—¥å¿—å·²æ¸…ç©º";
+        _logger.LogInformation("æ—¥å¿—å·²æ¸…ç©º");
     }
 
     #endregion
@@ -374,11 +412,23 @@ public partial class MesDebugViewModel : ObservableObject
         Logs.Add($"[{timestamp}] {message}");
     }
 
+    private void RunOnUiThread(Action action)
+    {
+        if (_uiContext != null)
+        {
+            _uiContext.Post(_ => action(), null);
+        }
+        else
+        {
+            action();
+        }
+    }
+
     /// <summary>
-    /// ¼ÆËã MD5 ¹şÏ£Öµ
+    /// è®¡ç®— MD5 å“ˆå¸Œå€¼
     /// </summary>
-    /// <param name="input">ÊäÈë×Ö·û´®</param>
-    /// <returns>MD5 ¹şÏ£Öµ£¨32Î»Ğ¡Ğ´£©</returns>
+    /// <param name="input">è¾“å…¥å­—ç¬¦ä¸²</param>
+    /// <returns>MD5 å“ˆå¸Œå€¼ï¼ˆ32ä½å°å†™ï¼‰</returns>
     private static string ComputeMd5Hash(string input)
     {
         var inputBytes = Encoding.UTF8.GetBytes(input);

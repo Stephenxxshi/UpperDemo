@@ -269,6 +269,26 @@
                             <TextBlock
                                 Margin="0,0,0,5"
                                 FontWeight="Bold"
+                                Text="Server Control" />
+                            <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
+                                <wpfui:AntButton
+                                    Margin="0,0,8,0"
+                                    Padding="12,6"
+                                    Command="{Binding StartServerCommand}"
+                                    Content="Start Server" />
+                                <wpfui:AntButton
+                                    Padding="12,6"
+                                    Command="{Binding StopServerCommand}"
+                                    Content="Stop Server" />
+                                <TextBlock
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding IsServerRunning, StringFormat='Running: {0}'}" />
+                            </StackPanel>
+
+                            <TextBlock
+                                Margin="0,0,0,5"
+                                FontWeight="Bold"
                                 Text="Basic Authentication" />
                             <Grid Margin="0,0,0,8">
                                 <Grid.ColumnDefinitions>
@@ -479,8 +499,8 @@
                             <wpfui:AntButton
                                 Margin="0,5,0,0"
                                 Padding="15,6"
-                                Command="{Binding CreateWorkOrderCommand}"
-                                Content="Test Work Order Push" />
+                                Command="{Binding SimulatePushCommand}"
+                                Content="Simulate Push (Client -> Localhost)" />
                         </StackPanel>
                     </GroupBox>
 

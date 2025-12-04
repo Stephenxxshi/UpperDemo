@@ -78,7 +78,7 @@ public static class Bootstrapper
         });
 
         // 注册应用服务
-        services.AddScoped<IMesWebApi, MesWebApi>();
+        services.AddSingleton<IMesWebApi, MesWebApi>();
         services.AddScoped<IMesService, MesService>();
 
         // 注册 UnitOfWork (Transient，因为每个 UoW 应该有自己的 DbContext)

@@ -12,19 +12,28 @@ namespace Plant01.Upper.Application.Interfaces;
 public interface IMesWebApi
 {
     /// <summary>
-    /// 接收MES生产工单推送
+    /// 启动 Web API 服务
     /// </summary>
-    /// <param name="request">工单创建请求</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>响应结果</returns>
-    Task<WorkOrderResponse> CreateWorkOrderAsync(WorkOrderRequest request, CancellationToken cancellationToken = default);
+    /// <returns>任务</returns>
+    Task StartAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 设置 Basic 认证信息
+    /// 停止 Web API 服务
     /// </summary>
-    /// <param name="username">用户名</param>
-    /// <param name="password">密码</param>
-    void SetBasicAuth(string username, string password);
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>任务</returns>
+    Task StopAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 收到工单推送事件
+    /// </summary>
+    event Func<WorkOrderRequest, Task<WorkOrderResponse>>? OnWorkOrderReceived;
+
+    /// <summary>
+    /// 服务是否正在运行
+    /// </summary>
+    bool IsRunning { get; }
 }
 
 /// <summary>
