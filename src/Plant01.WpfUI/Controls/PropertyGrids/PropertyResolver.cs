@@ -1,8 +1,9 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using Plant01.WpfUI.Controls.PropertyGrids.Editors;
 
-namespace Plant01.WpfUI.Controls;
+namespace Plant01.WpfUI.Controls.PropertyGrids;
 
 public class PropertyResolver
 {

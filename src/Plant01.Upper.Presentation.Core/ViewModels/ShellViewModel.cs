@@ -43,6 +43,14 @@ public partial class ShellViewModel : ObservableObject
         },
         new NavigateItem
         {
+            Title = "MES调试",
+            Description = "MES Interface Debug Tool",
+            IconChar = "&#xe7c6;",
+            IconPlacement = "Top",
+            ViewModelType = typeof(MesDebugViewModel)
+        },
+        new NavigateItem
+        {
             Description = "Application settings",
             IconChar = "&#xe7c6;",
             IconPlacement = "Top",

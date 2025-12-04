@@ -1,7 +1,7 @@
 using System.Windows;
 using System.Windows.Data;
 
-namespace Plant01.WpfUI.Controls;
+namespace Plant01.WpfUI.Controls.PropertyGrids.Editors;
 
 public class StringPropertyEditor : PropertyEditorBase
 {

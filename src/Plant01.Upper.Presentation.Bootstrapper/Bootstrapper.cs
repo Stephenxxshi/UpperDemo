@@ -2,9 +2,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using NLog.Extensions.Hosting;
+
+using Plant01.Domain.Shared.Interfaces;
+using Plant01.Infrastructure.Shared.Extensions;
+using Plant01.Infrastructure.Shared.Services;
+using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Models.Logging;
+using Plant01.Upper.Application.Services;
 using Plant01.Upper.Presentation.Core.ViewModels;
+
 using Serilog;
 
 namespace Plant01.Upper.Presentation.Bootstrapper;
@@ -62,12 +70,27 @@ public static class Bootstrapper
             services.AddSingleton<ILoggerProvider, ObservableLoggerProvider>();
         }
 
+        // 注册 HttpService（使用现代化的 IHttpClientFactory）
+        services.AddHttpService(builder =>
+        {
+            // 可选：配置 Polly 重试策略（需要安装 Microsoft.Extensions.Http.Resilience）
+            // builder.AddStandardResilienceHandler();
+        });
+
+        // 注册应用服务
+        services.AddScoped<IMesWebApi, MesWebApi>();
+        services.AddScoped<IMesService, MesService>();
+        //services.AddScoped<IHttpService, HttpService>();
+
         // 注册通用的 ViewModel
         services.AddSingleton<ShellViewModel>();
         services.AddSingleton<DashboardViewModel>();
         services.AddSingleton<SettingsViewModel>();
         services.AddSingleton<ProduceRecordViewModel>();
+        
+        // 注册 MES 调试 ViewModel
+        services.AddSingleton<MesDebugViewModel>();
 
-        // 这里可以继续注册其他通用服务，例如 HTTP Client, AutoMapper 等
+        // 这里可以继续注册其他通用服务，例如 AutoMapper 等
     }
 }

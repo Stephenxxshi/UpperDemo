@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Plant01.WpfUI.Controls;
+namespace Plant01.WpfUI.Controls.PropertyGrids;
 
 public class PropertyItem : ContentControl
 {

@@ -34,6 +34,9 @@ public partial class App : System.Windows.Application
                 // 注册 Dispatcher 服务
                 services.AddSingleton<IDispatcherService,WpfDispatcherService>();
 
+                // 注册 Views
+                services.AddTransient<MesDebugView>();
+
                 services.AddLogging(configure =>
                 {
                     configure.AddDebug();

@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace Plant01.WpfUI.Controls;
+namespace Plant01.WpfUI.Controls.PropertyGrids.Editors;
 
 public abstract class PropertyEditorBase : Control
 {

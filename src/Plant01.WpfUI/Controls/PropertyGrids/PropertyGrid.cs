@@ -5,9 +5,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+
 using Plant01.WpfUI.Themes;
 
-namespace Plant01.WpfUI.Controls;
+namespace Plant01.WpfUI.Controls.PropertyGrids;
 
 [TemplatePart(Name = ElementItemsControl, Type = typeof(ItemsControl))]
 [TemplatePart(Name = ElementSearchBar, Type = typeof(AntInput))]

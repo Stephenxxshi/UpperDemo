@@ -6,13 +6,13 @@
     <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
         <views:Dashboard />
     </DataTemplate>
-    <DataTemplate DataType="{x:Type vm:SideBarViewModel}">
-        <views:SideBar />
-    </DataTemplate>
     <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
         <views:Settings />
     </DataTemplate>
     <DataTemplate DataType="{x:Type vm:ProduceRecordViewModel}">
         <views:ProduceRecord />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:MesDebugViewModel}">
+        <views:MesDebugView />
     </DataTemplate>
 </ResourceDictionary>

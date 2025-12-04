@@ -1,0 +1,238 @@
+<UserControl x:Class="Plant01.Upper.Wpf.Views.MesDebugView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:wpfui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1200"
+             Background="White">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="MES Interface Debug Tool" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <GroupBox Header="Revopac Interface Test (IMesService)" Margin="0,0,0,10" Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="Authentication Key" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="CorpNo:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <wpfui:AntInput Grid.Column="1" Text="{Binding CorpNo, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0"/>
+                            
+                            <TextBlock Grid.Column="2" Text="CorpId:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <wpfui:AntInput Grid.Column="3" Text="{Binding CorpId, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0"/>
+                            
+                            <wpfui:AntButton Grid.Column="4" Content="Generate Key" Command="{Binding GenerateRevopacAuthKeyCommand}" Padding="12,6"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="Auth Key:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <wpfui:AntInput Grid.Column="1" Text="{Binding RevopacAuthKey}" IsReadOnly="True" 
+                                          Background="#F5F5F5" FontFamily="Consolas" FontSize="11"/>
+                        </Grid>
+
+                        <TextBlock Text="Common Parameters" FontWeight="Bold" Margin="0,5,0,5"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="AGV Device:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="0" Grid.Column="1" Text="{Binding AgvDeviceCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                            
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Pallet ID:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="0" Grid.Column="3" Text="{Binding PalletId, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Device Code:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="1" Grid.Column="1" Text="{Binding DeviceCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                            
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Job ID:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="1" Grid.Column="3" Text="{Binding JobId, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Pallet Type:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="2" Grid.Column="1" Text="{Binding PalletType, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                            
+
+                            <TextBlock Grid.Row="2" Grid.Column="2" Text="(1=Parent 2=Child)" VerticalAlignment="Center" Margin="0,0,0,5" Foreground="Gray" FontSize="11"/>
+                        </Grid>
+
+                        <TextBlock Text="Package Details" FontWeight="Bold" Margin="0,5,0,5"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Bag Number 1:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="0" Grid.Column="1" Text="{Binding BagNum1, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                            
+
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Quantity 1:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="0" Grid.Column="3" Text="{Binding Quantity1, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Bag Number 2:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="1" Grid.Column="1" Text="{Binding BagNum2, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                            
+
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Quantity 2:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="1" Grid.Column="3" Text="{Binding Quantity2, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
+                        </Grid>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                            <wpfui:AntButton Content="Test Finish Palletizing" Command="{Binding FinishPalletizingCommand}" Margin="0,0,8,0" Padding="15,6"/>
+                            <wpfui:AntButton Content="Test Lack Pallet" Command="{Binding ReportLackPalletCommand}" Padding="15,6"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Work Order Interface Test (IMesWebApi)" Margin="0,0,0,10" Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="Basic Authentication" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="Username:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <wpfui:AntInput Grid.Column="1" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0"/>
+                            
+
+                            <TextBlock Grid.Column="2" Text="Password:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <wpfui:AntInput Grid.Column="3" Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0"/>
+                            
+
+                            <wpfui:AntButton Grid.Column="4" Content="Set Auth" Command="{Binding SetBasicAuthCommand}" Padding="12,6"/>
+                        </Grid>
+
+                        <TextBlock Text="Work Order Parameters" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Work Order:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="0" Grid.Column="1" Text="{Binding WorkOrderCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                            
+
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Order Date:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntDatePicker Grid.Row="0" Grid.Column="3" SelectedDate="{Binding OrderDate, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Line Number:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="1" Grid.Column="1" Text="{Binding LineNo, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                            
+
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Product Code:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="1" Grid.Column="3" Text="{Binding ProductCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Product Name:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="2" Grid.Column="1" Text="{Binding ProductName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                            
+
+                            <TextBlock Grid.Row="2" Grid.Column="2" Text="Product Spec:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="2" Grid.Column="3" Text="{Binding ProductSpec, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Quantity:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="3" Grid.Column="1" Text="{Binding WorkOrderQuantity, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                            
+
+                            <TextBlock Grid.Row="3" Grid.Column="2" Text="Unit:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="3" Grid.Column="3" Text="{Binding Unit, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Batch Number:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="4" Grid.Column="1" Text="{Binding BatchNumber, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                            
+
+                            <TextBlock Grid.Row="4" Grid.Column="2" Text="Label Template:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="4" Grid.Column="3" Text="{Binding LabelTemplateCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
+
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Status:" VerticalAlignment="Center" Margin="0,0,8,5"/>
+                            <wpfui:AntInput Grid.Row="5" Grid.Column="1" Text="{Binding Status, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                            
+
+                            <TextBlock Grid.Row="5" Grid.Column="2" Text="(1=Start 99=Finish)" VerticalAlignment="Center" Margin="0,0,0,5" Foreground="Gray" FontSize="11"/>
+                        </Grid>
+
+                        <wpfui:AntButton Content="Test Work Order Push" Command="{Binding CreateWorkOrderCommand}" 
+                                       Margin="0,5,0,0" Padding="15,6"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Debug Logs" Padding="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="250"/>
+                        </Grid.RowDefinitions>
+
+                        <wpfui:AntButton Grid.Row="0" Content="Clear Logs" Command="{Binding ClearLogsCommand}" 
+                                       HorizontalAlignment="Right" Margin="0,0,0,5" Padding="12,5"/>
+
+                        <Border Grid.Row="1" BorderBrush="#DDDDDD" BorderThickness="1" Background="#F5F5F5">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding Logs}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" Margin="3,1" FontFamily="Consolas" FontSize="11"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Border>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="2" Background="#F0F0F0" Padding="8" Margin="0,10,0,0" BorderBrush="#DDDDDD" BorderThickness="0,1,0,0">
+            <TextBlock Text="{Binding StatusMessage}" FontWeight="SemiBold"/>
+        </Border>
+    </Grid>
+</UserControl>

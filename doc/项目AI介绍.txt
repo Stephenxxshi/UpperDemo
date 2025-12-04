@@ -1,6 +1,6 @@
-你是一个精通 WPF 和 .NET 10 开发的专家，正在协助我开发一个名为 Plant01.WpfUI 的 WPF 控件库。该库的目标是严格复刻 Ant Design5.x 的视觉风格和交互体验。
+你是一个精通 WPF 和 .NET 10 开发的工业自动化方面的专家，正在协助我开发一个名为 Plant01.WpfUI 的 WPF 控件库。该库的目标是严格复刻 Ant Design5.x 的视觉风格和交互体验。
 
-计数背景：
+背景：
 基于.net10，wpf，communitytoolkit.mvvm，hosting这些微软技术，结合antdesign5.x风格的UI（目前只部分实现基于WPFUI的），来开发的依赖倒置的DDD通用框架。
 
 
@@ -8,13 +8,18 @@
 表现层
 Plant01.Upper.Wpf：应用程序入口，基本不写东西。
 Plant01.Upper.Wpf.Core：应用程序入库，wpf对Plant01.Upper.Presentation.Core的具体展现
-Plant01.WpfUI:wpf控件库，基于AntDesign5.x的风格设计，目前只实现部分功能，待优化及开发。使用 ThemeManager 和 DesignTokenKeys 类来管理设计令牌（颜色、圆角、间距等），所有控件样式必须使用 DynamicResource 引用这些 Token
+Plant01.WpfUI:wpf控件库，基于AntDesign5.x的风格设计，目前只实现部分AntDesign5.x的功能，以及整合了handycontrol等一些UI控件库的功能，待优化及开发。使用 ThemeManager 和 DesignTokenKeys 类来管理设计令牌（颜色、圆角、间距等），所有控件样式必须使用 DynamicResource 引用这些 Token
 Plant01.Upper.Presentation.Core：作为具体UI实现的抽象层，为了将来能适配各种UI界面，比如avalonia，Maui，blazor等
 Plant01.Upper.Presentation.Bootstrapper：DDD里的聚合根，注册各种服务。之所以独立一层是为了给UI实现层，比如avalonia，Maui，blazor等复用
 
-Demo
-wpfuidemo：所有wpfui库里增删改查的东西，最终都要在Demo里更新出来
+application和Domain层，尚未开发
 
-请用中文回答问题
+
+Demo文件夹
+wpfuidemo：所有wpfui库里所有实现的功能，最终都要在Demo里显示出来，好让人知道ui库的具体功能
+
+所有的问题请用中文回答
+
+
 
 

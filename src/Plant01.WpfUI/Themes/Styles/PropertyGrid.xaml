@@ -1,11 +1,12 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:Plant01.WpfUI.Controls"
+                    xmlns:propertyGrids="clr-namespace:Plant01.WpfUI.Controls.PropertyGrids"
                     xmlns:themes="clr-namespace:Plant01.WpfUI.Themes">
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-    <Style TargetType="{x:Type controls:PropertyItem}">
+    <Style TargetType="{x:Type propertyGrids:PropertyItem}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ColorPrimaryBorder}}"/>
         <Setter Property="BorderThickness" Value="0,0,0,1"/>
@@ -13,7 +14,7 @@
         <Setter Property="MinHeight" Value="32"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:PropertyItem}">
+                <ControlTemplate TargetType="{x:Type propertyGrids:PropertyItem}">
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
@@ -38,13 +39,13 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type controls:PropertyGrid}">
+    <Style TargetType="{x:Type propertyGrids:PropertyGrid}">
         <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ColorPrimaryBg}}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ColorPrimaryBorder}}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:PropertyGrid}">
+                <ControlTemplate TargetType="{x:Type propertyGrids:PropertyGrid}">
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
@@ -65,12 +66,12 @@
                                 <controls:AntInput x:Name="PART_SearchBar"
                                                    Placeholder="Search properties..."
                                                    Margin="0,0,4,0"/>
-                                <Button Command="{x:Static controls:PropertyGrid.SortByCategoryCommand}"
+                                <Button Command="{x:Static propertyGrids:PropertyGrid.SortByCategoryCommand}"
                                         Content="Cat"
                                         ToolTip="Sort by Category"
                                         Margin="0,0,2,0"
                                         Visibility="{TemplateBinding ShowSortButton, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                <Button Command="{x:Static controls:PropertyGrid.SortByNameCommand}"
+                                <Button Command="{x:Static propertyGrids:PropertyGrid.SortByNameCommand}"
                                         Content="A-Z"
                                         ToolTip="Sort by Name"
                                         Visibility="{TemplateBinding ShowSortButton, Converter={StaticResource BooleanToVisibilityConverter}}"/>
