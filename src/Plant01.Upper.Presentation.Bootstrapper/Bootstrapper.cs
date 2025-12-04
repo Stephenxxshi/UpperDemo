@@ -5,9 +5,7 @@ using Microsoft.Extensions.Logging;
 
 using NLog.Extensions.Hosting;
 
-using Plant01.Domain.Shared.Interfaces;
 using Plant01.Infrastructure.Shared.Extensions;
-using Plant01.Infrastructure.Shared.Services;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Models.Logging;
 using Plant01.Upper.Application.Services;
@@ -80,14 +78,13 @@ public static class Bootstrapper
         // 注册应用服务
         services.AddScoped<IMesWebApi, MesWebApi>();
         services.AddScoped<IMesService, MesService>();
-        //services.AddScoped<IHttpService, HttpService>();
 
         // 注册通用的 ViewModel
         services.AddSingleton<ShellViewModel>();
         services.AddSingleton<DashboardViewModel>();
         services.AddSingleton<SettingsViewModel>();
         services.AddSingleton<ProduceRecordViewModel>();
-        
+
         // 注册 MES 调试 ViewModel
         services.AddSingleton<MesDebugViewModel>();
 
