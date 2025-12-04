@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using Plant01.Upper.Application.Interfaces;
 using System.Collections.ObjectModel;
 using System.Net.Http.Json;
@@ -20,6 +21,8 @@ public partial class MesDebugViewModel : ObservableObject
     private readonly SynchronizationContext? _uiContext;
 
     #region Observable Properties
+
+
 
     // MesService (生成接口) 参数
     [ObservableProperty]
@@ -100,6 +103,9 @@ public partial class MesDebugViewModel : ObservableObject
     [ObservableProperty]
     private string _password = "123456";
 
+    [ObservableProperty]
+    private string _baseUrl = "http://localhost:5000";
+
     // 日志
     [ObservableProperty]
     private ObservableCollection<string> _logs = new();
@@ -114,20 +120,30 @@ public partial class MesDebugViewModel : ObservableObject
 
     #region Constructor
 
+    // 构造函数中添加配置注入
     public MesDebugViewModel(
         IMesService mesService,
         IMesWebApi mesWebApi,
-        ILogger<MesDebugViewModel> logger)
+        ILogger<MesDebugViewModel> logger,
+        IConfiguration configuration)
     {
         _mesService = mesService;
         _mesWebApi = mesWebApi;
         _logger = logger;
         _uiContext = SynchronizationContext.Current;
-
+        
+        // 订阅工单接收事件 - 这是关键！
         _mesWebApi.OnWorkOrderReceived += OnWorkOrderReceivedHandler;
-
-        AddLog("MES 接口调试工具初始化完成");
-        _logger.LogInformation("MES 接口调试工具初始化完成");
+        
+        // 从配置读取
+        var baseUrl = configuration["MesWorkOrder:BaseUrl"] ?? "http://localhost:5000";
+        var username = configuration["MesWorkOrder:Username"] ?? "admin";
+        var password = configuration["MesWorkOrder:Password"] ?? "123456";
+        
+        // 设置默认值
+        Username = username;
+        Password = password;
+        BaseUrl = baseUrl;
     }
 
     #endregion
@@ -158,16 +174,61 @@ public partial class MesDebugViewModel : ObservableObject
         try
         {
             StatusMessage = "正在启动 Web API 服务...";
+            AddLog("========== 启动 Web API 服务 ==========");
+            
+            // 检查端口是否已被占用
+            if (await IsPortInUseAsync(5000))
+            {
+                AddLog("⚠️ 警告：端口 5000 已被占用");
+                AddLog("   尝试查找占用进程：使用命令 netstat -ano | findstr :5000");
+            }
+            
             await _mesWebApi.StartAsync();
-            IsServerRunning = true;
-            StatusMessage = "Web API 服务已启动";
-            AddLog("Web API 服务已启动");
+            
+            // 等待服务完全启动
+            await Task.Delay(1000);
+            
+            // 验证服务是否真正可用
+            bool isActuallyRunning = await VerifyServerHealthAsync();
+            
+            if (isActuallyRunning)
+            {
+                IsServerRunning = true;
+                StatusMessage = "✅ Web API 服务已启动并验证成功";
+                AddLog($"✅ Web API 服务已启动");
+                AddLog($"✅ 服务健康检查通过");
+                AddLog($"   监听地址: {BaseUrl}");
+                AddLog($"   已注册路由: POST /api/work_order/create");
+                AddLog($"   认证方式: Basic Auth ({Username})");
+            }
+            else
+            {
+                IsServerRunning = false;
+                StatusMessage = "⚠️ 服务启动但无法访问";
+                AddLog("⚠️ 警告：服务已启动但健康检查失败");
+                AddLog("   可能原因：");
+                AddLog("   1. 端口被其他进程占用");
+                AddLog("   2. 防火墙或代理拦截");
+                AddLog("   3. 之前的调试会话未完全停止");
+                AddLog("   建议：重启 Visual Studio 或终止占用端口的进程");
+            }
+            
+            AddLog("=====================================");
+            AddLog("");
         }
         catch (Exception ex)
         {
-            StatusMessage = $"启动失败: {ex.Message}";
-            AddLog($"启动失败: {ex.Message}");
+            IsServerRunning = false;
+            StatusMessage = $"❌ 启动失败: {ex.Message}";
+            AddLog($"❌ 启动失败: {ex.Message}");
+            AddLog($"   异常类型: {ex.GetType().Name}");
+            if (ex.InnerException != null)
+            {
+                AddLog($"   内部异常: {ex.InnerException.Message}");
+            }
             _logger.LogError(ex, "启动 Web API 服务失败");
+            AddLog("=====================================");
+            AddLog("");
         }
     }
 
@@ -332,20 +393,32 @@ public partial class MesDebugViewModel : ObservableObject
     [RelayCommand]
     private async Task SimulatePushAsync()
     {
+        if (!IsServerRunning)
+        {
+            StatusMessage = "❌ 请先启动 Web API 服务！";
+            AddLog("❌ 错误：Web API 服务未启动，请先点击 启动服务器 按钮");
+            return;
+        }
+        
         try
         {
             StatusMessage = "正在模拟工单推送...";
             AddLog("========== 模拟工单推送 (Client -> Localhost) ==========");
             AddLog($"工单号: {WorkOrderCode}");
-            AddLog($"目标地址: http://localhost:5000/api/work_order/create");
+            AddLog($"目标地址: {BaseUrl}/api/work_order/create");
 
-            using var client = new HttpClient();
+            var handler = new HttpClientHandler 
+{ 
+    UseProxy = false 
+};
+using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) };
             
             // 添加 Basic 认证
             if (!string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password))
             {
                 var authValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Username}:{Password}"));
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authValue);
+                AddLog($"🔐 已添加 Basic 认证: {Username}:***");
             }
 
             var request = new
@@ -368,7 +441,11 @@ public partial class MesDebugViewModel : ObservableObject
                 }
             };
 
-            var response = await client.PostAsJsonAsync("http://localhost:5000/api/work_order/create", request);
+            AddLog($"📤 发送请求...");
+            var response = await client.PostAsJsonAsync($"{BaseUrl}/api/work_order/create", request);
+            
+            AddLog($"📥 收到响应: {(int)response.StatusCode} {response.ReasonPhrase}");
+            
             var result = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
@@ -381,13 +458,52 @@ public partial class MesDebugViewModel : ObservableObject
             {
                 StatusMessage = $"❌ 模拟推送发送失败: {response.StatusCode}";
                 AddLog($"❌ 发送失败: {response.StatusCode}");
-                AddLog($"   响应: {result}");
+                AddLog($"   响应内容: {(string.IsNullOrEmpty(result) ? "(空)" : result)}");
+                
+                // 特别处理 502 错误
+                if (response.StatusCode == System.Net.HttpStatusCode.BadGateway)
+                {
+                    AddLog($"");
+                    AddLog($"💡 502 Bad Gateway 诊断：");
+                    AddLog($"   ❌ 请求未到达您的服务器");
+                    AddLog($"   可能原因：");
+                    AddLog($"   1. 端口 5000 被另一个进程占用");
+                    AddLog($"   2. 系统代理或防病毒软件拦截");
+                    AddLog($"   3. 旧的调试会话进程仍在运行");
+                    AddLog($"");
+                    AddLog($"   解决方案：");
+                    AddLog($"   1. 在 PowerShell 中运行: netstat -ano | findstr :5000");
+                    AddLog($"   2. 找到占用的进程 ID (PID)");
+                    AddLog($"   3. 在任务管理器中结束该进程");
+                    AddLog($"   4. 或重启 Visual Studio");
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    AddLog($"");
+                    AddLog($"💡 401 Unauthorized 诊断：");
+                    AddLog($"   认证失败，请检查用户名和密码是否正确");
+                }
             }
+        }
+        catch (HttpRequestException ex)
+        {
+            StatusMessage = $"❌ 网络异常: {ex.Message}";
+            AddLog($"❌ 网络异常：{ex.Message}");
+            if (ex.InnerException != null)
+            {
+                AddLog($"   根本原因: {ex.InnerException.Message}");
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            StatusMessage = $"❌ 请求超时";
+            AddLog($"❌ 请求超时：服务可能未响应或处理时间过长");
         }
         catch (Exception ex)
         {
             StatusMessage = $"❌ 异常: {ex.Message}";
             AddLog($"❌ 异常：{ex.Message}");
+            AddLog($"   类型: {ex.GetType().Name}");
         }
 
         AddLog("=====================================");
@@ -434,6 +550,56 @@ public partial class MesDebugViewModel : ObservableObject
         var inputBytes = Encoding.UTF8.GetBytes(input);
         var hashBytes = MD5.HashData(inputBytes);
         return Convert.ToHexString(hashBytes).ToLowerInvariant();
+    }
+
+    /// <summary>
+    /// 验证服务器健康状态
+    /// </summary>
+    private async Task<bool> VerifyServerHealthAsync()
+    {
+        try
+        {
+            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(3) };
+            
+            // 尝试访问根路径或 API 路径
+            var response = await client.GetAsync(BaseUrl);
+            AddLog($"🔍 健康检查: {(int)response.StatusCode} {response.ReasonPhrase}");
+            
+            // 任何响应（即使是 404）都表明服务器在运行
+            return true;
+        }
+        catch (HttpRequestException ex)
+        {
+            AddLog($"🔍 健康检查失败: {ex.Message}");
+            return false;
+        }
+        catch (TaskCanceledException)
+        {
+            AddLog($"🔍 健康检查超时");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            AddLog($"🔍 健康检查异常: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 检查端口是否被占用
+    /// </summary>
+    private async Task<bool> IsPortInUseAsync(int port)
+    {
+        try
+        {
+            using var client = new HttpClient { Timeout = TimeSpan.FromMilliseconds(500) };
+            await client.GetAsync($"http://localhost:{port}");
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     #endregion

@@ -4,7 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:Plant01.Upper.Presentation.Core.ViewModels;assembly=Plant01.Upper.Presentation.Core"
     xmlns:wpfui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+    d:DataContext="{d:DesignInstance vm:MesDebugViewModel}"
     d:DesignHeight="800"
     d:DesignWidth="1200"
     Background="White"
@@ -500,7 +502,7 @@
                                 Margin="0,5,0,0"
                                 Padding="15,6"
                                 Command="{Binding SimulatePushCommand}"
-                                Content="Simulate Push (Client -> Localhost)" />
+                                Content="Simulate Push (Client -&gt; Localhost)" />
                         </StackPanel>
                     </GroupBox>
 
