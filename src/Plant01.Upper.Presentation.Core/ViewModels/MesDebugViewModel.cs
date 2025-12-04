@@ -3,8 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Plant01.Upper.Application.Interfaces;
+using Plant01.Domain.Shared.Interfaces;
 using System.Collections.ObjectModel;
-using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -17,6 +17,7 @@ public partial class MesDebugViewModel : ObservableObject
 {
     private readonly IMesService _mesService;
     private readonly IMesWebApi _mesWebApi;
+    private readonly IHttpService _httpService;
     private readonly ILogger<MesDebugViewModel> _logger;
     private readonly SynchronizationContext? _uiContext;
 
@@ -124,11 +125,13 @@ public partial class MesDebugViewModel : ObservableObject
     public MesDebugViewModel(
         IMesService mesService,
         IMesWebApi mesWebApi,
+        IHttpService httpService,
         ILogger<MesDebugViewModel> logger,
         IConfiguration configuration)
     {
         _mesService = mesService;
         _mesWebApi = mesWebApi;
+        _httpService = httpService;
         _logger = logger;
         _uiContext = SynchronizationContext.Current;
         
@@ -144,6 +147,9 @@ public partial class MesDebugViewModel : ObservableObject
         Username = username;
         Password = password;
         BaseUrl = baseUrl;
+        
+        // 同步服务状态
+        IsServerRunning = _mesWebApi.IsRunning;
     }
 
     #endregion
@@ -407,17 +413,11 @@ public partial class MesDebugViewModel : ObservableObject
             AddLog($"工单号: {WorkOrderCode}");
             AddLog($"目标地址: {BaseUrl}/api/work_order/create");
 
-            var handler = new HttpClientHandler 
-{ 
-    UseProxy = false 
-};
-using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) };
-            
-            // 添加 Basic 认证
+            // 设置 Basic 认证
             if (!string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password))
             {
                 var authValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Username}:{Password}"));
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authValue);
+                _httpService.AddHeader("Authorization", $"Basic {authValue}");
                 AddLog($"🔐 已添加 Basic 认证: {Username}:***");
             }
 
@@ -442,47 +442,22 @@ using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) 
             };
 
             AddLog($"📤 发送请求...");
-            var response = await client.PostAsJsonAsync($"{BaseUrl}/api/work_order/create", request);
             
-            AddLog($"📥 收到响应: {(int)response.StatusCode} {response.ReasonPhrase}");
-            
-            var result = await response.Content.ReadAsStringAsync();
+            var response = await _httpService.PostJsonAsync<object, WorkOrderResponse>(
+                $"{BaseUrl}/api/work_order/create", 
+                request);
 
-            if (response.IsSuccessStatusCode)
+            if (response != null && response.ErrorCode == 0)
             {
                 StatusMessage = "✅ 模拟推送发送成功";
-                AddLog($"✅ 发送成功: {response.StatusCode}");
-                AddLog($"   响应: {result}");
+                AddLog($"✅ 发送成功");
+                AddLog($"   响应: {response.ErrorMsg}");
             }
             else
             {
-                StatusMessage = $"❌ 模拟推送发送失败: {response.StatusCode}";
-                AddLog($"❌ 发送失败: {response.StatusCode}");
-                AddLog($"   响应内容: {(string.IsNullOrEmpty(result) ? "(空)" : result)}");
-                
-                // 特别处理 502 错误
-                if (response.StatusCode == System.Net.HttpStatusCode.BadGateway)
-                {
-                    AddLog($"");
-                    AddLog($"💡 502 Bad Gateway 诊断：");
-                    AddLog($"   ❌ 请求未到达您的服务器");
-                    AddLog($"   可能原因：");
-                    AddLog($"   1. 端口 5000 被另一个进程占用");
-                    AddLog($"   2. 系统代理或防病毒软件拦截");
-                    AddLog($"   3. 旧的调试会话进程仍在运行");
-                    AddLog($"");
-                    AddLog($"   解决方案：");
-                    AddLog($"   1. 在 PowerShell 中运行: netstat -ano | findstr :5000");
-                    AddLog($"   2. 找到占用的进程 ID (PID)");
-                    AddLog($"   3. 在任务管理器中结束该进程");
-                    AddLog($"   4. 或重启 Visual Studio");
-                }
-                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                {
-                    AddLog($"");
-                    AddLog($"💡 401 Unauthorized 诊断：");
-                    AddLog($"   认证失败，请检查用户名和密码是否正确");
-                }
+                StatusMessage = $"❌ 模拟推送发送失败";
+                AddLog($"❌ 发送失败");
+                AddLog($"   响应内容: {response?.ErrorMsg ?? "(空)"}");
             }
         }
         catch (HttpRequestException ex)
@@ -492,6 +467,24 @@ using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) 
             if (ex.InnerException != null)
             {
                 AddLog($"   根本原因: {ex.InnerException.Message}");
+            }
+            
+            // 诊断常见问题
+            if (ex.Message.Contains("502") || ex.Message.Contains("Bad Gateway"))
+            {
+                AddLog($"");
+                AddLog($"💡 502 Bad Gateway 诊断：");
+                AddLog($"   ❌ 请求未到达您的服务器");
+                AddLog($"   可能原因：");
+                AddLog($"   1. 端口 5000 被另一个进程占用");
+                AddLog($"   2. 系统代理或防病毒软件拦截");
+                AddLog($"   3. 旧的调试会话进程仍在运行");
+            }
+            else if (ex.Message.Contains("401") || ex.Message.Contains("Unauthorized"))
+            {
+                AddLog($"");
+                AddLog($"💡 401 Unauthorized 诊断：");
+                AddLog($"   认证失败，请检查用户名和密码是否正确");
             }
         }
         catch (TaskCanceledException)
@@ -504,6 +497,11 @@ using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) 
             StatusMessage = $"❌ 异常: {ex.Message}";
             AddLog($"❌ 异常：{ex.Message}");
             AddLog($"   类型: {ex.GetType().Name}");
+        }
+        finally
+        {
+            // 清除认证头，避免影响其他请求
+            _httpService.RemoveHeader("Authorization");
         }
 
         AddLog("=====================================");
@@ -559,13 +557,8 @@ using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) 
     {
         try
         {
-            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(3) };
-            
-            // 尝试访问根路径或 API 路径
-            var response = await client.GetAsync(BaseUrl);
-            AddLog($"🔍 健康检查: {(int)response.StatusCode} {response.ReasonPhrase}");
-            
-            // 任何响应（即使是 404）都表明服务器在运行
+            await _httpService.GetAsync(BaseUrl);
+            AddLog($"🔍 健康检查: 服务器响应正常");
             return true;
         }
         catch (HttpRequestException ex)
@@ -585,15 +578,11 @@ using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) 
         }
     }
 
-    /// <summary>
-    /// 检查端口是否被占用
-    /// </summary>
     private async Task<bool> IsPortInUseAsync(int port)
     {
         try
         {
-            using var client = new HttpClient { Timeout = TimeSpan.FromMilliseconds(500) };
-            await client.GetAsync($"http://localhost:{port}");
+            await _httpService.GetAsync($"http://localhost:{port}");
             return true;
         }
         catch

@@ -39,4 +39,14 @@ public interface IHttpService
     /// 添加自定义请求头
     /// </summary>
     void AddHeader(string name, string value);
+
+    /// <summary>
+    /// 清除所有自定义请求头
+    /// </summary>
+    void ClearHeaders();
+
+    /// <summary>
+    /// 移除指定的自定义请求头
+    /// </summary>
+    void RemoveHeader(string name);
 }

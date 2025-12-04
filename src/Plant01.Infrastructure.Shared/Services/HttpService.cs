@@ -8,7 +8,7 @@ using System.Text.Json;
 namespace Plant01.Infrastructure.Shared.Services;
 
 /// <summary>
-/// HTTP 服务实现 - 使用 IHttpClientFactory 的现代化实现
+/// HTTP 服务实现 - 使用 IHttpClientFactory 管理生命周期
 /// </summary>
 public sealed class HttpService : IHttpService
 {
@@ -213,9 +213,30 @@ public sealed class HttpService : IHttpService
         _logger.LogDebug("添加自定义请求头: {Name} = {Value}", name, value);
     }
 
+    /// <inheritdoc/>
+    public void ClearHeaders()
+    {
+        _customHeaders.Clear();
+        _logger.LogDebug("已清除所有自定义请求头");
+    }
+
+    /// <inheritdoc/>
+    public void RemoveHeader(string name)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        
+        if (_customHeaders.Remove(name))
+        {
+            _logger.LogDebug("已移除自定义请求头: {Name}", name);
+        }
+    }
+
     private HttpClient CreateHttpClient()
     {
         var httpClient = _httpClientFactory.CreateClient();
+        
+        // 禁用代理以避免本地调试问题
+        // httpClient.DefaultRequestProxy = null; // 需要配置 HttpClientHandler
         
         // 设置 Bearer Token
         if (!string.IsNullOrWhiteSpace(_bearerToken))

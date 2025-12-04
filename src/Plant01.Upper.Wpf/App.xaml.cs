@@ -6,6 +6,7 @@ using Plant01.Upper.Presentation.Bootstrapper;
 using Plant01.Upper.Presentation.Core.Services;
 using Plant01.Upper.Wpf.Services;
 using Plant01.Upper.Wpf.Views;
+using Plant01.Upper.Application.Interfaces;
 
 using System.Windows;
 
@@ -58,10 +59,38 @@ public partial class App : System.Windows.Application
 
         await Host.StartAsync();
 
+        // 🔥 自动启动 MES Web API 服务
+        await StartMesWebApiAsync();
+
         var mainWindow = Host.Services.GetRequiredService<MainWindow>();
         mainWindow.Show();
 
         base.OnStartup(e);
+    }
+
+    /// <summary>
+    /// 启动 MES Web API 服务
+    /// </summary>
+    private async Task StartMesWebApiAsync()
+    {
+        try
+        {
+            var mesWebApi = Host.Services.GetRequiredService<IMesWebApi>();
+            var logger = Host.Services.GetService<ILogger<App>>();
+            
+            if (!mesWebApi.IsRunning)
+            {
+                await mesWebApi.StartAsync();
+                logger?.LogInformation("MES Web API 服务已自动启动");
+            }
+        }
+        catch (Exception ex)
+        {
+            var logger = Host.Services.GetService<ILogger<App>>();
+            logger?.LogError(ex, "自动启动 MES Web API 服务失败");
+            
+            // 不阻止应用启动，仅记录错误
+        }
     }
 
     private void RegisterEvents()
@@ -110,6 +139,9 @@ public partial class App : System.Windows.Application
     {
         if (_host != null)
         {
+            // 🔥 停止 MES Web API 服务
+            await StopMesWebApiAsync();
+            
             await _host.StopAsync();
             _host.Dispose();
         }
@@ -118,5 +150,28 @@ public partial class App : System.Windows.Application
         _mutex?.Dispose();
 
         base.OnExit(e);
+    }
+
+    /// <summary>
+    /// 停止 MES Web API 服务
+    /// </summary>
+    private async Task StopMesWebApiAsync()
+    {
+        try
+        {
+            var mesWebApi = _host?.Services.GetRequiredService<IMesWebApi>();
+            var logger = _host?.Services.GetService<ILogger<App>>();
+            
+            if (mesWebApi != null && mesWebApi.IsRunning)
+            {
+                await mesWebApi.StopAsync();
+                logger?.LogInformation("MES Web API 服务已自动停止");
+            }
+        }
+        catch (Exception ex)
+        {
+            var logger = _host?.Services.GetService<ILogger<App>>();
+            logger?.LogError(ex, "自动停止 MES Web API 服务失败");
+        }
     }
 }
