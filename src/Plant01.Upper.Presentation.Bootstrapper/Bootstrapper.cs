@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore; // Add EF Core namespace
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -14,6 +15,8 @@ using Plant01.Upper.Domain.Services;
 using Plant01.Upper.Infrastructure.Repository;
 
 using Serilog;
+
+using Plant01.Upper.Application.Mappings; // 确保引用了 Mapping Profile 所在的命名空间
 
 namespace Plant01.Upper.Presentation.Bootstrapper;
 
@@ -80,6 +83,20 @@ public static class Bootstrapper
         // 注册应用服务
         services.AddSingleton<IMesWebApi, MesWebApi>();
         services.AddScoped<IMesService, MesService>();
+        services.AddSingleton<IMesCommandService, MesCommandService>(); // 改为 Singleton
+        services.AddScoped<IPlcFlowService, PlcFlowService>();       // 新增
+        services.AddScoped<IProductionQueryService, ProductionQueryService>(); // 新增
+
+        // 注册 AutoMapper
+        services.AddAutoMapper(cfg => cfg.AddProfile<ProductionMappingProfile>());
+
+        // 注册 DbContext (PostgreSQL)
+        services.AddDbContext<AppDbContext>((serviceProvider, options) =>
+        {
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            options.UseNpgsql(connectionString);
+        });
 
         // 注册 UnitOfWork (Transient，因为每个 UoW 应该有自己的 DbContext)
         services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -89,6 +106,7 @@ public static class Bootstrapper
         services.AddSingleton<DashboardViewModel>();
         services.AddSingleton<SettingsViewModel>();
         services.AddSingleton<ProduceRecordViewModel>();
+        services.AddSingleton<ProductionMonitorViewModel>(); // 新增
 
         // 注册 MES 调试 ViewModel
         services.AddSingleton<MesDebugViewModel>();

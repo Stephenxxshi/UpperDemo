@@ -8,18 +8,20 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.0" />
+    <PackageReference Include="AutoMapper" Version="16.0.0" />
     <PackageReference Include="Serilog" Version="4.3.0" />
     <PackageReference Include="NLog" Version="6.0.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Plant01.Domain.Shared\Plant01.Domain.Shared.csproj" />
+    <ProjectReference Include="..\Plant01.Upper.Domain\Plant01.Upper.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Repository\" />
+    <Folder Include="EventHandlers\" />
+    <Folder Include="Mappings\" />
+    <Folder Include="Validators\" />
   </ItemGroup>
 
 </Project>

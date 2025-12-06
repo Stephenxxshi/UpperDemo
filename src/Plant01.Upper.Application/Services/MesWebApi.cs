@@ -21,7 +21,7 @@ public class MesWebApi : IMesWebApi
     private readonly string? _expectedPassword;
     private WebApplication? _app;
 
-    public event Func<WorkOrderRequest, Task<WorkOrderResponse>>? OnWorkOrderReceived;
+    public event Func<WorkOrderRequestDto, Task<WorkOrderResponse>>? OnWorkOrderReceived;
     public bool IsRunning => _app != null;
 
     public MesWebApi(
@@ -94,7 +94,7 @@ public class MesWebApi : IMesWebApi
         }
     }
 
-    private async Task<IResult> HandleCreateWorkOrder(HttpContext context, [FromBody] WorkOrderRequest request)
+    private async Task<IResult> HandleCreateWorkOrder(HttpContext context, [FromBody] WorkOrderRequestDto request)
     {
         _logger.LogInformation("收到工单推送请求: {Code}", request.Code);
 

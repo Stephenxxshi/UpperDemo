@@ -156,7 +156,7 @@ public partial class MesDebugViewModel : ObservableObject
 
     #region Event Handlers
 
-    private Task<WorkOrderResponse> OnWorkOrderReceivedHandler(WorkOrderRequest request)
+    private Task<WorkOrderResponse> OnWorkOrderReceivedHandler(WorkOrderRequestDto request)
     {
         RunOnUiThread(() =>
         {
