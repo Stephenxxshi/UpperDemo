@@ -8,15 +8,14 @@ using NLog.Extensions.Hosting;
 
 using Plant01.Infrastructure.Shared.Extensions;
 using Plant01.Upper.Application.Interfaces;
+using Plant01.Upper.Application.Mappings; // 确保引用了 Mapping Profile 所在的命名空间
 using Plant01.Upper.Application.Models.Logging;
 using Plant01.Upper.Application.Services;
-using Plant01.Upper.Presentation.Core.ViewModels;
 using Plant01.Upper.Domain.Services;
 using Plant01.Upper.Infrastructure.Repository;
+using Plant01.Upper.Presentation.Core.ViewModels;
 
 using Serilog;
-
-using Plant01.Upper.Application.Mappings; // 确保引用了 Mapping Profile 所在的命名空间
 
 namespace Plant01.Upper.Presentation.Bootstrapper;
 
@@ -98,8 +97,16 @@ public static class Bootstrapper
             options.UseNpgsql(connectionString);
         });
 
-        // 注册 UnitOfWork (Transient，因为每个 UoW 应该有自己的 DbContext)
-        services.AddTransient<IUnitOfWork, UnitOfWork>();
+        // 添加 DbContextFactory 注册
+        services.AddDbContextFactory<AppDbContext>((serviceProvider,options) =>
+        {
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            options.UseNpgsql(connectionString);
+        });
+
+        // 确保 UnitOfWork 已注册
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // 注册通用的 ViewModel
         services.AddSingleton<ShellViewModel>();
