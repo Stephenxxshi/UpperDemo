@@ -105,8 +105,10 @@ public static class Bootstrapper
             options.UseNpgsql(connectionString);
         });
 
+
         // 确保 UnitOfWork 已注册
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
         // 注册通用的 ViewModel
         services.AddSingleton<ShellViewModel>();

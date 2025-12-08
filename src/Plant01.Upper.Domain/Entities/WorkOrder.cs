@@ -63,6 +63,22 @@ namespace Plant01.Upper.Domain.Entities
         /// 工单数据
         /// </summary>
         public List<WorkOrderItemProperty> Items { get; set; }
+
+        public override string ToString()
+        {
+            return $"Code: {Code}, " +
+                   $"OrderDate: {OrderDate}, " +
+                   $"LineNo: {LineNo}, " +
+                   $"ProductCode: {ProductCode}, " +
+                   $"ProductName: {ProductName}, " +
+                   $"ProductSpec: {ProductSpec}, " +
+                   $"Quantity: {Quantity}, " +
+                   $"Unit: {Unit}, " +
+                   $"BatchNumber: {BatchNumber}, " +
+                   $"LabelTemplateCode: {LabelTemplateCode}, " +
+                   $"Status: {Status}, " +
+                   $"Items: [{string.Join("; ", Items?.Select(i => $"Key: {i.Key}, Name: {i.Name}, Value: {i.Value}") ?? Enumerable.Empty<string>())}]";
+        }
     }
 
     public class WorkOrderItemProperty

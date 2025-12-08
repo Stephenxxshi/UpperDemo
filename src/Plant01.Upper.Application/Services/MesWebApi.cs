@@ -30,7 +30,7 @@ public class MesWebApi : IMesWebApi
     {
         _logger = logger;
         // 默认监听端口 5000，可配置
-        _listenUrl = configuration["MesWorkOrder:ListenUrl"] ?? "http://localhost:5000";
+        _listenUrl = configuration["MesWorkOrder:ListenUrl"] ?? "http://0.0.0.0:5000";
         
         // 从配置读取期望的认证信息（用于验证客户端）
         _expectedUsername = configuration["MesWorkOrder:Username"];

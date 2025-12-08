@@ -3,8 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Plant01.Upper.Infrastructure.Repository;
 using Plant01.Upper.Presentation.Core.Models;
 
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -71,6 +73,13 @@ public partial class ShellViewModel : ObservableObject
     {
         _serviceProvider = serviceProvider;
         InitializeDefaultView();
+
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            dbContext.Database.EnsureCreated(); // 如果数据库不存在则自动创建所有表
+                                                // 或使用 dbContext.Database.Migrate(); // 推荐生产环境，自动应用所有迁移
+        }
     }
 
     private void InitializeDefaultView()
