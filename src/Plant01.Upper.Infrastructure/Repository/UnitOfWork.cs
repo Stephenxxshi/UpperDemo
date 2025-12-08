@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Plant01.Upper.Domain.Services;
+
+using Plant01.Upper.Domain.Repository;
 
 namespace Plant01.Upper.Infrastructure.Repository;
 

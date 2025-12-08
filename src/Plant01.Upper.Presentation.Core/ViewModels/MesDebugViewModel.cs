@@ -7,6 +7,9 @@ using Plant01.Domain.Shared.Interfaces;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 using System.Text;
+using Plant01.Upper.Application.Contracts.DTOs;
+using Plant01.Upper.Application.Contracts.Api.Requests;
+using Plant01.Upper.Application.Contracts.Api.Responses;
 
 namespace Plant01.Upper.Presentation.Core.ViewModels;
 

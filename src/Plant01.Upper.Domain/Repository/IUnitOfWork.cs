@@ -1,6 +1,4 @@
-using Plant01.Upper.Domain.Services;
-
-namespace Plant01.Upper.Domain.Services;
+namespace Plant01.Upper.Domain.Repository;
 
 public interface IUnitOfWork : IDisposable
 {

@@ -1,6 +1,6 @@
 using Plant01.Upper.Domain.ValueObjects;
 
-namespace Plant01.Upper.Application.DTOs;
+namespace Plant01.Upper.Application.Contracts.DTOs;
 
 public class WorkOrderDto
 {

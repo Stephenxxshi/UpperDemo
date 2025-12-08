@@ -1,9 +1,10 @@
 using AutoMapper;
-using Plant01.Upper.Application.DTOs;
+
+using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Domain.Aggregation;
 using Plant01.Upper.Domain.Entities;
-using Plant01.Upper.Domain.Services;
+using Plant01.Upper.Domain.Repository;
 
 namespace Plant01.Upper.Application.Services;
 

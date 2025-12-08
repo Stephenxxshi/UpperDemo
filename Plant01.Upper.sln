@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plant01.Upper.Presentation.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plant01.Upper.Wpf", "src\Plant01.Upper.Wpf\Plant01.Upper.Wpf.csproj", "{F365ED87-7800-4132-8F1E-6E898EBAABFD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wpfuidemo", "src\wpfuidemo\wpfuidemo.csproj", "{03E8A917-08C8-4C77-A3AA-DBC9DB631B13}"
 EndProject

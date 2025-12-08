@@ -15,4 +15,7 @@
     <DataTemplate DataType="{x:Type vm:MesDebugViewModel}">
         <views:MesDebugView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:WorkOrderListViewModel}">
+        <views:WorkOrderList />
+    </DataTemplate>
 </ResourceDictionary>

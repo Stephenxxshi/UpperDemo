@@ -1,4 +1,7 @@
-﻿namespace Plant01.Upper.Application.Interfaces;
+﻿using Plant01.Upper.Application.Contracts.Api.Requests;
+using Plant01.Upper.Application.Contracts.Api.Responses;
+
+namespace Plant01.Upper.Application.Interfaces;
 
 /// <summary>
 /// MES Web API 服务接口 - 接收MES生产工单推送

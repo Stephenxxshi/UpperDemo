@@ -1,5 +1,6 @@
 using AutoMapper;
-using Plant01.Upper.Application.DTOs;
+
+using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Domain.Aggregation;
 using Plant01.Upper.Domain.Entities;
 

@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
+
+using Plant01.Upper.Application.Contracts.Api.Requests;
+using Plant01.Upper.Application.Contracts.Api.Responses;
 using Plant01.Upper.Application.Interfaces;
+
 using System.Text;
 
 namespace Plant01.Upper.Application.Services;
@@ -31,7 +29,7 @@ public class MesWebApi : IMesWebApi
         _logger = logger;
         // 默认监听端口 5000，可配置
         _listenUrl = configuration["MesWorkOrder:ListenUrl"] ?? "http://0.0.0.0:5000";
-        
+
         // 从配置读取期望的认证信息（用于验证客户端）
         _expectedUsername = configuration["MesWorkOrder:Username"];
         _expectedPassword = configuration["MesWorkOrder:Password"];
@@ -44,10 +42,10 @@ public class MesWebApi : IMesWebApi
         try
         {
             var builder = WebApplication.CreateBuilder();
-            
+
             // 配置 Kestrel 监听地址
             builder.WebHost.UseUrls(_listenUrl);
-            
+
             // 配置 JSON 序列化选项 (忽略大小写)
             builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
             {
@@ -55,7 +53,7 @@ public class MesWebApi : IMesWebApi
             });
 
             // 添加日志
-            builder.Services.AddLogging(logging => 
+            builder.Services.AddLogging(logging =>
             {
                 logging.ClearProviders();
                 logging.AddConsole();
@@ -110,7 +108,7 @@ public class MesWebApi : IMesWebApi
 
         if (OnWorkOrderReceived != null)
         {
-            try 
+            try
             {
                 var response = await OnWorkOrderReceived.Invoke(request);
                 return Results.Ok(response);

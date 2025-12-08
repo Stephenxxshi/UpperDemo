@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using Plant01.Upper.Application.DTOs;
+
+using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Application.Interfaces;
+
 using System.Collections.ObjectModel;
 
 namespace Plant01.Upper.Presentation.Core.ViewModels;

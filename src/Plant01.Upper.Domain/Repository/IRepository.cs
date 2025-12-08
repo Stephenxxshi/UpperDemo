@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
-namespace Plant01.Upper.Domain.Services;
+namespace Plant01.Upper.Domain.Repository;
 
 public interface IRepository<TEntity> where TEntity : class
 {

@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Plant01.Upper.Domain.Services;
+
+using Plant01.Upper.Domain.Repository;
+
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 

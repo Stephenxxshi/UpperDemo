@@ -1,4 +1,4 @@
-namespace Plant01.Upper.Application.DTOs;
+namespace Plant01.Upper.Application.Contracts.DTOs;
 
 public class PalletDto
 {

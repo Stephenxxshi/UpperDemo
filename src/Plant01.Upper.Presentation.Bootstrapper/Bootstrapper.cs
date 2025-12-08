@@ -7,11 +7,12 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Hosting;
 
 using Plant01.Infrastructure.Shared.Extensions;
+using Plant01.Upper.Application.Contracts.Commands;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Mappings; // 确保引用了 Mapping Profile 所在的命名空间
 using Plant01.Upper.Application.Models.Logging;
 using Plant01.Upper.Application.Services;
-using Plant01.Upper.Domain.Services;
+using Plant01.Upper.Domain.Repository;
 using Plant01.Upper.Infrastructure.Repository;
 using Plant01.Upper.Presentation.Core.ViewModels;
 
