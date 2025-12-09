@@ -58,6 +58,14 @@ public partial class ShellViewModel : ObservableObject
             IconPlacement = "Top",
             Title = "设置",
             ViewModelType = typeof(SettingsViewModel)
+        },
+        new NavigateItem
+        {
+            Description = "工单记录",
+            IconChar = "&#xe624;",
+            IconPlacement = "Top",
+            Title = "工单记录",
+            ViewModelType = typeof(WorkOrderListViewModel)
         }
     };
 

@@ -116,7 +116,8 @@ public static class Bootstrapper
         services.AddSingleton<DashboardViewModel>();
         services.AddSingleton<SettingsViewModel>();
         services.AddSingleton<ProduceRecordViewModel>();
-        services.AddSingleton<ProductionMonitorViewModel>(); // 新增
+        services.AddSingleton<ProductionMonitorViewModel>();
+        services.AddSingleton<WorkOrderListViewModel>();
 
         // 注册 MES 调试 ViewModel
         services.AddSingleton<MesDebugViewModel>();
