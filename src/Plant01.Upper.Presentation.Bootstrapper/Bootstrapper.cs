@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Hosting;
 
 using Plant01.Infrastructure.Shared.Extensions;
-using Plant01.Upper.Application.Contracts.Commands;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Mappings; // 确保引用了 Mapping Profile 所在的命名空间
 using Plant01.Upper.Application.Models.Logging;
@@ -85,7 +84,8 @@ public static class Bootstrapper
         services.AddScoped<IMesService, MesService>();
         services.AddSingleton<IMesCommandService, MesCommandService>(); // 改为 Singleton
         services.AddScoped<IPlcFlowService, PlcFlowService>();       // 新增
-        services.AddScoped<IProductionQueryService, ProductionQueryService>(); // 新增
+        services.AddScoped<IProductionQueryService, ProductionQueryService>();
+        services.AddScoped<IWorkOrderRepository, WorkOrderRepository>();
 
         // 注册 AutoMapper
         services.AddAutoMapper(cfg => cfg.AddProfile<ProductionMappingProfile>());

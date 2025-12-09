@@ -20,7 +20,7 @@ public class MesCommandService : IMesCommandService
     private readonly IMapper _mapper;
     private readonly IWorkOrderRepository _workOrderRepository;
 
-    public MesCommandService(IMesWebApi mesWebApi, IServiceScopeFactory scopeFactory,IMapper mapper,IWorkOrderRepository workOrderRepository)
+    public MesCommandService(IMesWebApi mesWebApi, IServiceScopeFactory scopeFactory, IMapper mapper, IWorkOrderRepository workOrderRepository)
     {
         _mesWebApi = mesWebApi;
         _scopeFactory = scopeFactory;
