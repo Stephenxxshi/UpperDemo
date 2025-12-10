@@ -164,10 +164,19 @@ public class AntLog : Control
     {
         if (AutoScroll && e.Action == NotifyCollectionChangedAction.Add && _listBox != null)
         {
-             if (_listBox.Items.Count > 0)
-             {
-                 _listBox.ScrollIntoView(_listBox.Items[_listBox.Items.Count - 1]);
-             }
+            // 使用 Dispatcher 延迟执行滚动，确保 UI 已经更新且 VirtualizingStackPanel 准备就绪
+            // 避免 "itemIndex must be less than 0" 异常
+            Dispatcher.InvokeAsync(() =>
+            {
+                if (_listBox.Items.Count > 0)
+                {
+                    var lastItem = _listBox.Items[_listBox.Items.Count - 1];
+                    if (lastItem != null)
+                    {
+                        _listBox.ScrollIntoView(lastItem);
+                    }
+                }
+            }, System.Windows.Threading.DispatcherPriority.Background);
         }
     }
 

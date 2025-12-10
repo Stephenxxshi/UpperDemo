@@ -11,7 +11,42 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid>
-        <controls:EntityListLayout ActionContent="{Binding AddCommand}" AdvancedFilterContent="{Binding AdvancedFilterCommand}" />
-    </Grid>
+    <controls:TransitioningContentControl RunTransitionOnLoaded="True">
+        <Grid>
+            <controls:EntityListLayout
+                ActionContent="{Binding AddCommand}"
+                AdvancedFilterContent="{Binding AdvancedFilterCommand}"
+                IsLoading="{Binding IsLoading}">
+                <controls:EntityListLayout.FilterContent>
+                    <WrapPanel>
+                        <controls:AntInput Placeholder="请输入工单名称" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                        <controls:AntButton
+                            Margin="0,0,8,0"
+                            Command="{Binding LoadDataCommand}"
+                            Content="查询"
+                            Type="Primary" />
+                        <controls:AntButton Command="{Binding ResetFilterCommand}" Content="重置" />
+                    </WrapPanel>
+                </controls:EntityListLayout.FilterContent>
+            </controls:EntityListLayout>
+
+            <controls:AntDataGrid
+                AutoGenerateColumns="False"
+                IsReadOnly="True"
+                ItemsSource="{Binding Items}">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="40">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=Header, Mode=OneWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </controls:AntDataGrid>
+        </Grid>
+    </controls:TransitioningContentControl>
 </UserControl>
