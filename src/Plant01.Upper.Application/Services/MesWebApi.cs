@@ -101,7 +101,7 @@ public class MesWebApi : IMesWebApi
             WriteIndented = true,
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         });
-        _logger.LogTrace("收到工单推送请求，原始JSON:\n{Json}", jsonString);
+        _logger.LogDebug("收到工单推送请求，原始JSON:\n{Json}", jsonString);
         _logger.LogInformation("收到工单推送请求: {Code}", request.Code);
 
         // Basic Auth 验证

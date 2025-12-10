@@ -18,7 +18,7 @@ public class CommonFields
     /// <summary>
     /// 创建于
     /// </summary>        
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     /// 软删除标志，0未删除，1已删除
