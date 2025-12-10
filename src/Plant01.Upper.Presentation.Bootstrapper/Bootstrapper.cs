@@ -24,7 +24,7 @@ public static class Bootstrapper
     public static IHostBuilder CreateHostBuilder(string[] args)
     {
         var upperEnvironment = Environment.GetEnvironmentVariable("Upper");
-        // Build intermediate config to read LoggingProvider
+        // 构建中间配置以读取 LoggingProvider
         var config = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -42,7 +42,7 @@ public static class Bootstrapper
         });
         var loggingProvider = config["LoggingProvider"];
 
-        // Configure Serilog if selected
+        // 如果选择了 Serilog，则进行配置
         if (string.Equals(loggingProvider, "Serilog", StringComparison.OrdinalIgnoreCase))
         {
             builder.UseSerilog((context, services, configuration) =>
@@ -53,7 +53,7 @@ public static class Bootstrapper
                     .WriteTo.Sink(new SerilogToLogStoreSink(logStore));
             });
         }
-        // Configure NLog if selected
+        // 如果选择了 NLog，则进行配置
         else if (string.Equals(loggingProvider, "NLog", StringComparison.OrdinalIgnoreCase))
         {
             builder.UseNLog();
@@ -73,10 +73,10 @@ public static class Bootstrapper
 
     private static void ConfigureCommonServices(IServiceCollection services, string? loggingProvider)
     {
-        // Logging Store (Shared by all providers)
+        // 日志存储 (所有提供程序共享)
         services.AddSingleton<ILogStore, LogStore>();
 
-        // Register Default Logger only if no other provider is selected
+        // 仅当未选择其他提供程序时才注册默认记录器
         if (string.IsNullOrEmpty(loggingProvider) || string.Equals(loggingProvider, "Default", StringComparison.OrdinalIgnoreCase))
         {
             services.AddSingleton<ILoggerProvider, ObservableLoggerProvider>();

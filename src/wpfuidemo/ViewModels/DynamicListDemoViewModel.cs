@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Plant01.Upper.Presentation.Core.Models.DynamicList;
+using Plant01.Core.Models.DynamicList;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -41,7 +41,7 @@ namespace wpfuidemo.ViewModels
 
         public DynamicListDemoViewModel()
         {
-            _listConfig = new ListConfiguration(); // Initialize to avoid warning
+            _listConfig = new ListConfiguration(); // 初始化以避免警告
             InitializeConfig();
             LoadData();
         }
@@ -120,16 +120,16 @@ namespace wpfuidemo.ViewModels
                 return;
             }
 
-            // 1. Generate Mock Data (if not already generated or if we want to simulate DB)
+            // 1. 生成模拟数据 (如果尚未生成或如果我们想要模拟数据库)
             var allData = GenerateMockData();
 
-            // 2. Apply Filters
+            // 2. 应用过滤器
             var filteredData = new List<DemoEntity>();
             foreach (var item in allData)
             {
                 bool match = true;
 
-                // Filter by Keyword (Name or Code)
+                // 按关键字过滤 (名称或编码)
                 if (SearchValues.ContainsKey("Keyword") && SearchValues["Keyword"] is string keyword && !string.IsNullOrWhiteSpace(keyword))
                 {
                     if (!item.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase) && 
@@ -139,7 +139,7 @@ namespace wpfuidemo.ViewModels
                     }
                 }
 
-                // Filter by Status
+                // 按状态过滤
                 if (match && SearchValues.ContainsKey("Status") && SearchValues["Status"] is string status && !string.IsNullOrWhiteSpace(status))
                 {
                     if (!string.Equals(item.Status, status, StringComparison.OrdinalIgnoreCase))
@@ -148,7 +148,7 @@ namespace wpfuidemo.ViewModels
                     }
                 }
 
-                // Filter by Date Range
+                // 按日期范围过滤
                 if (match)
                 {
                     if (SearchValues.ContainsKey("StartDate") && SearchValues["StartDate"] is DateTime startDate)
@@ -167,7 +167,7 @@ namespace wpfuidemo.ViewModels
                 }
             }
 
-            // 3. Apply Pagination
+            // 3. 应用分页
             TotalCount = filteredData.Count;
             var pagedData = new List<DemoEntity>();
             int skip = (PageIndex - 1) * PageSize;
@@ -183,7 +183,7 @@ namespace wpfuidemo.ViewModels
         {
             var list = new List<DemoEntity>();
             var statuses = new[] { "Active", "Inactive", "Pending" };
-            var random = new Random(42); // Fixed seed for consistent results
+            var random = new Random(42); // 固定种子以获得一致的结果
 
             for (int i = 1; i <= 100; i++)
             {

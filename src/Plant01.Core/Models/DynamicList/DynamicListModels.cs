@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 
-namespace Plant01.WpfUI.Models.DynamicList
+namespace Plant01.Core.Models.DynamicList
 {
     public enum SearchControlType
     {

@@ -1,4 +1,4 @@
-using Plant01.WpfUI.Models.DynamicList;
+using Plant01.Core.Models.DynamicList;
 
 using System.Collections;
 using System.Windows;
@@ -180,7 +180,7 @@ public class DynamicEntityList : Control
         _emptyState.Visibility = hasData ? Visibility.Collapsed : Visibility.Visible;
         _dataGrid.Visibility = hasData ? Visibility.Visible : Visibility.Collapsed;
 
-        // Pagination visibility logic
+        // 分页可见性逻辑
         if (_pagination != null)
         {
             _pagination.Visibility = (TotalCount > PageSize) ? Visibility.Visible : Visibility.Collapsed;
@@ -206,7 +206,7 @@ public class DynamicEntityList : Control
 
     private FrameworkElement CreateSearchControl(SearchFieldConfig field)
     {
-        // Helper to create binding
+        // 创建绑定的辅助方法
         Binding CreateBinding(string path)
         {
             var binding = new Binding(path)
@@ -215,9 +215,9 @@ public class DynamicEntityList : Control
                 Mode = BindingMode.TwoWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
-            // If SearchContext is a Dictionary or Dynamic, we might need indexer binding
-            // Assuming SearchContext is a ViewModel object with properties matching 'Key'
-            // If it's a Dictionary, path should be [Key]
+            // 如果 SearchContext 是字典或动态对象，我们可能需要索引器绑定
+            // 假设 SearchContext 是 ViewModel 对象，其属性与 'Key' 匹配
+            // 如果是字典，路径应该是 [Key]
             if (SearchContext is IDictionary)
             {
                 binding.Path = new PropertyPath($"[{path}]");
@@ -304,7 +304,7 @@ public class DynamicEntityList : Control
                 }
             }
 
-            // Width handling
+            // 宽度处理
             if (colConfig.Width.HasValue)
             {
                 column.Width = new DataGridLength(colConfig.Width.Value, DataGridLengthUnitType.Pixel);
@@ -314,7 +314,7 @@ public class DynamicEntityList : Control
                 column.Width = colConfig.WidthType.ToLower() switch
                 {
                     "auto" => DataGridLength.Auto,
-                    "pixel" => DataGridLength.SizeToCells, // Fallback
+                    "pixel" => DataGridLength.SizeToCells, // 后备
                     _ => new DataGridLength(1, DataGridLengthUnitType.Star)
                 };
             }
@@ -322,7 +322,7 @@ public class DynamicEntityList : Control
             _dataGrid.Columns.Add(column);
         }
 
-        // Row Actions Column
+        // 行操作列
         if (Configuration.RowActions.Count > 0)
         {
             var actionColumn = new DataGridTemplateColumn
@@ -338,29 +338,28 @@ public class DynamicEntityList : Control
             foreach (var action in Configuration.RowActions)
             {
                 var btnFactory = new FrameworkElementFactory(typeof(AntButton));
-                btnFactory.SetValue(AntButton.TypeProperty, ButtonType.Link); // Use Link style for table actions
+                btnFactory.SetValue(AntButton.TypeProperty, ButtonType.Link); // 表格操作使用链接样式
                 btnFactory.SetValue(AntButton.ContentProperty, action.Label);
                 btnFactory.SetValue(AntButton.CommandProperty, action.Command);
-                btnFactory.SetBinding(AntButton.CommandParameterProperty, new Binding(".")); // Bind to Row Item
+                btnFactory.SetBinding(AntButton.CommandParameterProperty, new Binding(".")); // 绑定到行项目
                 btnFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(4, 0, 4, 0));
 
-                // Handle DisplayMode (Icon/Text)
+                // 处理显示模式 (图标/文本)
                 if (action.DisplayMode == RowActionDisplayMode.Icon && action.Icon != null)
                 {
-                    // If Icon is string (font key), use TextBlock with font family
-                    // For now, just set Content to Icon if it's a string
+                    // 如果图标是字符串 (字体键)，使用带有字体系列的 TextBlock
+                    // 目前，如果是字符串，只需将 Content 设置为 Icon
                     btnFactory.SetValue(AntButton.ContentProperty, action.Icon);
-                    // You might need a specific style for Icon buttons
+                    // 您可能需要为图标按钮指定特定样式
                 }
                 else if (action.DisplayMode == RowActionDisplayMode.Both && action.Icon != null)
                 {
-                    // Complex content with Icon + Text
-                    // For simplicity in Factory, maybe just append text
-                    // Or use AntButton's Icon property if it exists (it does usually)
-                    // Let's assume AntButton has Icon property or similar mechanism
-                    // Checking AntButton.cs... it has Icon property? 
-                    // The file read didn't show Icon property in first 50 lines.
-                    // Let's assume we just set Content for now.
+                    // 带有图标 + 文本的复杂内容
+                    // 为了简化工厂，也许只需追加文本
+                    // 或者使用 AntButton 的 Icon 属性 (如果存在) (通常存在)
+                    // 检查 AntButton.cs... 它有 Icon 属性吗？
+                    // 读取的文件在前 50 行中未显示 Icon 属性。
+                    // 让我们假设我们现在只设置 Content。
                 }
 
                 if (!string.IsNullOrEmpty(action.ToolTip))

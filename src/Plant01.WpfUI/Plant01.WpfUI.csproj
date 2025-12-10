@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Models\DynamicList\" />
     <Folder Include="Styels\" />
   </ItemGroup>
 
@@ -15,6 +16,10 @@
     <Resource Include="Assets\Fonts\iconfont.ttf" />
     <Resource Include="Assets\Images\Copyright.png" />
     <Resource Include="Assets\Images\TitleBackgournd.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Plant01.Core\Plant01.Core.csproj" />
   </ItemGroup>
 
 </Project>
