@@ -1,6 +1,7 @@
 using AutoMapper;
 
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Application.Contracts.Api.Requests;
 using Plant01.Upper.Application.Contracts.Api.Responses;
@@ -19,13 +20,20 @@ public class MesCommandService : IMesCommandService
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IMapper _mapper;
     private readonly IWorkOrderRepository _workOrderRepository;
+    private readonly ILogger<MesCommandService> _logger;
 
-    public MesCommandService(IMesWebApi mesWebApi, IServiceScopeFactory scopeFactory, IMapper mapper, IWorkOrderRepository workOrderRepository)
+    public MesCommandService(
+        IMesWebApi mesWebApi, 
+        IServiceScopeFactory scopeFactory, 
+        IMapper mapper, 
+        IWorkOrderRepository workOrderRepository,
+        ILogger<MesCommandService> logger)
     {
         _mesWebApi = mesWebApi;
         _scopeFactory = scopeFactory;
         _mapper = mapper;
         _workOrderRepository = workOrderRepository;
+        _logger = logger;
 
         _mesWebApi.OnWorkOrderReceived += HandleWorkOrderReceived;
     }
@@ -50,7 +58,8 @@ public class MesCommandService : IMesCommandService
             using var scope = _scopeFactory.CreateScope();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var workOrderRepo = unitOfWork.Repository<WorkOrder>();
-            var existing = await workOrderRepo.GetByIdAsync(dto.Code);
+            
+            var existing = (await workOrderRepo.GetAllAsync(w => w.Code == dto.Code)).FirstOrDefault();
 
             var workOrder = existing ?? new WorkOrder();
 
@@ -94,6 +103,7 @@ public class MesCommandService : IMesCommandService
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error handling work order received: {Message}", ex.Message);
             return new WorkOrderResponse { ErrorCode = 500, ErrorMsg = ex.Message };
         }
     }

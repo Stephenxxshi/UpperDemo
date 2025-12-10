@@ -23,14 +23,24 @@ public static class Bootstrapper
 {
     public static IHostBuilder CreateHostBuilder(string[] args)
     {
+        var upperEnvironment = Environment.GetEnvironmentVariable("Upper");
         // Build intermediate config to read LoggingProvider
         var config = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{upperEnvironment}.json", optional: false, reloadOnChange: true)
             .Build();
 
-        var loggingProvider = config["LoggingProvider"];
         var builder = Host.CreateDefaultBuilder(args);
+
+        builder.ConfigureAppConfiguration((hostingContext, configBuilder) =>
+        {
+            if (!string.IsNullOrEmpty(upperEnvironment))
+            {
+                configBuilder.AddJsonFile($"appsettings.{upperEnvironment}.json", optional: true, reloadOnChange: true);
+            }
+        });
+        var loggingProvider = config["LoggingProvider"];
 
         // Configure Serilog if selected
         if (string.Equals(loggingProvider, "Serilog", StringComparison.OrdinalIgnoreCase))
