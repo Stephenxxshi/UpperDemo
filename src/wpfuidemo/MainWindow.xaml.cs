@@ -149,6 +149,9 @@ namespace wpfuidemo
                 case "DataGrid":
                     MainContent.Content = new DataGridPage();
                     break;
+                case "DynamicList":
+                    MainContent.Content = new DynamicListDemoPage();
+                    break;
                 case "Empty":
                     MainContent.Content = new EmptyPage();
                     break;

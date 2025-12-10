@@ -1,90 +1,202 @@
 ﻿using AutoMapper;
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 
 using Microsoft.Extensions.Logging;
 
-using Plant01.Core.Data;
 using Plant01.Upper.Application.Contracts.DTOs;
-using Plant01.Upper.Application.Contracts.IntegrationEvents;
+using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Domain.Repository;
+using Plant01.Upper.Domain.ValueObjects;
+using Plant01.Upper.Presentation.Core.Models.DynamicList;
 using Plant01.Upper.Presentation.Core.Services;
 
 using System.Collections.ObjectModel;
 
 namespace Plant01.Upper.Presentation.Core.ViewModels;
 
-public class WorkOrderFilter
+
+public partial class WorkOrderListViewModel : ObservableObject
 {
-    public string? Category { get; set; }
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-}
-
-public partial class WorkOrderListViewModel : EntityListViewModelBase<WorkOrderDto, WorkOrderFilter>
-{
-    private List<WorkOrderDto> _allProducts;
-    private int _selectedCount;
-
-    public int SelectedCount
-    {
-        get => _selectedCount;
-        set => SetProperty(ref _selectedCount, value);
-    }
-
-    public RelayCommand RefreshCommand { get; }
-    public RelayCommand BatchDeleteCommand { get; }
-
     private readonly ILogger<WorkOrderListViewModel> _logger;
+    private readonly IDialogService _dialogService;
     private readonly IWorkOrderRepository _workOrderRepository;
     private readonly IMapper _mapper;
-    public ObservableCollection<WorkOrderDto> WorkOrders { get; set; } = new();
 
-    public WorkOrderListViewModel(IDialogService dialogService, IMapper mapper, ILogger<WorkOrderListViewModel> logger, IWorkOrderRepository workOrderRepository) : base(dialogService)
+    [ObservableProperty]
+    private ListConfiguration _listConfig;
+
+    [ObservableProperty]
+    private Dictionary<string, object> _searchValues = new();
+
+    [ObservableProperty]
+    private ObservableCollection<WorkOrderDto> _workOrders = new();
+
+    [ObservableProperty]
+    private int _totalCount;
+
+    [ObservableProperty]
+    private int _pageIndex = 1;
+
+    [ObservableProperty]
+    private int _pageSize = 10;
+
+    public WorkOrderListViewModel(ILogger<WorkOrderListViewModel> logger, IDialogService dialogService, IWorkOrderRepository workOrderRepository, IMapper mapper)
     {
         _logger = logger;
+        _dialogService = dialogService;
         _workOrderRepository = workOrderRepository;
         _mapper = mapper;
-        _allProducts = new List<WorkOrderDto>();
 
-        // 异步加载数据，避免阻塞 UI 线程导致死锁或异常
-        _ = LoadDataAsync();
+        _listConfig = new ListConfiguration(); // Initialize to avoid warning
+        InitializeConfig();
+        LoadData();
+    }
 
-        WeakReferenceMessenger.Default.Register<WorkOrderReceivedEvent>(this, (r, m) =>
+    private void InitializeConfig()
+    {
+        ListConfig = new ListConfiguration
         {
-            _logger.LogTrace("Received WorkOrderReceivedEvent in WorkOrderListViewModel.");
-            // 在这里处理收到的工单消息
-            WorkOrders.Add(m.WorkOrder);
+            SearchFields = new List<SearchFieldConfig>
+                {
+                    new SearchFieldConfig { Key = "Code", Label = "订单号", Type = SearchControlType.Text },
+                    new SearchFieldConfig { Key = "Status", Label = "订单状态", Type = SearchControlType.Select, Options = new[] { WorkOrderStatus.开工.ToString(), WorkOrderStatus.完工.ToString() } },
+                    new SearchFieldConfig { Key = "StartDate", SecondaryKey = "EndDate", Label = "创建时间", Type = SearchControlType.DateRange }
+                },
+            Columns = new List<ColumnConfig>
+                {
+                    new ColumnConfig { Header = "订单号", BindingPath = "Code", Width = 100, WidthType = "Pixel" },
+                    new ColumnConfig { Header = "状态", BindingPath = "Status" },
+                    new ColumnConfig { Header = "创建时间", BindingPath = "OrderDate", StringFormat = "yyyy-MM-dd HH:mm:ss" }
+                },
+            RowActions = new List<RowActionConfig>
+                {
+                    new RowActionConfig { Label = "编辑", Command = EditCommand },
+                    new RowActionConfig { Label = "删除", Command = DeleteCommand }
+                }
+        };
+    }
+
+    [RelayCommand]
+    private void Search()
+    {
+        LoadData();
+    }
+
+    [RelayCommand]
+    private void Reset()
+    {
+        SearchValues.Clear();
+        SearchValues = new Dictionary<string, object>();
+        OnPropertyChanged(nameof(SearchValues));
+        LoadData();
+    }
+
+    [RelayCommand]
+    private void Create()
+    {
+        _dialogService.ShowDialog(this, null, (result) =>
+        {
+            if (result is WorkOrderDto newEntity)
+            {
+                // Handle the newly created entity
+            }
         });
     }
 
-    private async Task LoadDataAsync()
+    [RelayCommand]
+    private void Edit(WorkOrderDto entity)
     {
+        _dialogService.ShowDialog(this, entity, (result) =>
+        {
+            if (result is WorkOrderDto editedEntity)
+            {
+                // Handle the edited entity
+            }
+        });
+    }
+
+    [RelayCommand]
+    private void Delete(WorkOrderDto entity)
+    {
+        _dialogService.ShowDialog(this, entity, (result) =>
+        {
+            if (result is WorkOrderDto deletedEntity)
+            {
+                // Handle the deleted entity
+            }
+        });
+    }
+
+    private async void LoadData()
+    {
+        List<WorkOrder> allData = new();
         try
         {
-            //IsLoading = true;
-            var all = await _workOrderRepository.GetAllAsync();
-            _allProducts = _mapper.Map<List<WorkOrderDto>>(all);
-            
-            // 如果需要将数据绑定到界面，建议也更新 WorkOrders 集合
-            // foreach (var item in _allProducts)
-            // {
-            //     WorkOrders.Add(item);
-            // }
+            // 1. Generate Mock Data (if not already generated or if we want to simulate DB)
+            allData = await _workOrderRepository.GetAllAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to load work orders.");
+            _logger.LogError(ex, "Error loading work orders.");
+            throw;
         }
-        finally
+        // 2. Apply Filters
+        var filteredData = new List<WorkOrderDto>();
+        foreach (var item in allData)
         {
-            IsLoading = false;
+            bool match = true;
+
+            // Filter by Keyword (Name or Code)
+            if (SearchValues.ContainsKey("Keyword") && SearchValues["Keyword"] is string keyword && !string.IsNullOrWhiteSpace(keyword))
+            {
+                if (!item.Code.Contains(keyword, StringComparison.OrdinalIgnoreCase) &&
+                    !item.Code.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                {
+                    match = false;
+                }
+            }
+
+            // Filter by Status
+            if (match && SearchValues.ContainsKey("Status") && SearchValues["Status"] is string status && !string.IsNullOrWhiteSpace(status))
+            {
+                if (!string.Equals(item.Status.ToString(), status, StringComparison.OrdinalIgnoreCase))
+                {
+                    match = false;
+                }
+            }
+
+            // Filter by Date Range
+            if (match)
+            {
+                if (SearchValues.ContainsKey("StartDate") && SearchValues["StartDate"] is DateTime startDate)
+                {
+                    if (item.OrderDate < DateOnly.FromDateTime(startDate)) match = false;
+                }
+                if (match && SearchValues.ContainsKey("EndDate") && SearchValues["EndDate"] is DateTime endDate)
+                {
+                    if (item.OrderDate > DateOnly.FromDateTime(endDate)) match = false;
+                }
+            }
+
+            if (match)
+            {
+                filteredData.Add(_mapper.Map<WorkOrderDto>(item));
+            }
         }
+
+        // 3. Apply Pagination
+        TotalCount = filteredData.Count;
+        var pagedData = new List<WorkOrderDto>();
+        int skip = (PageIndex - 1) * PageSize;
+        for (int i = skip; i < skip + PageSize && i < filteredData.Count; i++)
+        {
+            pagedData.Add(filteredData[i]);
+        }
+
+        WorkOrders = new ObservableCollection<WorkOrderDto>(pagedData);
     }
 
-    protected override Task<PagedResult<WorkOrderDto>> GetPagedDataAsync(PageRequest request)
-    {
-        throw new NotImplementedException();
-    }
+
 }

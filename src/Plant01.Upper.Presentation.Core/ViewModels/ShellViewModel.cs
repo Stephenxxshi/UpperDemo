@@ -45,6 +45,14 @@ public partial class ShellViewModel : ObservableObject
         },
         new NavigateItem
         {
+            Description = "工单记录",
+            IconChar = "&#xe624;",
+            IconPlacement = "Top",
+            Title = "工单记录",
+            ViewModelType = typeof(WorkOrderListViewModel)
+        },
+        new NavigateItem
+        {
             Title = "MES调试",
             Description = "MES Interface Debug Tool",
             IconChar = "&#xe7c6;",
@@ -59,14 +67,6 @@ public partial class ShellViewModel : ObservableObject
             Title = "设置",
             ViewModelType = typeof(SettingsViewModel)
         },
-        new NavigateItem
-        {
-            Description = "工单记录",
-            IconChar = "&#xe624;",
-            IconPlacement = "Top",
-            Title = "工单记录",
-            ViewModelType = typeof(WorkOrderListViewModel)
-        }
     };
 
     [ObservableProperty]

@@ -79,6 +79,7 @@
                     Header="Data Display"
                     Icon="📊"
                     IsExpanded="True">
+                    <controls:AntMenuItem Header="Dynamic List 动态列表" Tag="DynamicList" />
                     <controls:AntMenuItem Header="DataGrid 表格" Tag="DataGrid" />
                     <controls:AntMenuItem Header="Empty 空状态" Tag="Empty" />
                     <controls:AntMenuItem Header="Timeline 时间轴" Tag="Timeline" />
@@ -104,6 +105,12 @@
                     Icon="📋"
                     IsExpanded="True">
                     <controls:AntMenuItem Header="Generic List 通用列表" Tag="ProductList" />
+                </controls:AntMenuItem>
+                <controls:AntMenuItem
+                    Header="Business"
+                    Icon="💼"
+                    IsExpanded="True">
+                    <controls:AntMenuItem Header="Dynamic List" Tag="DynamicList" />
                 </controls:AntMenuItem>
             </controls:AntMenu>
         </Border>

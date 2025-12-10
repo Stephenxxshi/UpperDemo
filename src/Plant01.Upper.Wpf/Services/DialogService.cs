@@ -19,10 +19,8 @@ public class DialogService : IDialogService
         return Task.FromResult(result == MessageBoxResult.Yes);
     }
 
-    public Task<TResult> ShowModalAsync<TViewModel, TResult>(TViewModel viewModel, string title = "")
+    public void ShowDialog<TViewModel>(TViewModel viewModel, object parameter, Action<object> callback, string title = "")
     {
-        var tcs = new TaskCompletionSource<TResult>();
-
         System.Windows.Application.Current.Dispatcher.Invoke(() =>
         {
             var modal = new AntModal
@@ -30,23 +28,62 @@ public class DialogService : IDialogService
                 Title = title,
                 Content = viewModel,
                 Owner = System.Windows.Application.Current.MainWindow,
-                // Auto-size or default size
                 SizeToContent = SizeToContent.WidthAndHeight
             };
 
-            bool? result = modal.ShowDialog();
+            object dialogResultData = null;
 
-            if (typeof(TResult) == typeof(bool))
+            if (viewModel is IDialogAware dialogAware)
             {
-                tcs.SetResult((TResult)(object)(result ?? false));
+                dialogAware.OnDialogOpened(parameter);
+
+                Action<object> closeHandler = null;
+                closeHandler = (result) =>
+                {
+                    dialogResultData = result;
+                    dialogAware.RequestClose -= closeHandler;
+                    // Setting DialogResult closes the window if it's a Window
+                    try
+                    {
+                        modal.DialogResult = true;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // Dialog might be already closing or not opened as dialog
+                        modal.Close();
+                    }
+                };
+
+                dialogAware.RequestClose += closeHandler;
+                
+                // Handle window closing to unsubscribe if not closed via RequestClose
+                modal.Closed += (s, e) => 
+                {
+                    dialogAware.RequestClose -= closeHandler;
+                };
+            }
+
+            modal.ShowDialog();
+
+            callback?.Invoke(dialogResultData);
+        });
+    }
+
+    public Task<TResult> ShowDialogAsync<TViewModel, TResult>(TViewModel viewModel, object parameter, string title = "")
+    {
+        var tcs = new TaskCompletionSource<TResult>();
+
+        ShowDialog(viewModel, parameter, (result) =>
+        {
+            if (result is TResult tResult)
+            {
+                tcs.SetResult(tResult);
             }
             else
             {
-                // For other types, we might need a more specific mechanism.
-                // For now, return default.
                 tcs.SetResult(default!);
             }
-        });
+        }, title);
 
         return tcs.Task;
     }

@@ -58,7 +58,13 @@ public class DemoDialogService : IDialogService
         return Task.FromResult(result == MessageBoxResult.Yes);
     }
 
-    public Task<TResult> ShowModalAsync<TViewModel, TResult>(TViewModel viewModel, string title = "")
+    public void ShowDialog<TViewModel>(TViewModel viewModel, object parameter, Action<object> callback, string title = "")
+    {
+        MessageBox.Show($"Mock Modal for {title}");
+        callback?.Invoke(null);
+    }
+
+    public Task<TResult> ShowDialogAsync<TViewModel, TResult>(TViewModel viewModel, object parameter, string title = "")
     {
         MessageBox.Show($"Mock Modal for {title}");
         return Task.FromResult(default(TResult)!);

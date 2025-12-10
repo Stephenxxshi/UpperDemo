@@ -6,11 +6,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Plant01.Upper.Presentation.Core.ViewModels;assembly=Plant01.Upper.Presentation.Core"
     xmlns:wpfui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+    xmlns:converters="clr-namespace:Plant01.Upper.Wpf.Converters"
     d:DataContext="{d:DesignInstance vm:MesDebugViewModel}"
     d:DesignHeight="800"
     d:DesignWidth="1200"
     Background="White"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:IntToStringConverter x:Key="IntToStringConverter" />
+    </UserControl.Resources>
     <wpfui:TransitioningContentControl RunTransitionOnLoaded="True">
 
         <Grid Margin="10">
@@ -157,7 +161,7 @@
                                     Grid.Row="1"
                                     Grid.Column="3"
                                     Margin="0,0,0,5"
-                                    Text="{Binding JobId, UpdateSourceTrigger=PropertyChanged}" />
+                                    Text="{Binding JobId, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IntToStringConverter}}" />
 
                                 <TextBlock
                                     Grid.Row="2"

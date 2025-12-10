@@ -30,7 +30,7 @@ public partial class MesDebugViewModel : ObservableObject
 
     // MesService (生成接口) 参数
     [ObservableProperty]
-    private string _agvDeviceCode = "AGV001";
+    private string _agvDeviceCode = "AGV1";
 
     [ObservableProperty]
     private string _palletId = "P00001";

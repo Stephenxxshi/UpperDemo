@@ -5,6 +5,7 @@ using Plant01.Upper.Application.Contracts.Api.Responses;
 using Plant01.Upper.Application.Interfaces;
 
 using System.Text;
+using System.Text.Json;
 
 namespace Plant01.Upper.Application.Services;
 
@@ -94,17 +95,24 @@ public class MesWebApi : IMesWebApi
 
     private async Task<IResult> HandleCreateWorkOrder(HttpContext context, [FromBody] WorkOrderRequestDto request)
     {
+        // 打印收到的原始 JSON 结构
+        var jsonString = JsonSerializer.Serialize(request, new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
+        _logger.LogTrace("收到工单推送请求，原始JSON:\n{Json}", jsonString);
         _logger.LogInformation("收到工单推送请求: {Code}", request.Code);
 
         // Basic Auth 验证
-        if (!string.IsNullOrEmpty(_expectedUsername) && !string.IsNullOrEmpty(_expectedPassword))
-        {
-            if (!ValidateBasicAuth(context.Request.Headers["Authorization"]))
-            {
-                _logger.LogWarning("工单推送认证失败");
-                return Results.Unauthorized();
-            }
-        }
+        //if (!string.IsNullOrEmpty(_expectedUsername) && !string.IsNullOrEmpty(_expectedPassword))
+        //{
+        //    if (!ValidateBasicAuth(context.Request.Headers["Authorization"]))
+        //    {
+        //        _logger.LogWarning("工单推送认证失败");
+        //        return Results.Unauthorized();
+        //    }
+        //}
 
         if (OnWorkOrderReceived != null)
         {
