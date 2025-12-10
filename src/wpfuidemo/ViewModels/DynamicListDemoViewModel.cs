@@ -58,7 +58,7 @@ namespace wpfuidemo.ViewModels
                 },
                 Columns = new List<ColumnConfig>
                 {
-                    new ColumnConfig { Header = "编码", BindingPath = "Code", Width = 100, WidthType = "Pixel" },
+                    new ColumnConfig { Header = "编码", BindingPath = "Code", Width = 100, WidthType = ColumnWidthType.Pixel },
                     new ColumnConfig { Header = "名称", BindingPath = "Name" },
                     new ColumnConfig { Header = "状态", BindingPath = "Status" },
                     new ColumnConfig { Header = "创建时间", BindingPath = "CreatedTime", StringFormat = "yyyy-MM-dd HH:mm:ss" }

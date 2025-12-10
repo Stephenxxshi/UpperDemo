@@ -1,10 +1,12 @@
 using Plant01.Core.Models.DynamicList;
 
+using System;
 using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Plant01.WpfUI.Controls;
 
@@ -311,10 +313,10 @@ public class DynamicEntityList : Control
             }
             else
             {
-                column.Width = colConfig.WidthType.ToLower() switch
+                column.Width = colConfig.WidthType switch
                 {
-                    "auto" => DataGridLength.Auto,
-                    "pixel" => DataGridLength.SizeToCells, // 后备
+                    ColumnWidthType.Auto => DataGridLength.Auto,
+                    ColumnWidthType.Pixel => DataGridLength.SizeToCells, // 后备
                     _ => new DataGridLength(1, DataGridLengthUnitType.Star)
                 };
             }
@@ -345,21 +347,19 @@ public class DynamicEntityList : Control
                 btnFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(4, 0, 4, 0));
 
                 // 处理显示模式 (图标/文本)
-                if (action.DisplayMode == RowActionDisplayMode.Icon && action.Icon != null)
+                if (action.Icon != null)
                 {
-                    // 如果图标是字符串 (字体键)，使用带有字体系列的 TextBlock
-                    // 目前，如果是字符串，只需将 Content 设置为 Icon
-                    btnFactory.SetValue(AntButton.ContentProperty, action.Icon);
-                    // 您可能需要为图标按钮指定特定样式
-                }
-                else if (action.DisplayMode == RowActionDisplayMode.Both && action.Icon != null)
-                {
-                    // 带有图标 + 文本的复杂内容
-                    // 为了简化工厂，也许只需追加文本
-                    // 或者使用 AntButton 的 Icon 属性 (如果存在) (通常存在)
-                    // 检查 AntButton.cs... 它有 Icon 属性吗？
-                    // 读取的文件在前 50 行中未显示 Icon 属性。
-                    // 让我们假设我们现在只设置 Content。
+                    if (action.DisplayMode == RowActionDisplayMode.Icon)
+                    {
+                        btnFactory.SetValue(AntButton.IconProperty, action.Icon.ToString());
+                        btnFactory.SetValue(AntButton.IconFontFamilyProperty, new FontFamily(new Uri("pack://application:,,,/Plant01.WpfUI;component/Assets/Fonts/"), "./#iconfont"));
+                        btnFactory.SetValue(AntButton.ContentProperty, null);
+                    }
+                    else if (action.DisplayMode == RowActionDisplayMode.Both)
+                    {
+                        btnFactory.SetValue(AntButton.IconProperty, action.Icon.ToString());
+                        btnFactory.SetValue(AntButton.IconFontFamilyProperty, new FontFamily(new Uri("pack://application:,,,/Plant01.WpfUI;component/Assets/Fonts/"), "./#iconfont"));
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(action.ToolTip))

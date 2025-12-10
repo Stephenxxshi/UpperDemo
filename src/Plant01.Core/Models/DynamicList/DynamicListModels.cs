@@ -18,6 +18,13 @@ namespace Plant01.Core.Models.DynamicList
         Both
     }
 
+    public enum ColumnWidthType
+    {
+        Star,
+        Auto,
+        Pixel
+    }
+
     public class SearchFieldConfig
     {
         public string Key { get; set; } = string.Empty;
@@ -43,7 +50,7 @@ namespace Plant01.Core.Models.DynamicList
         /// <summary>
         /// "Auto", "Star" (default if Width is null), "Pixel"
         /// </summary>
-        public string WidthType { get; set; } = "Star";
+        public ColumnWidthType WidthType { get; set; } = ColumnWidthType.Star;
         
         public string? ConverterName { get; set; }
         public object? ConverterParameter { get; set; }
@@ -61,7 +68,7 @@ namespace Plant01.Core.Models.DynamicList
     }
 
     public class ListConfiguration
-    {
+    {   
         public List<SearchFieldConfig> SearchFields { get; set; } = new();
         public List<ColumnConfig> Columns { get; set; } = new();
         public List<RowActionConfig> RowActions { get; set; } = new();

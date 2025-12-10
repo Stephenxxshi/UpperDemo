@@ -67,22 +67,23 @@ public partial class WorkOrderListViewModel : ObservableObject
                 },
             Columns = new List<ColumnConfig>
                 {
-                    new ColumnConfig { Header = "工单号", BindingPath = "Code", Width = 200, WidthType = "Pixel" },
-                    new ColumnConfig { Header = "产线编号", BindingPath = "LineNo", Width = 100, WidthType = "Pixel" },
-                    new ColumnConfig { Header = "产品编号", BindingPath = "ProductCode", Width = 100, WidthType = "Pixel" },
-                    new ColumnConfig { Header = "产品名称", BindingPath = "ProductName", Width = 100, WidthType = "Pixel" },
-                    new ColumnConfig { Header = "产品规格", BindingPath = "ProductSpec", Width = 100, WidthType = "Pixel" },
-                    new ColumnConfig { Header = "计划数量", BindingPath = "Quantity", Width = 100, WidthType = "Pixel" },
-                    new ColumnConfig { Header = "单位", BindingPath = "Unit", Width = 100, WidthType = "Pixel" },
-                    new ColumnConfig { Header = "批号", BindingPath = "BatchNumber", Width = 100, WidthType = "Pixel" },
+                new ColumnConfig { Header = "工单号", BindingPath = "Code", Width = 200 },
+                    new ColumnConfig { Header = "产线编号", BindingPath = "LineNo", Width = 100 },
+                    new ColumnConfig { Header = "产品编号", BindingPath = "ProductCode", Width = 100 },
+                    new ColumnConfig { Header = "产品名称", BindingPath = "ProductName", Width = 100 },
+                    new ColumnConfig { Header = "产品规格", BindingPath = "ProductSpec", Width = 100 },
+                    new ColumnConfig { Header = "计划数量", BindingPath = "Quantity", Width = 100 },
+                    new ColumnConfig { Header = "单位", BindingPath = "Unit", Width = 100 },
+                    new ColumnConfig { Header = "批号", BindingPath = "BatchNumber", Width = 100 },
                     new ColumnConfig { Header = "工单状态", BindingPath = "Status", Width=100 },
                     new ColumnConfig { Header = "创建日期", BindingPath = "OrderDate", Width=150, StringFormat = "yyyy-MM-dd HH:mm:ss" },
                     new ColumnConfig { Header = "产品编号", BindingPath = "ProductCode", Width=150 }
-                },
+
+            },
             RowActions = new List<RowActionConfig>
                 {
-                    new RowActionConfig { Label = "编辑", Command = EditCommand },
-                    new RowActionConfig { Label = "删除", Command = DeleteCommand }
+                    new RowActionConfig { Label = "编辑",ToolTip="编辑", Command = EditCommand, Icon = "&#xe737;", DisplayMode= RowActionDisplayMode.Icon },
+                    new RowActionConfig { Label = "删除",ToolTip="删除", Command = DeleteCommand,Icon = "&#xe612;", DisplayMode= RowActionDisplayMode.Icon    }
                 }
         };
     }
