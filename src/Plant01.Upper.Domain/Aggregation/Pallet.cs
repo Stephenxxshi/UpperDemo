@@ -1,11 +1,12 @@
 using Plant01.Upper.Domain.Entities;
+using Plant01.Upper.Domain.ValueObjects;
 
 namespace Plant01.Upper.Domain.Aggregation;
 
 /// <summary>
 /// 托盘聚合根
 /// </summary>
-public class Pallet
+public class Pallet : CommonFields
 {
     /// <summary>
     /// 托盘码 (唯一标识)
