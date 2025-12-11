@@ -28,7 +28,7 @@ public static class Bootstrapper
         var config = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{upperEnvironment}.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{upperEnvironment}.json", optional: true, reloadOnChange: true)
             .Build();
 
         var builder = Host.CreateDefaultBuilder(args);

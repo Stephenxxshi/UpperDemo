@@ -48,10 +48,13 @@
                                     Orientation="Horizontal">
                                     <controls:AntButton
                                         Margin="8,0,0,0"
+                                        HorizontalContentAlignment="Center"
                                         Command="{TemplateBinding SearchCommand}"
-                                        Content="查询" />
+                                        Content="查询"
+                                        Type="Primary" />
                                     <controls:AntButton
                                         Margin="8,0,0,0"
+                                        HorizontalContentAlignment="Center"
                                         Command="{TemplateBinding ResetCommand}"
                                         Content="重置" />
 
@@ -87,7 +90,7 @@
                             x:Name="PART_Pagination"
                             Grid.Row="2"
                             Margin="0,16,0,0"
-                            HorizontalAlignment="Right"
+                            HorizontalAlignment="Center"
                             Current="{Binding PageIndex, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                             PageSize="{Binding PageSize, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                             ShowSizeChanger="True"

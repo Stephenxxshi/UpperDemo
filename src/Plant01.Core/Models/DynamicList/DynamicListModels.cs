@@ -43,15 +43,16 @@ namespace Plant01.Core.Models.DynamicList
         public string BindingPath { get; set; } = string.Empty;
         
         /// <summary>
-        /// Pixel width. If null, uses WidthType.
+        /// ���ؿ��ȡ����Ϊ null����ʹ�� WidthType��
         /// </summary>
         public double? Width { get; set; }
         
         /// <summary>
-        /// "Auto", "Star" (default if Width is null), "Pixel"
+        /// "Auto"��"Star"����� Width Ϊ null ʱ��Ĭ��ֵ����"Pixel"
         /// </summary>
         public ColumnWidthType WidthType { get; set; } = ColumnWidthType.Star;
         
+        public object? Converter { get; set; }
         public string? ConverterName { get; set; }
         public object? ConverterParameter { get; set; }
         public string? StringFormat { get; set; }
@@ -65,6 +66,15 @@ namespace Plant01.Core.Models.DynamicList
         public ICommand? Command { get; set; }
         public RowActionDisplayMode DisplayMode { get; set; } = RowActionDisplayMode.Text;
         public string? ToolTip { get; set; }
+        /// <summary>
+        /// DesignTokenKeys 中的属性名称，例如 "ErrorColor", "WarningColor"
+        /// </summary>
+        public string? ColorToken { get; set; }
+
+        /// <summary>
+        /// 使用枚举强类型指定颜色 Token
+        /// </summary>
+        public DesignTokenType? ColorTokenType { get; set; }
     }
 
     public class ListConfiguration

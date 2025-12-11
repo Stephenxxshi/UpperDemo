@@ -80,7 +80,7 @@
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                     Margin="{TemplateBinding Padding}">
                             
-                            <StackPanel x:Name="IconPanel" Orientation="Horizontal" DockPanel.Dock="Left" Margin="0,0,8,0">
+                            <StackPanel x:Name="IconPanel" Orientation="Horizontal" DockPanel.Dock="Left">
                                 <!-- Loading Icon -->
                                 <Path x:Name="LoadingIcon"
                                       Style="{StaticResource AntDesign.LoadingSpinner}"
@@ -97,7 +97,9 @@
                                            Text="{TemplateBinding Icon}"
                                            FontFamily="{TemplateBinding IconFontFamily}"
                                            FontSize="{TemplateBinding IconFontSize, Converter={x:Static converters:NanToUnsetValueConverter.Instance}}"
+                                           Foreground="{TemplateBinding Foreground}"
                                            Width="{TemplateBinding IconWidth}"
+                                           Margin="0,0,8,0"
                                            Height="{TemplateBinding IconHeight}"
                                            Visibility="{TemplateBinding Icon, Converter={x:Static converters:StringVisibilityConverter.Instance}}"
                                            VerticalAlignment="Center"
@@ -144,7 +146,8 @@
                         <!-- Icon Placement Triggers -->
                         <Trigger Property="IconPlacement" Value="Right">
                             <Setter TargetName="IconPanel" Property="DockPanel.Dock" Value="Right"/>
-                            <Setter TargetName="IconPanel" Property="Margin" Value="8,0,0,0"/>
+                            <Setter TargetName="IconText" Property="Margin" Value="8,0,0,0"/>
+                            <Setter TargetName="LoadingIcon" Property="Margin" Value="8,0,0,0"/>
                         </Trigger>
                         <Trigger Property="IconPlacement" Value="Top">
                             <Setter TargetName="IconPanel" Property="DockPanel.Dock" Value="Top"/>

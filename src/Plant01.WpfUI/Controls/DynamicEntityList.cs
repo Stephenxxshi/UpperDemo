@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using Plant01.WpfUI.Themes;
 
 namespace Plant01.WpfUI.Controls;
 
@@ -43,7 +44,12 @@ public class DynamicEntityList : Control
     }
 
     public static readonly DependencyProperty SearchContextProperty =
-        DependencyProperty.Register(nameof(SearchContext), typeof(object), typeof(DynamicEntityList), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(SearchContext), typeof(object), typeof(DynamicEntityList), new PropertyMetadata(null, OnSearchContextChanged));
+
+    private static void OnSearchContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        ((DynamicEntityList)d).RefreshView();
+    }
 
     public object? SearchContext
     {
@@ -211,18 +217,21 @@ public class DynamicEntityList : Control
         // 创建绑定的辅助方法
         Binding CreateBinding(string path)
         {
-            var binding = new Binding(path)
-            {
-                Source = SearchContext,
-                Mode = BindingMode.TwoWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            };
+            var binding = new Binding();
+            binding.Source = this; // 使用控件自身作为源，这样当 SearchContext 变化时绑定会自动更新
+            binding.Mode = BindingMode.TwoWay;
+            binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+
             // 如果 SearchContext 是字典或动态对象，我们可能需要索引器绑定
             // 假设 SearchContext 是 ViewModel 对象，其属性与 'Key' 匹配
-            // 如果是字典，路径应该是 [Key]
+            // 如果是字典，路径应该是 SearchContext[Key]
             if (SearchContext is IDictionary)
             {
-                binding.Path = new PropertyPath($"[{path}]");
+                binding.Path = new PropertyPath($"SearchContext[{path}]");
+            }
+            else
+            {
+                binding.Path = new PropertyPath($"SearchContext.{path}");
             }
             return binding;
         }
@@ -292,12 +301,23 @@ public class DynamicEntityList : Control
                 Binding = new Binding(colConfig.BindingPath)
             };
 
+            // 设置单元格内容居中
+            var elementStyle = new Style(typeof(TextBlock));
+            elementStyle.Setters.Add(new Setter(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center));
+            elementStyle.Setters.Add(new Setter(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center));
+            column.ElementStyle = elementStyle;
+
             if (!string.IsNullOrEmpty(colConfig.StringFormat))
             {
                 column.Binding.StringFormat = colConfig.StringFormat;
             }
 
-            if (!string.IsNullOrEmpty(colConfig.ConverterName))
+            if (colConfig.Converter is IValueConverter directConverter)
+            {
+                (column.Binding as Binding).Converter = directConverter;
+                (column.Binding as Binding).ConverterParameter = colConfig.ConverterParameter;
+            }
+            else if (!string.IsNullOrEmpty(colConfig.ConverterName))
             {
                 if (TryFindResource(colConfig.ConverterName) is IValueConverter converter)
                 {
@@ -307,7 +327,13 @@ public class DynamicEntityList : Control
             }
 
             // 宽度处理
-            if (colConfig.Width.HasValue)
+            if (colConfig.WidthType == ColumnWidthType.Star)
+            {
+                 // 如果是 Star 类型，Width 值作为权重，默认为 1
+                 double starValue = colConfig.Width ?? 1.0;
+                 column.Width = new DataGridLength(starValue, DataGridLengthUnitType.Star);
+            }
+            else if (colConfig.Width.HasValue)
             {
                 column.Width = new DataGridLength(colConfig.Width.Value, DataGridLengthUnitType.Pixel);
             }
@@ -341,6 +367,37 @@ public class DynamicEntityList : Control
             {
                 var btnFactory = new FrameworkElementFactory(typeof(AntButton));
                 btnFactory.SetValue(AntButton.TypeProperty, ButtonType.Link); // 表格操作使用链接样式
+                
+                // 动态设置颜色
+                ComponentResourceKey? colorKey = null;
+
+                // 优先使用枚举
+                if (action.ColorTokenType.HasValue)
+                {
+                    var prop = typeof(DesignTokenKeys).GetProperty(action.ColorTokenType.Value.ToString(), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                    if (prop != null)
+                    {
+                        colorKey = prop.GetValue(null) as ComponentResourceKey;
+                    }
+                }
+                // 其次使用字符串
+                else if (!string.IsNullOrEmpty(action.ColorToken))
+                {
+                    var prop = typeof(DesignTokenKeys).GetProperty(action.ColorToken, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                    if (prop != null)
+                    {
+                        colorKey = prop.GetValue(null) as ComponentResourceKey;
+                    }
+                }
+                
+                // 默认为 PrimaryColor
+                if (colorKey == null)
+                {
+                    colorKey = DesignTokenKeys.PrimaryColor;
+                }
+                
+                btnFactory.SetResourceReference(Control.ForegroundProperty, colorKey);
+                
                 btnFactory.SetValue(AntButton.ContentProperty, action.Label);
                 btnFactory.SetValue(AntButton.CommandProperty, action.Command);
                 btnFactory.SetBinding(AntButton.CommandParameterProperty, new Binding(".")); // 绑定到行项目

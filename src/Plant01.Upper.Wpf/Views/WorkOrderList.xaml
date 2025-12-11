@@ -22,14 +22,15 @@
             ResetCommand="{Binding ResetCommand}"
             SearchCommand="{Binding SearchCommand}"
             SearchContext="{Binding SearchValues}"
+            ShowCreateButton="False"
             TotalCount="{Binding TotalCount}"
             PageIndex="{Binding PageIndex, Mode=TwoWay}">
-            <controls:DynamicEntityList.ExtraFilterContent>
+            <!--<controls:DynamicEntityList.ExtraFilterContent>
                 <controls:AntButton
                     Margin="8,0,0,0"
                     Command="{Binding RefreshCommand}"
                     Content="刷新" />
-            </controls:DynamicEntityList.ExtraFilterContent>
+            </controls:DynamicEntityList.ExtraFilterContent>-->
         </controls:DynamicEntityList>
     </controls:TransitioningContentControl>
 </UserControl>

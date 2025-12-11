@@ -22,10 +22,7 @@
   <ItemGroup>
     <Folder Include="Contracts\Commands\" />
     <Folder Include="Contracts\IntegrationEvents\" />
-    <Folder Include="Contracts\Api\" />
     <Folder Include="Contracts\Queries\" />
-    <Folder Include="Contracts\Api\Responses\" />
-    <Folder Include="Contracts\Api\Requests\" />
     <Folder Include="EventHandlers\" />
     <Folder Include="Mappings\" />
     <Folder Include="Behaviors\" />

@@ -1,15 +1,17 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
+
 using Microsoft.Extensions.Configuration;
-using Plant01.Upper.Application.Interfaces;
+using Microsoft.Extensions.Logging;
+
 using Plant01.Domain.Shared.Interfaces;
+using Plant01.Upper.Application.Contracts.Api.Requests;
+using Plant01.Upper.Application.Contracts.Api.Responses;
+using Plant01.Upper.Application.Interfaces;
+
 using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 using System.Text;
-using Plant01.Upper.Application.Contracts.DTOs;
-using Plant01.Upper.Application.Contracts.Api.Requests;
-using Plant01.Upper.Application.Contracts.Api.Responses;
 
 namespace Plant01.Upper.Presentation.Core.ViewModels;
 
@@ -24,9 +26,7 @@ public partial class MesDebugViewModel : ObservableObject
     private readonly ILogger<MesDebugViewModel> _logger;
     private readonly SynchronizationContext? _uiContext;
 
-    #region Observable Properties
-
-
+    #region 依赖属性
 
     // MesService (生成接口) 参数
     [ObservableProperty]
@@ -36,10 +36,10 @@ public partial class MesDebugViewModel : ObservableObject
     private string _palletId = "P00001";
 
     [ObservableProperty]
-    private string _deviceCode = "Palletizing";
+    private string _deviceCode = "PMJ1";
 
     [ObservableProperty]
-    private int _jobId = 10000;
+    private string _jobId = "MO010604:1";
 
     [ObservableProperty]
     private int _palletType = 1;
@@ -68,22 +68,22 @@ public partial class MesDebugViewModel : ObservableObject
 
     // MesWebApi (工单接口) 参数
     [ObservableProperty]
-    private string _workOrderCode = "WO20240101001";
+    private string _workOrderCode = "MO010604:1";
 
     [ObservableProperty]
     private DateTime _orderDate = DateTime.Today;
 
     [ObservableProperty]
-    private string _lineNo = "LINE001";
+    private string _lineNo = "ZL004";
 
     [ObservableProperty]
-    private string _productCode = "P001";
+    private string _productCode = "020101780";
 
     [ObservableProperty]
-    private string _productName = "产品A";
+    private string _productName = "SM103";
 
     [ObservableProperty]
-    private string _productSpec = "规格型号A";
+    private string _productSpec = "000001";
 
     [ObservableProperty]
     private decimal _workOrderQuantity = 1000;
@@ -92,7 +92,7 @@ public partial class MesDebugViewModel : ObservableObject
     private string _unit = "kg";
 
     [ObservableProperty]
-    private string _batchNumber = "BATCH001";
+    private string _batchNumber = "C253572A";
 
     [ObservableProperty]
     private string _labelTemplateCode = "LABEL001";
@@ -122,7 +122,7 @@ public partial class MesDebugViewModel : ObservableObject
 
     #endregion
 
-    #region Constructor
+    #region 构造函数
 
     // 构造函数中添加配置注入
     public MesDebugViewModel(
@@ -137,27 +137,27 @@ public partial class MesDebugViewModel : ObservableObject
         _httpService = httpService;
         _logger = logger;
         _uiContext = SynchronizationContext.Current;
-        
+
         // 订阅工单接收事件 - 这是关键！
         _mesWebApi.OnWorkOrderReceived += OnWorkOrderReceivedHandler;
-        
+
         // 从配置读取
         var baseUrl = configuration["MesWorkOrder:BaseUrl"] ?? "http://localhost:5000";
         var username = configuration["MesWorkOrder:Username"] ?? "admin";
         var password = configuration["MesWorkOrder:Password"] ?? "123456";
-        
+
         // 设置默认值
         Username = username;
         Password = password;
         BaseUrl = baseUrl;
-        
+
         // 同步服务状态
         IsServerRunning = _mesWebApi.IsRunning;
     }
 
     #endregion
 
-    #region Event Handlers
+    #region 事件处理器
 
     private Task<WorkOrderResponse> OnWorkOrderReceivedHandler(WorkOrderRequestDto request)
     {
@@ -175,7 +175,7 @@ public partial class MesDebugViewModel : ObservableObject
 
     #endregion
 
-    #region Command Methods
+    #region 命令方法
 
     [RelayCommand]
     private async Task StartServerAsync()
@@ -184,22 +184,22 @@ public partial class MesDebugViewModel : ObservableObject
         {
             StatusMessage = "正在启动 Web API 服务...";
             AddLog("========== 启动 Web API 服务 ==========");
-            
+
             // 检查端口是否已被占用
             if (await IsPortInUseAsync(5000))
             {
                 AddLog("⚠️ 警告：端口 5000 已被占用");
                 AddLog("   尝试查找占用进程：使用命令 netstat -ano | findstr :5000");
             }
-            
+
             await _mesWebApi.StartAsync();
-            
+
             // 等待服务完全启动
             await Task.Delay(1000);
-            
+
             // 验证服务是否真正可用
             bool isActuallyRunning = await VerifyServerHealthAsync();
-            
+
             if (isActuallyRunning)
             {
                 IsServerRunning = true;
@@ -221,7 +221,7 @@ public partial class MesDebugViewModel : ObservableObject
                 AddLog("   3. 之前的调试会话未完全停止");
                 AddLog("   建议：重启 Visual Studio 或终止占用端口的进程");
             }
-            
+
             AddLog("=====================================");
             AddLog("");
         }
@@ -408,7 +408,7 @@ public partial class MesDebugViewModel : ObservableObject
             AddLog("❌ 错误：Web API 服务未启动，请先点击 启动服务器 按钮");
             return;
         }
-        
+
         try
         {
             StatusMessage = "正在模拟工单推送...";
@@ -445,9 +445,9 @@ public partial class MesDebugViewModel : ObservableObject
             };
 
             AddLog($"📤 发送请求...");
-            
+
             var response = await _httpService.PostJsonAsync<object, WorkOrderResponse>(
-                $"{BaseUrl}/api/work_order/create", 
+                $"{BaseUrl}/api/work_order/create",
                 request);
 
             if (response != null && response.ErrorCode == 0)
@@ -471,7 +471,7 @@ public partial class MesDebugViewModel : ObservableObject
             {
                 AddLog($"   根本原因: {ex.InnerException.Message}");
             }
-            
+
             // 诊断常见问题
             if (ex.Message.Contains("502") || ex.Message.Contains("Bad Gateway"))
             {
@@ -521,7 +521,7 @@ public partial class MesDebugViewModel : ObservableObject
 
     #endregion
 
-    #region Helper Methods
+    #region 辅助方法
 
     private void AddLog(string message)
     {
