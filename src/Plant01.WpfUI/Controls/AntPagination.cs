@@ -50,7 +50,8 @@ namespace Plant01.WpfUI.Controls
 
         private void AntPagination_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdatePagingSource();
+            // 使用 Dispatcher 确保在绑定完成后更新，解决某些场景下（如Tab切换）数据未及时同步导致的分页消失问题
+            Dispatcher.BeginInvoke(new Action(UpdatePagingSource), System.Windows.Threading.DispatcherPriority.DataBind);
         }
 
         #region Dependency Properties

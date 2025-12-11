@@ -153,11 +153,13 @@
                             <Setter TargetName="IconPanel" Property="DockPanel.Dock" Value="Top"/>
                             <Setter TargetName="IconPanel" Property="Margin" Value="0,0,0,8"/>
                             <Setter TargetName="IconPanel" Property="HorizontalAlignment" Value="Center"/>
+                            <Setter TargetName="IconText" Property="Margin" Value="0"/>
                         </Trigger>
                         <Trigger Property="IconPlacement" Value="Bottom">
                             <Setter TargetName="IconPanel" Property="DockPanel.Dock" Value="Bottom"/>
                             <Setter TargetName="IconPanel" Property="Margin" Value="0,8,0,0"/>
                             <Setter TargetName="IconPanel" Property="HorizontalAlignment" Value="Center"/>
+                            <Setter TargetName="IconText" Property="Margin" Value="0"/>
                         </Trigger>
 
                         <!-- Loading State -->

@@ -29,7 +29,6 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <ContentPresenter Grid.Column="0" 
-                                                  Grid.ColumnSpan="2"
                                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>

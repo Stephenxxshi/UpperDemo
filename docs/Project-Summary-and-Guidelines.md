@@ -28,6 +28,7 @@
 | **Plant01.Upper.Wpf** | **应用程序入口**。包含 `App.xaml`，主要负责启动宿主环境，几乎不包含业务逻辑。 |
 | **Plant01.Upper.Wpf.Core** | **WPF 具体实现层**。实现了 `Presentation.Core` 中定义的抽象接口，负责 WPF 特有的视图逻辑。 |
 | **Plant01.WpfUI** | **核心 UI 控件库**。基于 Ant Design 5.x 风格开发。包含自定义控件、样式、模板。**核心要求：使用 `ThemeManager` 和 `DesignTokenKeys` 管理样式。** |
+| **Plant01.WpfUI.ViewModel** | **业务 UI 组件库**。包含依赖于 `Plant01.Core` 或特定 ViewModel 逻辑的复杂 UI 控件（如 `DynamicEntityList`）。此项目将纯粹的 UI 样式库 (`Plant01.WpfUI`) 与业务逻辑解耦。 |
 | **Plant01.Upper.Presentation.Core** | **UI 抽象层**。包含 ViewModels、UI 接口定义。不依赖具体 UI 框架（如 WPF），以便未来适配 Avalonia, MAUI, Blazor 等。 |
 | **Plant01.Upper.Presentation.Bootstrapper** | **聚合根 / 组合根**。负责应用程序启动时的服务注册（DI 容器配置）。独立存在是为了让不同的 UI 实现层（如 WPF, MAUI）复用相同的业务服务注册逻辑。 |
 

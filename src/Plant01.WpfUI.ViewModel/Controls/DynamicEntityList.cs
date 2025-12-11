@@ -68,7 +68,12 @@ public class DynamicEntityList : Control
     }
 
     public static readonly DependencyProperty TotalCountProperty =
-        DependencyProperty.Register(nameof(TotalCount), typeof(int), typeof(DynamicEntityList), new PropertyMetadata(0));
+        DependencyProperty.Register(nameof(TotalCount), typeof(int), typeof(DynamicEntityList), new PropertyMetadata(0, OnTotalCountChanged));
+
+    private static void OnTotalCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        ((DynamicEntityList)d).UpdateEmptyState();
+    }
 
     public int TotalCount
     {
@@ -158,18 +163,68 @@ public class DynamicEntityList : Control
         _pagination = GetTemplateChild(PaginationPartName) as AntPagination;
         _emptyState = GetTemplateChild(EmptyStatePartName) as AntEmpty;
 
+        if (_dataGrid != null)
+        {
+            _dataGrid.VerticalAlignment = VerticalAlignment.Top;
+        }
+
+        this.SizeChanged += DynamicEntityList_SizeChanged;
+
         RefreshView();
     }
 
-    private static void OnConfigurationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private void DynamicEntityList_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        ((DynamicEntityList)d).RefreshView();
+        UpdateDataGridMaxHeight();
+    }
+
+    private void UpdateDataGridMaxHeight()
+    {
+        if (_dataGrid == null) return;
+
+        double availableHeight = this.ActualHeight;
+
+        if (_searchPanel != null)
+        {
+            // 查找 SearchPanel 的容器（Border）
+            // 在 Template 中，SearchPanel 在一个 Border 中，Border 在 Row 0
+            // 我们向上查找 Border
+            var parent = VisualTreeHelper.GetParent(_searchPanel) as FrameworkElement;
+            while (parent != null && !(parent is Border))
+            {
+                parent = VisualTreeHelper.GetParent(parent) as FrameworkElement;
+            }
+
+            if (parent != null)
+            {
+                availableHeight -= parent.ActualHeight;
+                availableHeight -= parent.Margin.Top + parent.Margin.Bottom;
+            }
+        }
+        
+        if (_pagination != null)
+        {
+            availableHeight -= _pagination.ActualHeight;
+            availableHeight -= _pagination.Margin.Top + _pagination.Margin.Bottom;
+        }
+
+        // 减去一些 Padding/Margin
+        availableHeight -= this.Padding.Top + this.Padding.Bottom;
+
+        if (availableHeight < 0) availableHeight = 0;
+
+        _dataGrid.MaxHeight = availableHeight;
     }
 
     private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var control = (DynamicEntityList)d;
         control.UpdateEmptyState();
+    }
+
+    private static void OnConfigurationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        ((DynamicEntityList)d).RefreshView();
     }
 
     private void RefreshView()
@@ -207,20 +262,6 @@ public class DynamicEntityList : Control
             FrameworkElement control = CreateSearchControl(field);
             if (control != null)
             {
-                if (Configuration.ShowSearchLabel)
-                {
-                    var panel = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
-                    var label = new TextBlock 
-                    { 
-                        Text = field.Label, 
-                        VerticalAlignment = VerticalAlignment.Center, 
-                        Margin = new Thickness(0, 0, 4, 0) 
-                    };
-                    panel.Children.Add(label);
-                    panel.Children.Add(control);
-                    control = panel;
-                }
-
                 control.Margin = new Thickness(0, 0, 8, 0);
                 _searchPanel.Children.Add(control);
             }
@@ -229,6 +270,7 @@ public class DynamicEntityList : Control
 
     private FrameworkElement CreateSearchControl(SearchFieldConfig field)
     {
+        FrameworkElement control;
         // 创建绑定的辅助方法
         Binding CreateBinding(string path)
         {
@@ -260,7 +302,8 @@ public class DynamicEntityList : Control
                     Width = 150
                 };
                 textBox.SetBinding(AntInput.TextProperty, CreateBinding(field.Key));
-                return textBox;
+                control = textBox;
+                break;
 
             case SearchControlType.Select:
                 var comboBox = new AntSelect
@@ -272,7 +315,8 @@ public class DynamicEntityList : Control
                     SelectedValuePath = field.SelectedValuePath
                 };
                 comboBox.SetBinding(AntSelect.SelectedValueProperty, CreateBinding(field.Key));
-                return comboBox;
+                control = comboBox;
+                break;
 
             case SearchControlType.Date:
                 var datePicker = new AntDatePicker
@@ -281,7 +325,8 @@ public class DynamicEntityList : Control
                     Width = 150
                 };
                 datePicker.SetBinding(AntDatePicker.SelectedDateProperty, CreateBinding(field.Key));
-                return datePicker;
+                control = datePicker;
+                break;
 
             case SearchControlType.DateRange:
                 var dateRange = new AntDateRangePicker
@@ -293,11 +338,28 @@ public class DynamicEntityList : Control
                 {
                     dateRange.SetBinding(AntDateRangePicker.SelectedDateEndProperty, CreateBinding(field.SecondaryKey));
                 }
-                return dateRange;
+                control = dateRange;
+                break;
 
             default:
-                return new TextBlock { Text = $"Unknown Type: {field.Type}" };
+                control = new TextBlock { Text = $"Unknown Type: {field.Type}" };
+                break;
         }
+
+        if (field.ShowLabel)
+        {
+            var panel = new StackPanel { Orientation = Orientation.Horizontal };
+            panel.Children.Add(new TextBlock 
+            { 
+                Text = field.Label + "：", 
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 0, 4, 0)
+            });
+            panel.Children.Add(control);
+            return panel;
+        }
+
+        return control;
     }
 
     private void GenerateColumns()
@@ -305,7 +367,10 @@ public class DynamicEntityList : Control
         if (_dataGrid == null || Configuration == null) return;
 
         _dataGrid.Columns.Clear();
-        _dataGrid.FrozenColumnCount = Configuration.FrozenColumnCount;
+        _dataGrid.FrozenColumnCount = 0;
+
+        var columns = new List<DataGridColumn>();
+        int frozenCount = 0;
 
         foreach (var colConfig in Configuration.Columns)
         {
@@ -364,7 +429,12 @@ public class DynamicEntityList : Control
                 };
             }
 
-            _dataGrid.Columns.Add(column);
+            columns.Add(column);
+
+            if (colConfig.IsFrozen)
+            {
+                frozenCount++;
+            }
         }
 
         // 行操作列
@@ -379,8 +449,6 @@ public class DynamicEntityList : Control
             var cellTemplate = new DataTemplate();
             var panelFactory = new FrameworkElementFactory(typeof(StackPanel));
             panelFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
-            // 添加右侧边距，防止内容紧贴边缘导致视觉上被截断
-            panelFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 4, 0));
 
             foreach (var action in Configuration.RowActions)
             {
@@ -464,7 +532,40 @@ public class DynamicEntityList : Control
 
             cellTemplate.VisualTree = panelFactory;
             actionColumn.CellTemplate = cellTemplate;
-            _dataGrid.Columns.Add(actionColumn);
+
+            if (Configuration.IsActionColumnFrozen)
+            {
+                columns.Insert(0, actionColumn);
+                frozenCount++;
+            }
+            else
+            {
+                columns.Add(actionColumn);
+            }
         }
+
+        // 添加所有列
+        foreach (var col in columns)
+        {
+            _dataGrid.Columns.Add(col);
+        }
+
+        // 应用全局冻结列设置
+        if (Configuration.FrozenColumnCount > 0)
+        {
+            // 确保不小于已有的冻结列数（例如通过 IsFrozen 单独设置的）
+            if (Configuration.FrozenColumnCount > frozenCount)
+            {
+                frozenCount = Configuration.FrozenColumnCount;
+            }
+        }
+
+        // 安全检查
+        if (frozenCount > _dataGrid.Columns.Count)
+        {
+            frozenCount = _dataGrid.Columns.Count;
+        }
+
+        _dataGrid.FrozenColumnCount = frozenCount;
     }
 }

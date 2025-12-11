@@ -6,9 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Plant01.Upper.Infrastructure.Repository;
 using Plant01.Upper.Presentation.Core.Models;
 
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace Plant01.Upper.Presentation.Core.ViewModels;
 
@@ -31,7 +29,7 @@ public partial class ShellViewModel : ObservableObject
         new NavigateItem{
             Title = "仪表盘",
             Description = "Overview of the system",
-            IconChar = "&#xe62b;", 
+            IconChar = "&#xe62b;",
             IconPlacement = "Top",
             ViewModelType = typeof(DashboardViewModel)
         },

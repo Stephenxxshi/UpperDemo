@@ -16,7 +16,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <!--  Search & Toolbar  -->
-                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                             <!--  Content  -->
                             <RowDefinition Height="Auto" />
                             <!--  Pagination  -->
@@ -92,10 +92,10 @@
                             Grid.Row="2"
                             Margin="0,16,0,0"
                             HorizontalAlignment="Center"
-                                    Current="{Binding PageIndex, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                    PageSize="{Binding PageSize, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                    ShowSizeChanger="True"
-                                    Total="{Binding TotalCount, RelativeSource={RelativeSource TemplatedParent}}" />
+                            Current="{Binding PageIndex, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                            PageSize="{Binding PageSize, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                            ShowSizeChanger="True"
+                            Total="{Binding TotalCount, RelativeSource={RelativeSource TemplatedParent}}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

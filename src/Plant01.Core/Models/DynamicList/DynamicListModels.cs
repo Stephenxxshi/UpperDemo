@@ -35,6 +35,7 @@ namespace Plant01.Core.Models.DynamicList
         public string? SelectedValuePath { get; set; }
         public string? SecondaryKey { get; set; }
         public object? DefaultValue { get; set; }
+        public bool ShowLabel { get; set; } = false;
     }
 
     public class ColumnConfig
@@ -43,12 +44,12 @@ namespace Plant01.Core.Models.DynamicList
         public string BindingPath { get; set; } = string.Empty;
         
         /// <summary>
-        /// 像素宽度。如果为 null，则使用 WidthType。
+        /// ���ؿ��ȡ����Ϊ null����ʹ�� WidthType��
         /// </summary>
         public double? Width { get; set; }
         
         /// <summary>
-        /// "Auto"、"Star"（如果 Width 为 null 时的默认值）、"Pixel"
+        /// "Auto"��"Star"����� Width Ϊ null ʱ��Ĭ��ֵ����"Pixel"
         /// </summary>
         public ColumnWidthType WidthType { get; set; } = ColumnWidthType.Pixel;
         
@@ -58,6 +59,7 @@ namespace Plant01.Core.Models.DynamicList
         public string? StringFormat { get; set; }
         public bool IsVisible { get; set; } = true;
         public bool IsSortable { get; set; } = true;
+        public bool IsFrozen { get; set; } = false;
     }
 
     public class RowActionConfig
@@ -84,7 +86,11 @@ namespace Plant01.Core.Models.DynamicList
         public List<ColumnConfig> Columns { get; set; } = new();
         public List<RowActionConfig> RowActions { get; set; } = new();
         public string ActionItemMargin { get; set; } = "4,0,4,0";
+        public bool IsActionColumnFrozen { get; set; } = false;
+        
+        /// <summary>
+        /// 冻结左侧列的数量
+        /// </summary>
         public int FrozenColumnCount { get; set; } = 0;
-        public bool ShowSearchLabel { get; set; } = false;
     }
 }
