@@ -50,18 +50,25 @@ namespace wpfuidemo.ViewModels
         {
             ListConfig = new ListConfiguration
             {
+                FrozenColumnCount = 1, // 演示冻结前1列
+                IsActionColumnFrozen = true, // 演示冻结操作列
+                ActionItemMargin = "8,0,8,0", // 演示自定义操作列间距
                 SearchFields = new List<SearchFieldConfig>
                 {
-                    new SearchFieldConfig { Key = "Keyword", Label = "名称/编码", Type = SearchControlType.Text },
-                    new SearchFieldConfig { Key = "Status", Label = "状态", Type = SearchControlType.Select, Options = new[] { "Active", "Inactive", "Pending" } },
-                    new SearchFieldConfig { Key = "StartDate", SecondaryKey = "EndDate", Label = "创建时间", Type = SearchControlType.DateRange }
+                    new SearchFieldConfig { Key = "Keyword", Label = "名称/编码", Type = SearchControlType.Text, ShowLabel = true }, // 演示显示标签
+                    new SearchFieldConfig { Key = "Status", Label = "状态", Type = SearchControlType.Select, Options = new[] { "Active", "Inactive", "Pending" }, ShowLabel = true },
+                    new SearchFieldConfig { Key = "StartDate", SecondaryKey = "EndDate", Label = "创建时间", Type = SearchControlType.DateRange, ShowLabel = true }
                 },
                 Columns = new List<ColumnConfig>
                 {
-                    new ColumnConfig { Header = "编码", BindingPath = "Code", Width = 100, WidthType = ColumnWidthType.Pixel },
-                    new ColumnConfig { Header = "名称", BindingPath = "Name" },
-                    new ColumnConfig { Header = "状态", BindingPath = "Status" },
-                    new ColumnConfig { Header = "创建时间", BindingPath = "CreatedTime", StringFormat = "yyyy-MM-dd HH:mm:ss" }
+                    new ColumnConfig { Header = "编码", BindingPath = "Code", Width = 120, WidthType = ColumnWidthType.Pixel, IsFrozen = true }, // 演示单独冻结
+                    new ColumnConfig { Header = "名称", BindingPath = "Name", Width = 200, WidthType = ColumnWidthType.Pixel },
+                    new ColumnConfig { Header = "状态", BindingPath = "Status", Width = 100, WidthType = ColumnWidthType.Pixel },
+                    new ColumnConfig { Header = "创建时间", BindingPath = "CreatedTime", StringFormat = "yyyy-MM-dd HH:mm:ss", Width = 180, WidthType = ColumnWidthType.Pixel },
+                    // 添加更多列以触发横向滚动
+                    new ColumnConfig { Header = "备注1", BindingPath = "Name", Width = 150, WidthType = ColumnWidthType.Pixel },
+                    new ColumnConfig { Header = "备注2", BindingPath = "Name", Width = 150, WidthType = ColumnWidthType.Pixel },
+                    new ColumnConfig { Header = "备注3", BindingPath = "Name", Width = 150, WidthType = ColumnWidthType.Pixel },
                 },
                 RowActions = new List<RowActionConfig>
                 {
