@@ -20,7 +20,7 @@ public class MesWebApi : IMesWebApi
     private readonly string? _expectedPassword;
     private WebApplication? _app;
 
-    public event Func<WorkOrderRequestDto, Task<WorkOrderResponse>>? OnWorkOrderReceived;
+    public event Func<WorkOrderRequestDto, Task<WorkOrderResponseDto>>? OnWorkOrderReceived;
     public bool IsRunning => _app != null;
 
     public MesWebApi(
@@ -124,11 +124,11 @@ public class MesWebApi : IMesWebApi
             catch (Exception ex)
             {
                 _logger.LogError(ex, "处理工单推送时发生异常");
-                return Results.Json(new WorkOrderResponse { ErrorCode = 500, ErrorMsg = $"内部错误: {ex.Message}" });
+                return Results.Json(new WorkOrderResponseDto { ErrorCode = 500, ErrorMsg = $"内部错误: {ex.Message}" });
             }
         }
 
-        return Results.Ok(new WorkOrderResponse { ErrorCode = -1, ErrorMsg = "服务未就绪 (No Handler)" });
+        return Results.Ok(new WorkOrderResponseDto { ErrorCode = -1, ErrorMsg = "服务未就绪 (No Handler)" });
     }
 
     private bool ValidateBasicAuth(string? authHeader)

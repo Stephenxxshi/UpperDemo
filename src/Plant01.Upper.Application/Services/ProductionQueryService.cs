@@ -1,5 +1,6 @@
 using AutoMapper;
 
+using Plant01.Upper.Application.Contracts.Api.Requests;
 using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Domain.Aggregation;
@@ -27,10 +28,10 @@ public class ProductionQueryService : IProductionQueryService
         _mapper = mapper;
     }
 
-    public async Task<List<WorkOrderDto>> GetRecentWorkOrdersAsync(int count = 10)
+    public async Task<List<WorkOrderRequestDto>> GetRecentWorkOrdersAsync(int count = 10)
     {
         var entities = await _workOrderRepository.GetPagedAsync(1, count);
-        return _mapper.Map<List<WorkOrderDto>>(entities);
+        return _mapper.Map<List<WorkOrderRequestDto>>(entities);
     }
 
     public async Task<List<BagDto>> GetRecentBagsAsync(int count = 50)

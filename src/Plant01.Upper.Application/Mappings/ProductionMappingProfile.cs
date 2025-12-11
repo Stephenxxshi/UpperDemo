@@ -1,5 +1,6 @@
 using AutoMapper;
 
+using Plant01.Upper.Application.Contracts.Api.Requests;
 using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Domain.Aggregation;
 using Plant01.Upper.Domain.Entities;
@@ -10,7 +11,8 @@ public class ProductionMappingProfile : Profile
 {
     public ProductionMappingProfile()
     {
-        CreateMap<WorkOrder, WorkOrderDto>();
+        CreateMap<WorkOrder, WorkOrderRequestDto>()
+            .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.OrderDate.ToDateTime(TimeOnly.MinValue)));
         
         CreateMap<BagProcessRecord, BagProcessRecordDto>();
         

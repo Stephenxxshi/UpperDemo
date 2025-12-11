@@ -159,7 +159,7 @@ public partial class MesDebugViewModel : ObservableObject
 
     #region 事件处理器
 
-    private Task<WorkOrderResponse> OnWorkOrderReceivedHandler(WorkOrderRequestDto request)
+    private Task<WorkOrderResponseDto> OnWorkOrderReceivedHandler(WorkOrderRequestDto request)
     {
         RunOnUiThread(() =>
         {
@@ -170,7 +170,7 @@ public partial class MesDebugViewModel : ObservableObject
             _logger.LogInformation("收到工单推送: {Code}", request.Code);
         });
 
-        return Task.FromResult(new WorkOrderResponse { ErrorCode = 0, ErrorMsg = "接收成功" });
+        return Task.FromResult(new WorkOrderResponseDto { ErrorCode = 0, ErrorMsg = "接收成功" });
     }
 
     #endregion
@@ -446,7 +446,7 @@ public partial class MesDebugViewModel : ObservableObject
 
             AddLog($"📤 发送请求...");
 
-            var response = await _httpService.PostJsonAsync<object, WorkOrderResponse>(
+            var response = await _httpService.PostJsonAsync<object, WorkOrderResponseDto>(
                 $"{BaseUrl}/api/work_order/create",
                 request);
 

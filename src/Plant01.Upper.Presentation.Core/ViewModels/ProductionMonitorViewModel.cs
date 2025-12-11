@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
+using Plant01.Upper.Application.Contracts.Api.Requests;
 using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Application.Interfaces;
 
@@ -15,13 +16,13 @@ public partial class ProductionMonitorViewModel : ObservableObject
     private ObservableCollection<BagDto> _bags = new();
 
     [ObservableProperty]
-    private ObservableCollection<WorkOrderDto> _workOrders = new();
+    private ObservableCollection<WorkOrderRequestDto> _workOrders = new();
 
     [ObservableProperty]
     private ObservableCollection<PalletDto> _pallets = new();
 
     [ObservableProperty]
-    private WorkOrderDto? _currentWorkOrder;
+    private WorkOrderRequestDto? _currentWorkOrder;
 
     public ProductionMonitorViewModel(IProductionQueryService productionQueryService)
     {
@@ -32,7 +33,7 @@ public partial class ProductionMonitorViewModel : ObservableObject
     {
         // 加载最近的工单
         var orders = await _productionQueryService.GetRecentWorkOrdersAsync(10);
-        WorkOrders = new ObservableCollection<WorkOrderDto>(orders);
+        WorkOrders = new ObservableCollection<WorkOrderRequestDto>(orders);
         
         if (WorkOrders.Any())
         {

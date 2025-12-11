@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 
 using Plant01.Core.Models.DynamicList;
+using Plant01.Upper.Application.Contracts.Api.Requests;
 using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Domain.Repository;
@@ -31,7 +32,7 @@ public partial class WorkOrderListViewModel : ObservableObject
     private Dictionary<string, object> _searchValues = new();
 
     [ObservableProperty]
-    private ObservableCollection<WorkOrderDto> _workOrders = new();
+    private ObservableCollection<WorkOrderRequestDto> _workOrders = new();
 
     [ObservableProperty]
     private int _totalCount;
@@ -126,7 +127,7 @@ public partial class WorkOrderListViewModel : ObservableObject
         _logger.LogInformation("点击创建按钮。");
         _dialogService.ShowDialog(this, null, (result) =>
         {
-            if (result is WorkOrderDto newEntity)
+            if (result is WorkOrderRequestDto newEntity)
             {
                 // 处理新创建的实体
                 _logger.LogInformation("工单创建成功: {Code}", newEntity.Code);
@@ -135,12 +136,12 @@ public partial class WorkOrderListViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Edit(WorkOrderDto entity)
+    private void Edit(WorkOrderRequestDto entity)
     {
         _logger.LogInformation("点击编辑按钮。工单: {Code}", entity.Code);
         _dialogService.ShowDialog(this, entity, (result) =>
         {
-            if (result is WorkOrderDto editedEntity)
+            if (result is WorkOrderRequestDto editedEntity)
             {
                 // 处理编辑后的实体
                 _logger.LogInformation("工单编辑成功: {Code}", editedEntity.Code);
@@ -149,12 +150,12 @@ public partial class WorkOrderListViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Delete(WorkOrderDto entity)
+    private void Delete(WorkOrderRequestDto entity)
     {
         _logger.LogInformation("点击删除按钮。工单: {Code}", entity.Code);
         _dialogService.ShowDialog(this, entity, (result) =>
         {
-            if (result is WorkOrderDto deletedEntity)
+            if (result is WorkOrderRequestDto deletedEntity)
             {
                 // 处理删除后的实体
                 _logger.LogInformation("工单删除成功: {Code}", deletedEntity.Code);
@@ -187,7 +188,7 @@ public partial class WorkOrderListViewModel : ObservableObject
             throw;
         }
         // 2. 应用过滤器
-        var filteredData = new List<WorkOrderDto>();
+        var filteredData = new List<WorkOrderRequestDto>();
         foreach (var item in allData)
         {
             bool match = true;
@@ -226,7 +227,7 @@ public partial class WorkOrderListViewModel : ObservableObject
 
             if (match)
             {
-                filteredData.Add(_mapper.Map<WorkOrderDto>(item));
+                filteredData.Add(_mapper.Map<WorkOrderRequestDto>(item));
             }
         }
 
@@ -240,7 +241,7 @@ public partial class WorkOrderListViewModel : ObservableObject
             .Take(PageSize)
             .ToList();
 
-        WorkOrders = new ObservableCollection<WorkOrderDto>(pagedData);
+        WorkOrders = new ObservableCollection<WorkOrderRequestDto>(pagedData);
         _logger.LogInformation("数据加载完成。总记录数: {TotalCount}", TotalCount);
     }
 

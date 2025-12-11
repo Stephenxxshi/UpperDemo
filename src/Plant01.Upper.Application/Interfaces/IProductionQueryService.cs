@@ -1,3 +1,4 @@
+using Plant01.Upper.Application.Contracts.Api.Requests;
 using Plant01.Upper.Application.Contracts.DTOs;
 
 namespace Plant01.Upper.Application.Interfaces;
@@ -10,7 +11,7 @@ public interface IProductionQueryService
     /// <summary>
     /// 获取最近的工单列表
     /// </summary>
-    Task<List<WorkOrderDto>> GetRecentWorkOrdersAsync(int count = 10);
+    Task<List<WorkOrderRequestDto>> GetRecentWorkOrdersAsync(int count = 10);
 
     /// <summary>
     /// 获取最近的包装袋记录

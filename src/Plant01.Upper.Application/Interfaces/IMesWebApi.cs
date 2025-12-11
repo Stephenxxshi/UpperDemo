@@ -25,7 +25,7 @@ public interface IMesWebApi
     /// <summary>
     /// 收到工单推送事件
     /// </summary>
-    event Func<WorkOrderRequestDto, Task<WorkOrderResponse>>? OnWorkOrderReceived;
+    event Func<WorkOrderRequestDto, Task<WorkOrderResponseDto>>? OnWorkOrderReceived;
 
     /// <summary>
     /// 服务是否正在运行

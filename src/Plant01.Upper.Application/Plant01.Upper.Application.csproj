@@ -23,6 +23,8 @@
     <Folder Include="Contracts\Commands\" />
     <Folder Include="Contracts\IntegrationEvents\" />
     <Folder Include="Contracts\Queries\" />
+    <Folder Include="Contracts\Report\Requests\" />
+    <Folder Include="Contracts\Report\Responses\" />
     <Folder Include="EventHandlers\" />
     <Folder Include="Mappings\" />
     <Folder Include="Behaviors\" />
