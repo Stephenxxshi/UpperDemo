@@ -43,12 +43,12 @@ namespace Plant01.Core.Models.DynamicList
         public string BindingPath { get; set; } = string.Empty;
         
         /// <summary>
-        /// ���ؿ��ȡ����Ϊ null����ʹ�� WidthType��
+        /// 像素宽度。如果为 null，则使用 WidthType。
         /// </summary>
         public double? Width { get; set; }
         
         /// <summary>
-        /// "Auto"��"Star"����� Width Ϊ null ʱ��Ĭ��ֵ����"Pixel"
+        /// "Auto"、"Star"（如果 Width 为 null 时的默认值）、"Pixel"
         /// </summary>
         public ColumnWidthType WidthType { get; set; } = ColumnWidthType.Pixel;
         
@@ -84,5 +84,7 @@ namespace Plant01.Core.Models.DynamicList
         public List<ColumnConfig> Columns { get; set; } = new();
         public List<RowActionConfig> RowActions { get; set; } = new();
         public string ActionItemMargin { get; set; } = "4,0,4,0";
+        public int FrozenColumnCount { get; set; } = 0;
+        public bool ShowSearchLabel { get; set; } = false;
     }
 }

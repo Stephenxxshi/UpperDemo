@@ -47,6 +47,12 @@ namespace Plant01.WpfUI.Controls
         {
             ColumnGroupsSource = new ObservableCollection<ColumnGroupItem>();
             this.LayoutUpdated += AntDataGrid_LayoutUpdated;
+            this.Loaded += AntDataGrid_Loaded;
+        }
+
+        private void AntDataGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            // 可以在此处添加加载时的初始化逻辑
         }
 
         public static readonly DependencyProperty SizeProperty = DependencyProperty.Register(

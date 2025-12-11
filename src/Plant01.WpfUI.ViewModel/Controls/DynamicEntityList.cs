@@ -207,6 +207,20 @@ public class DynamicEntityList : Control
             FrameworkElement control = CreateSearchControl(field);
             if (control != null)
             {
+                if (Configuration.ShowSearchLabel)
+                {
+                    var panel = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
+                    var label = new TextBlock 
+                    { 
+                        Text = field.Label, 
+                        VerticalAlignment = VerticalAlignment.Center, 
+                        Margin = new Thickness(0, 0, 4, 0) 
+                    };
+                    panel.Children.Add(label);
+                    panel.Children.Add(control);
+                    control = panel;
+                }
+
                 control.Margin = new Thickness(0, 0, 8, 0);
                 _searchPanel.Children.Add(control);
             }
@@ -291,6 +305,7 @@ public class DynamicEntityList : Control
         if (_dataGrid == null || Configuration == null) return;
 
         _dataGrid.Columns.Clear();
+        _dataGrid.FrozenColumnCount = Configuration.FrozenColumnCount;
 
         foreach (var colConfig in Configuration.Columns)
         {
@@ -364,6 +379,8 @@ public class DynamicEntityList : Control
             var cellTemplate = new DataTemplate();
             var panelFactory = new FrameworkElementFactory(typeof(StackPanel));
             panelFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+            // 添加右侧边距，防止内容紧贴边缘导致视觉上被截断
+            panelFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 4, 0));
 
             foreach (var action in Configuration.RowActions)
             {
