@@ -1,4 +1,6 @@
 using Plant01.Core.Models.DynamicList;
+using Plant01.WpfUI.Controls;
+using Plant01.WpfUI.Themes;
 
 using System;
 using System.Collections;
@@ -7,9 +9,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using Plant01.WpfUI.Themes;
 
-namespace Plant01.WpfUI.Controls;
+namespace Plant01.WpfUI.ViewModel.Controls;
 
 [TemplatePart(Name = SearchPanelPartName, Type = typeof(Panel))]
 [TemplatePart(Name = DataGridPartName, Type = typeof(AntDataGrid))]
@@ -298,7 +299,8 @@ public class DynamicEntityList : Control
             var column = new DataGridTextColumn
             {
                 Header = colConfig.Header,
-                Binding = new Binding(colConfig.BindingPath)
+                Binding = new Binding(colConfig.BindingPath),
+                CanUserSort = colConfig.IsSortable
             };
 
             // 设置单元格内容居中
@@ -401,7 +403,23 @@ public class DynamicEntityList : Control
                 btnFactory.SetValue(AntButton.ContentProperty, action.Label);
                 btnFactory.SetValue(AntButton.CommandProperty, action.Command);
                 btnFactory.SetBinding(AntButton.CommandParameterProperty, new Binding(".")); // 绑定到行项目
-                btnFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(4, 0, 4, 0));
+                
+                // 解析 Margin
+                Thickness margin = new Thickness(4, 0, 4, 0);
+                if (!string.IsNullOrEmpty(Configuration.ActionItemMargin))
+                {
+                    try
+                    {
+                        var converter = new ThicknessConverter();
+                        var converted = converter.ConvertFromString(Configuration.ActionItemMargin);
+                        if (converted != null)
+                        {
+                            margin = (Thickness)converted;
+                        }
+                    }
+                    catch { /* 忽略解析错误，使用默认值 */ }
+                }
+                btnFactory.SetValue(FrameworkElement.MarginProperty, margin);
 
                 // 处理显示模式 (图标/文本)
                 if (action.Icon != null)

@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Plant01.WpfUI\Plant01.WpfUI.csproj" />
+    <ProjectReference Include="..\Plant01.WpfUI.ViewModel\Plant01.WpfUI.ViewModel.csproj" />
     <ProjectReference Include="..\Plant01.Upper.Presentation.Bootstrapper\Plant01.Upper.Presentation.Bootstrapper.csproj" />
   </ItemGroup>
 

@@ -1,8 +1,9 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:Plant01.WpfUI.Controls"
-    xmlns:themes="clr-namespace:Plant01.WpfUI.Themes">
+    xmlns:controls="clr-namespace:Plant01.WpfUI.ViewModel.Controls"
+    xmlns:ui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+    xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI">
 
     <Style TargetType="{x:Type controls:DynamicEntityList}">
         <Setter Property="Template">
@@ -46,13 +47,13 @@
                                     Grid.Column="1"
                                     VerticalAlignment="Center"
                                     Orientation="Horizontal">
-                                    <controls:AntButton
+                                    <ui:AntButton
                                         Margin="8,0,0,0"
                                         HorizontalContentAlignment="Center"
                                         Command="{TemplateBinding SearchCommand}"
                                         Content="查询"
                                         Type="Primary" />
-                                    <controls:AntButton
+                                    <ui:AntButton
                                         Margin="8,0,0,0"
                                         HorizontalContentAlignment="Center"
                                         Command="{TemplateBinding ResetCommand}"
@@ -60,7 +61,7 @@
 
                                     <ContentPresenter Margin="8,0,0,0" Content="{TemplateBinding ExtraFilterContent}" />
 
-                                    <controls:AntButton
+                                    <ui:AntButton
                                         Margin="16,0,0,0"
                                         Command="{TemplateBinding CreateCommand}"
                                         Content="新建"
@@ -72,13 +73,13 @@
 
                         <!--  Content Area  -->
                         <Grid Grid.Row="1">
-                            <controls:AntDataGrid
+                            <ui:AntDataGrid
                                 x:Name="PART_DataGrid"
                                 AutoGenerateColumns="False"
                                 IsReadOnly="True"
                                 ItemsSource="{TemplateBinding ItemsSource}" />
 
-                            <controls:AntEmpty
+                            <ui:AntEmpty
                                 x:Name="PART_EmptyState"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
@@ -86,7 +87,7 @@
                         </Grid>
 
                         <!--  Pagination  -->
-                        <controls:AntPagination
+                        <ui:AntPagination
                             x:Name="PART_Pagination"
                             Grid.Row="2"
                             Margin="0,16,0,0"

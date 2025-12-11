@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Plant01.Upper.Presentation.Core\Plant01.Upper.Presentation.Core.csproj" />
+    <ProjectReference Include="..\Plant01.Core\Plant01.Core.csproj" />
     <ProjectReference Include="..\Plant01.WpfUI\Plant01.WpfUI.csproj" />
   </ItemGroup>
 

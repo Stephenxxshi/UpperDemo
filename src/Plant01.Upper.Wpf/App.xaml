@@ -14,6 +14,8 @@
                     PrimaryColor="#23333a"
                     ThemeType="Light" />
 
+                <ResourceDictionary Source="pack://application:,,,/Plant01.WpfUI.ViewModel;component/Themes/Generic.xaml" />
+
                 <!--<ResourceDictionary Source="/Plant01.WpfUI;component/Themes/Generic.xaml" />-->
                 <!--<ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />-->

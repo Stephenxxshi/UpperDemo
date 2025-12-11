@@ -50,13 +50,14 @@ namespace Plant01.Core.Models.DynamicList
         /// <summary>
         /// "Auto"��"Star"����� Width Ϊ null ʱ��Ĭ��ֵ����"Pixel"
         /// </summary>
-        public ColumnWidthType WidthType { get; set; } = ColumnWidthType.Star;
+        public ColumnWidthType WidthType { get; set; } = ColumnWidthType.Pixel;
         
         public object? Converter { get; set; }
         public string? ConverterName { get; set; }
         public object? ConverterParameter { get; set; }
         public string? StringFormat { get; set; }
         public bool IsVisible { get; set; } = true;
+        public bool IsSortable { get; set; } = true;
     }
 
     public class RowActionConfig
@@ -82,5 +83,6 @@ namespace Plant01.Core.Models.DynamicList
         public List<SearchFieldConfig> SearchFields { get; set; } = new();
         public List<ColumnConfig> Columns { get; set; } = new();
         public List<RowActionConfig> RowActions { get; set; } = new();
+        public string ActionItemMargin { get; set; } = "4,0,4,0";
     }
 }

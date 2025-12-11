@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+    xmlns:vmcontrols="clr-namespace:Plant01.WpfUI.ViewModel.Controls;assembly=Plant01.WpfUI.ViewModel"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:wpfuidemo.ViewModels"
@@ -15,7 +16,7 @@
         <vm:DynamicListDemoViewModel />
     </UserControl.DataContext>
     <Grid Margin="20">
-        <controls:DynamicEntityList
+        <vmcontrols:DynamicEntityList
             Configuration="{Binding ListConfig}"
             CreateCommand="{Binding CreateCommand}"
             ItemsSource="{Binding Entities}"
@@ -25,12 +26,12 @@
             SearchContext="{Binding SearchValues}"
             TotalCount="{Binding TotalCount}"
             PageIndex="{Binding PageIndex, Mode=TwoWay}">
-            <controls:DynamicEntityList.ExtraFilterContent>
+            <vmcontrols:DynamicEntityList.ExtraFilterContent>
                 <controls:AntButton
                     Margin="8,0,0,0"
                     Command="{Binding ToggleMockDataCommand}"
                     Content="Toggle Data" />
-            </controls:DynamicEntityList.ExtraFilterContent>
-        </controls:DynamicEntityList>
+            </vmcontrols:DynamicEntityList.ExtraFilterContent>
+        </vmcontrols:DynamicEntityList>
     </Grid>
 </UserControl>

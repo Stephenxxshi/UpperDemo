@@ -2,12 +2,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:wpfuidemo"
-             xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI"
+             xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.Wpf.UI"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <themes:AntDesignThemeDictionary/>
+                <ResourceDictionary Source="pack://application:,,,/Plant01.WpfUI.ViewModel;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
