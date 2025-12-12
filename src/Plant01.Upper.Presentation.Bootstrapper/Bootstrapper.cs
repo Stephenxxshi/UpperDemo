@@ -17,6 +17,11 @@ using Plant01.Upper.Domain.Repository;
 using Plant01.Upper.Infrastructure.Repository;
 using Plant01.Upper.Infrastructure.Services;
 using Plant01.Upper.Presentation.Core.ViewModels;
+using Plant01.Upper.Infrastructure.DeviceCommunication;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Engine;
+using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 
 using Serilog;
 
@@ -153,6 +158,34 @@ public static class Bootstrapper
 
         // 注册 MES 调试 ViewModel
         services.AddSingleton<MesDebugViewModel>();
+
+        // 注册设备通信层 (Device Communication Layer)
+        // 1. 注册配置加载器
+        services.AddSingleton<ConfigurationLoader>(sp => 
+        {
+            var logger = sp.GetRequiredService<ILogger<ConfigurationLoader>>();
+            // 假设 Configs 文件夹在运行目录下
+            var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs");
+            return new ConfigurationLoader(configPath, logger);
+        });
+        
+        // 2. 注册热重载服务
+        services.AddSingleton<ConfigHotReloader>(sp => 
+        {
+            var logger = sp.GetRequiredService<ILogger<ConfigHotReloader>>();
+            var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs");
+            return new ConfigHotReloader(configPath, logger);
+        });
+
+        // 3. 注册驱动工厂和引擎
+        services.AddSingleton<DriverFactory>();
+        services.AddSingleton<TagEngine>();
+
+        // 4. 注册主服务 (既是业务接口，又是后台服务)
+        services.AddSingleton<DeviceCommunicationService>();
+        services.AddSingleton<IDeviceCommunicationService>(sp => sp.GetRequiredService<DeviceCommunicationService>());
+        services.AddHostedService<DeviceCommunicationService>(sp => sp.GetRequiredService<DeviceCommunicationService>());
+
 
         // 这里可以继续注册其他通用服务，例如 AutoMapper 等
     }

@@ -7,16 +7,82 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Configs\Channels\PLC01.json" />
+    <None Remove="Configs\Channels\PLC02.json" />
+    <None Remove="Configs\Channels\PLC03.json" />
+    <None Remove="Configs\Devices\01上袋\SDJ01.json" />
+    <None Remove="Configs\Devices\01上袋\SDJ02.json" />
+    <None Remove="Configs\Devices\02包装\BZJ01.json" />
+    <None Remove="Configs\Devices\02包装\BZJ02.json" />
+    <None Remove="Configs\Devices\02包装\BZJ03.json" />
+    <None Remove="Configs\Devices\02包装\BZJ04.json" />
+    <None Remove="Configs\Devices\02包装\BZJ05.json" />
+    <None Remove="Configs\Devices\02包装\BZJ06.json" />
+    <None Remove="Configs\Devices\03其他\CZJ01.json" />
+    <None Remove="Configs\Devices\03其他\MDJ01.json" />
+    <None Remove="Configs\Devices\03其他\PMJ01.json" />
+    <None Remove="Configs\Devices\03其他\PMJ02.json" />
+    <None Remove="Configs\Devices\03其他\TBJ01.json" />
     <None Remove="Configs\tags.csv" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Configs\Channels\PLC01.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Channels\PLC02.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Channels\PLC03.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\01上袋\SDJ01.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\01上袋\SDJ02.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\02包装\BZJ01.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\02包装\BZJ02.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\02包装\BZJ03.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\02包装\BZJ04.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\02包装\BZJ05.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\02包装\BZJ06.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\03其他\CZJ01.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\03其他\MDJ01.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\03其他\PMJ01.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\03其他\PMJ02.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Devices\03其他\TBJ01.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Configs\tags.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <PackageReference Include="HslCommunication" Version="12.5.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
   </ItemGroup>

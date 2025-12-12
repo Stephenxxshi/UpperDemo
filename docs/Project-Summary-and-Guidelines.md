@@ -18,6 +18,7 @@
 ### 核心原则
 - **UI 与逻辑分离**: `Presentation.Core` 定义抽象，`Wpf.Core` 或其他 UI 框架实现具体展现。
 - **依赖注入**: 通过 `Bootstrapper` 统一管理服务注册，实现模块解耦。
+- **独立设备通信**: 采用仿 KEPServer 架构的 **DeviceCommunication** 层。支持多驱动插件、配置热重载、O(1) 高速标签寻址。
 - **双总线机制**:
     - **应用消息总线**: 使用 `WeakReferenceMessenger` (CommunityToolkit.Mvvm) 处理高频硬件信号（PLC/扫码枪）与业务服务的解耦。核心组件为 `TriggerDispatcherService`。
     - **领域事件总线**: 使用 `IDomainEventBus` 处理业务实体状态变更后的副作用（如：托盘满垛 -> 触发 MES 报工）。
@@ -45,7 +46,7 @@
 ### 基础设施层 (Infrastructure Layer)
 | 项目名称 | 职责说明 |
 | :--- | :--- |
-| **Plant01.Upper.Infrastructure** | **基础设施实现**。包含数据仓储实现 (`Repository`)、数据库上下文、**消息调度 (`TriggerDispatcher`)**、**领域事件总线 (`DomainEventBus`)**、**PLC 监控服务**。 |
+| **Plant01.Upper.Infrastructure** | **基础设施实现**。包含数据仓储实现 (`Repository`)、数据库上下文、**消息调度 (`TriggerDispatcher`)**、**领域事件总线 (`DomainEventBus`)**、**设备通信核心 (DeviceCommunication)**。 |
 | **Plant01.Infrastructure.Shared** | **共享基础设施**。包含通用服务实现（如 `HttpService`）、扩展方法。 |
 | **Plant01.Core** | **核心工具库**。包含基础框架代码、通用工具类 (`Utilities`)、扩展方法 (`Extensions`)。 |
 
@@ -80,6 +81,7 @@
 - **服务注册**: `src/Plant01.Upper.Presentation.Bootstrapper/Bootstrapper.cs`
 - **事件注册**: `src/Plant01.Upper.Presentation.Bootstrapper/EventRegistrationService.cs`
 - **触发器调度**: `src/Plant01.Upper.Infrastructure/Services/TriggerDispatcherService.cs`
+- **设备通信服务**: `src/Plant01.Upper.Infrastructure/DeviceCommunication/DeviceCommunicationService.cs`
 - **主题管理**: `src/Plant01.WpfUI/Helpers/ThemeManager.cs`
 - **设计令牌**: `src/Plant01.WpfUI/Themes/DesignTokenKeys.cs`
 - **HTTP 服务**: `src/Plant01.Infrastructure.Shared/Services/HttpService.cs`
