@@ -1,0 +1,14 @@
+﻿{
+  "Code": "TMJ01",
+  "Name": "套膜机",
+  "Enable": false,
+  "Type": "LabelPrinter",
+  "Width": 300,
+  "Height": 350,
+  "Seq": 13,
+  "MonitorTags": [
+    {
+      "Name": "TMJ01.ReadBagCodeEnabled"
+    }
+  ]
+}

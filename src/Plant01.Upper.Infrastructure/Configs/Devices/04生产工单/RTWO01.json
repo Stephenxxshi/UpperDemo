@@ -1,0 +1,25 @@
+﻿{
+    "Code": "RTWO01",
+    "Name": "瑞堂生产工单",
+    "Enable": true,
+    "Type": "RotounWorkOrder",
+    "Width": 1280,
+    "Height": 600,
+    "Properties": [
+        {
+            "Name": "ListenPort",
+            "Value": "9000",
+            "Description": "端口"
+        },
+        {
+            "Name": "Username",
+            "Value": "admin",
+            "Description": "用户名"
+        },
+        {
+            "Name": "Password",
+            "Value": "admin",
+            "Description": "密码"
+        }
+    ]
+}

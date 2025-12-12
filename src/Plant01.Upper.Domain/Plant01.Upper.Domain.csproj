@@ -11,4 +11,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Plant01.Domain.Shared\Plant01.Domain.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

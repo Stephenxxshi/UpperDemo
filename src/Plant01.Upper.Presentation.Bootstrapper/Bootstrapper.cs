@@ -7,12 +7,15 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Hosting;
 
 using Plant01.Infrastructure.Shared.Extensions;
+using Plant01.Domain.Shared.Events;
+using Plant01.Upper.Application.EventHandlers;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Mappings; // 确保引用了 Mapping Profile 所在的命名空间
 using Plant01.Upper.Application.Models.Logging;
 using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Repository;
 using Plant01.Upper.Infrastructure.Repository;
+using Plant01.Upper.Infrastructure.Services;
 using Plant01.Upper.Presentation.Core.ViewModels;
 
 using Serilog;
@@ -92,8 +95,27 @@ public static class Bootstrapper
         // 注册应用服务
         services.AddSingleton<IMesWebApi, MesWebApi>();
         services.AddScoped<IMesService, MesService>();
-        services.AddSingleton<IMesCommandService, MesCommandService>(); // 改为 Singleton
-        services.AddScoped<IPlcFlowService, PlcFlowService>();       // 新增
+        services.AddSingleton<WorkOrderPushCommandHandle, WorkOrderPushCommandHandle>(); // 改为 Singleton
+        
+        // 注册通用触发与监控服务
+        services.AddSingleton<TriggerDispatcherService>();
+        services.AddHostedService<TriggerDispatcherService>(sp => sp.GetRequiredService<TriggerDispatcherService>());
+        services.AddSingleton<ITriggerDispatcher>(sp => sp.GetRequiredService<TriggerDispatcherService>());
+
+        // 注册 PLC 监控服务
+        services.AddHostedService<PlcMonitorService>();
+
+        // 注册领域事件总线
+        services.AddSingleton<IDomainEventBus, DomainEventBus>();
+        
+        // 注册事件处理器
+        services.AddScoped<MesEventHandler>();
+        services.AddHostedService<EventRegistrationService>(); // 注册事件绑定服务
+
+        // 注册生产流程服务 (作为 Singleton 监听消息)
+        services.AddSingleton<ProductionFlowService>();
+        services.AddSingleton<IPlcFlowService>(sp => sp.GetRequiredService<ProductionFlowService>());
+
         services.AddScoped<IProductionQueryService, ProductionQueryService>();
         services.AddScoped<IWorkOrderRepository, WorkOrderRepository>();
 

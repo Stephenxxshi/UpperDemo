@@ -17,6 +17,11 @@ public interface IMesService
     Task<MesApiResponse> FinishPalletizingAsync(FinishPalletizingRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// 简化的码垛完成上报 (适配 Domain Event)
+    /// </summary>
+    Task ReportPalletCompletionAsync(string workOrderCode, string palletCode);
+
+    /// <summary>
     /// 锐派托盘缺少
     /// </summary>
     /// <param name="request">托盘缺少请求</param>

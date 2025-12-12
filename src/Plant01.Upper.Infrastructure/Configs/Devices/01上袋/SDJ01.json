@@ -1,0 +1,15 @@
+﻿{
+    "Code": "SDJ01",
+    "Name": "1#上袋机",
+    "Enable": true,
+    "Type": "RevopacBagPicker",
+    "Width": 252,
+    "Height": 280,
+    "Seq": 1,
+    "ErrorMsgPlcTag": "ErrorMessage",
+    "MonitorTags": [
+        {
+            "Name": "SDJ01.ReadBagPickerCodeEnabled"
+        }
+    ]
+}

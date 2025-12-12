@@ -76,7 +76,7 @@ public partial class App : System.Windows.Application
         try
         {
             // 确保 MesCommandService 被实例化并订阅事件
-            var mesCommandService = Host.Services.GetRequiredService<IMesCommandService>();
+            var mesCommandService = Host.Services.GetRequiredService<IWorkOrderPushCommandHandle>();
             
             var mesWebApi = Host.Services.GetRequiredService<IMesWebApi>();
             var logger = Host.Services.GetService<ILogger<App>>();

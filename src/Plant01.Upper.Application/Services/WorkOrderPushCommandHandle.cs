@@ -12,20 +12,20 @@ using Plant01.Upper.Domain.ValueObjects;
 
 namespace Plant01.Upper.Application.Services;
 
-public class MesCommandService : IMesCommandService
+public class WorkOrderPushCommandHandle : IWorkOrderPushCommandHandle
 {
     private readonly IMesWebApi _mesWebApi;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IMapper _mapper;
     private readonly IWorkOrderRepository _workOrderRepository;
-    private readonly ILogger<MesCommandService> _logger;
+    private readonly ILogger<WorkOrderPushCommandHandle> _logger;
 
-    public MesCommandService(
+    public WorkOrderPushCommandHandle(
         IMesWebApi mesWebApi,
         IServiceScopeFactory scopeFactory,
         IMapper mapper,
         IWorkOrderRepository workOrderRepository,
-        ILogger<MesCommandService> logger)
+        ILogger<WorkOrderPushCommandHandle> logger)
     {
         _mesWebApi = mesWebApi;
         _scopeFactory = scopeFactory;

@@ -1,6 +1,6 @@
 namespace Plant01.Upper.Application.Interfaces;
 
-public interface IMesCommandService
+public interface IWorkOrderPushCommandHandle
 {
     Task StartAsync(CancellationToken cancellationToken = default);
     Task StopAsync(CancellationToken cancellationToken = default);

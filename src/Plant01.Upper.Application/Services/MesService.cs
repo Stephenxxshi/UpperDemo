@@ -171,4 +171,34 @@ public class MesService : IMesService
         var hashBytes = MD5.HashData(inputBytes);
         return Convert.ToHexString(hashBytes).ToLowerInvariant();
     }
+
+    /// <summary>
+    /// 上报托盘完成
+    /// </summary>
+    /// <param name="workOrderCode">工单编码</param>
+    /// <param name="palletCode">托盘编码</param>
+    public async Task ReportPalletCompletionAsync(string workOrderCode, string palletCode)
+    {
+        _logger.LogInformation("Reporting pallet completion for WorkOrder: {WorkOrder}, Pallet: {Pallet}", workOrderCode, palletCode);
+        
+        // 构造请求对象 (实际项目中需要从数据库查询详细信息)
+        var request = new FinishPalletizingRequest
+        {
+            AgvDeviceCode = "AGV_DEFAULT", // TODO: 配置或查找
+            PalletId = palletCode,
+            DeviceCode = "ROBOT_01",       // TODO: 配置
+            JobId = workOrderCode,
+            List = new List<PackageDetail>() // TODO: 查询托盘内的包明细
+        };
+
+        try 
+        {
+            await FinishPalletizingAsync(request);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to report pallet completion to MES");
+            // 根据业务需求决定是否抛出异常
+        }
+    }
 }

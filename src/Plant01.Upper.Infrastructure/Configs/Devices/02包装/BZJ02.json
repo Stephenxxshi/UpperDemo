@@ -1,0 +1,31 @@
+﻿{
+  "Code": "BZJ02",
+  "PrefixCode": "SDJ01",
+  "Name": "2#包装机",
+  "Enable": true,
+  "Type": "RevopacPackage",
+  "Width": 252,
+  "Height": 418,
+  "Seq": 4,
+  "ErrorMsgPlcTag": "ErrorMessage",
+  "MonitorTags": [
+    {
+      "Name": "SDJ01.ReadBaggingCodeEnabled",
+      "Conditions": [
+        {
+          "Tag": "SDJ01.CurrentBaggingNo",
+          "Value": 2
+        }
+      ]
+    },
+    {
+      "Name": "SDJ01.ReadBagTakeCodeEnable",
+      "Conditions": [
+        {
+          "Tag": "SDJ01.CurrentBagTakeNo",
+          "Value": 2
+        }
+      ]
+    }
+  ]
+}

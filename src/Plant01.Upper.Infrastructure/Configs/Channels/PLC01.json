@@ -1,0 +1,11 @@
+{
+  "Name": "PLC01",
+  "AliasName": "上袋机2PLC",
+  "Enable": true,
+  "Description": "上袋机2PLC",
+  "Drive": "SiemensS7",
+  "DriveModel": "S7_1200",
+  "Address": "10.168.1.21",
+  "Port": 102,
+  "ScanRate": 100
+}
