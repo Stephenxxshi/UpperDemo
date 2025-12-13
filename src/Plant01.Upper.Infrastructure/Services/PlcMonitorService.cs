@@ -6,6 +6,9 @@ using Plant01.Upper.Application.Models;
 
 namespace Plant01.Upper.Infrastructure.Services;
 
+/// <summary>
+/// PLC 监控服务
+/// </summary>
 public class PlcMonitorService : BackgroundService
 {
     private readonly ILogger<PlcMonitorService> _logger;
@@ -24,9 +27,9 @@ public class PlcMonitorService : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("PLC Monitor Service Started (Bridge Mode).");
+        _logger.LogInformation("PLC 监控服务已启动（桥接模式）。");
         
-        // Subscribe to tag changes
+        // 订阅标签变化事件
         _deviceService.TagChanged += OnTagChanged;
         
         return Task.CompletedTask;
@@ -34,22 +37,22 @@ public class PlcMonitorService : BackgroundService
 
     private async void OnTagChanged(object? sender, TagChangeEventArgs e)
     {
-        // Filter only relevant tags if needed
-        // For now, we assume any tag change is a trigger or data update
+        // 如需要，仅过滤相关标签
+        // 目前，我们假设任何标签变化都是触发器或数据更新
         
-        // Example mapping logic:
-        // If tag name starts with "ST", it might be a station trigger
-        // e.g. "ST01_Loading.Trigger"
+        // 示例映射逻辑：
+        // 如果标签名称以 "ST" 开头，它可能是站点触发器
+        // 例如 "ST01_Loading.Trigger"
         
         try
         {
-            // Simple logic: Just forward everything for now, or filter by specific tags
-            // In a real app, you'd look up the tag in a "TriggerMap"
+            // 简单逻辑：目前只是转发一切，或按特定标签过滤
+            // 在真实应用中，您会在 "TriggerMap" 中查找标签
             
-            // Example: If value is boolean TRUE, trigger an event
+            // 示例：如果值为布尔 TRUE，则触发事件
             if (e.NewData.Value is bool bVal && bVal)
             {
-                // Extract StationId from TagName (e.g. "SDJ01.HeartBreak" -> "SDJ01")
+                // 从 TagName 中提取 StationId（例如 "SDJ01.HeartBreak" -> "SDJ01"）
                 var parts = e.TagName.Split('.');
                 var stationId = parts.Length > 0 ? parts[0] : "Unknown";
                 
@@ -58,13 +61,13 @@ public class PlcMonitorService : BackgroundService
                     source: TriggerSourceType.PLC,
                     payload: $"{e.TagName}={e.NewData.Value}",
                     priority: TriggerPriority.Normal,
-                    debounceKey: e.TagName // Debounce by tag name
+                    debounceKey: e.TagName // 按标签名称去抖
                 );
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error processing tag change for {Tag}", e.TagName);
+            _logger.LogError(ex, "处理标签变化时出错 {Tag}", e.TagName);
         }
     }
 

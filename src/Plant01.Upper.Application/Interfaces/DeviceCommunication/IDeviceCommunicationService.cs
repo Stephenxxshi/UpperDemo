@@ -8,6 +8,7 @@ public interface IDeviceCommunicationService
     Task StopAsync(CancellationToken cancellationToken = default);
     
     TagData GetTagValue(string tagName);
+    T GetTagValue<T>(string tagName, T defaultValue = default);
     Task WriteTagAsync(string tagName, object value);
     
     event EventHandler<TagChangeEventArgs>? TagChanged;

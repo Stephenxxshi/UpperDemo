@@ -10,6 +10,16 @@ public class SimulationDriver : IDriver
 
     public bool IsConnected => _isConnected;
 
+    public void Initialize(DeviceConfig config)
+    {
+        // No config needed for simulation
+    }
+
+    public void ValidateConfig(DeviceConfig config)
+    {
+        // Always valid
+    }
+
     public Task ConnectAsync()
     {
         _isConnected = true;
@@ -33,21 +43,46 @@ public class SimulationDriver : IDriver
             // Simple simulation logic
             object? val = null;
             
-            if (tag.DataType.Contains("BOOL", StringComparison.OrdinalIgnoreCase))
+            switch (tag.DataType)
             {
-                val = _random.Next(0, 2) == 1;
+                case TagDataType.Boolean:
+                    val = _random.Next(0, 2) == 1;
+                    break;
+                case TagDataType.Int16:
+                case TagDataType.Int32:
+                case TagDataType.Int64:
+                case TagDataType.UInt16:
+                case TagDataType.UInt32:
+                case TagDataType.UInt64:
+                case TagDataType.Byte:
+                    val = _random.Next(0, 100);
+                    break;
+                case TagDataType.Float:
+                case TagDataType.Double:
+                    val = _random.NextDouble() * 100;
+                    break;
+                case TagDataType.String:
+                    val = $"Sim-{DateTime.Now.Second}";
+                    break;
+                default:
+                    val = 0;
+                    break;
             }
-            else if (tag.DataType.Contains("INT", StringComparison.OrdinalIgnoreCase))
+
+            // Handle array
+            if (tag.ArrayLength > 1 && tag.DataType != TagDataType.String)
             {
-                val = _random.Next(0, 100);
-            }
-            else if (tag.DataType.Contains("FLOAT", StringComparison.OrdinalIgnoreCase))
-            {
-                val = _random.NextDouble() * 100;
-            }
-            else if (tag.DataType.Contains("STRING", StringComparison.OrdinalIgnoreCase))
-            {
-                val = $"Sim-{DateTime.Now.Second}";
+                // Create array
+                // For simplicity, just creating an array of the value type
+                // Note: val might be int, but DataType is Int16, so we might need casting.
+                // But for simulation, let's keep it simple.
+                var type = val.GetType();
+                var arr = Array.CreateInstance(type, tag.ArrayLength);
+                for(int i=0; i<tag.ArrayLength; i++)
+                {
+                    arr.SetValue(val, i); 
+                }
+                val = arr;
             }
 
             result[tag.Name] = val;
@@ -58,12 +93,10 @@ public class SimulationDriver : IDriver
 
     public Task WriteTagAsync(Tag tag, object value)
     {
-        // Simulate write delay
-        return Task.Delay(10);
+        return Task.CompletedTask;
     }
 
     public void Dispose()
     {
-        DisconnectAsync();
     }
 }

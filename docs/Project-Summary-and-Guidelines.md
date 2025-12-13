@@ -18,7 +18,9 @@
 ### 核心原则
 - **UI 与逻辑分离**: `Presentation.Core` 定义抽象，`Wpf.Core` 或其他 UI 框架实现具体展现。
 - **依赖注入**: 通过 `Bootstrapper` 统一管理服务注册，实现模块解耦。
-- **独立设备通信**: 采用仿 KEPServer 架构的 **DeviceCommunication** 层。支持多驱动插件、配置热重载、O(1) 高速标签寻址。
+- **独立设备通信**: 采用仿 KEPServer 架构的 **DeviceCommunication** 层。
+    - **三层架构**: Channel (驱动/通道) -> Device (设备连接) -> Tag (数据点)。
+    - **特性**: 支持多驱动插件、配置热重载、O(1) 高速标签寻址、强类型数据处理。
 - **双总线机制**:
     - **应用消息总线**: 使用 `WeakReferenceMessenger` (CommunityToolkit.Mvvm) 处理高频硬件信号（PLC/扫码枪）与业务服务的解耦。核心组件为 `TriggerDispatcherService`。
     - **领域事件总线**: 使用 `IDomainEventBus` 处理业务实体状态变更后的副作用（如：托盘满垛 -> 触发 MES 报工）。
@@ -91,3 +93,27 @@
 2.  **定义样式**: 使用 `DesignTokenKeys` 定义视觉外观。
 3.  **演示验证**: 在 `wpfuidemo` 项目中添加该控件的演示页面，验证 Light/Dark 模式切换效果。
 4.  **业务集成**: 在 `Plant01.Upper.Wpf` 或其他具体应用中使用该控件。
+
+## 7. 设备通信开发规范 (Device Communication Standards)
+
+### 7.1 架构模型
+系统采用 **Channel -> Device -> Tag** 的三层层级结构，严格区分驱动逻辑与设备连接参数。
+
+- **Channel (通道)**: 定义驱动类型（如 SiemensS7, ModbusTCP）。一个通道可包含多个设备。
+- **Device (设备)**: 定义具体的连接参数（如 IP, Port, Slot, Rack）。
+- **Tag (标签)**: 定义数据点属性（地址, 数据类型, 读写权限）。
+
+### 7.2 配置规范
+- **通道与设备**: 使用 JSON 配置。`Options` 字典存储驱动特定的连接参数。
+- **标签定义**: 使用 CSV 统一管理。
+    - **DataType**: 必须使用标准类型名称 (`Int16`, `Float`, `Boolean`, `String` 等)，严禁使用驱动特定名称（如 `Word`, `Real`）。
+    - **RW (权限)**: 使用 `R` (只读), `W` (只写), `RW` (读写)。
+    - **Length**: 对于数组，指定数组长度；对于字符串，指定字节长度。
+
+### 7.3 开发注意事项
+1.  **类型安全**: 应用层获取数据时，**必须**使用泛型方法 `GetTagValue<T>("TagName")`，避免手动拆箱。
+2.  **驱动开发**:
+    - 必须实现 `Initialize(DeviceConfig)` 和 `ValidateConfig(DeviceConfig)`。
+    - `ValidateConfig` 中必须校验 IP、端口等关键参数，缺失时抛出异常。
+    - 驱动内部负责将标准 `TagDataType` 映射为协议特定的读取指令。
+3.  **数组处理**: 当 CSV 中 `Length > 1` (且非 String) 时，驱动返回的是数组对象。应用层应使用 `GetTagValue<int[]>` 等方式接收。

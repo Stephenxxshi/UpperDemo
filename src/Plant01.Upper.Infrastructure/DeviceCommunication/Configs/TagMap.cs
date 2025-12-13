@@ -9,16 +9,48 @@ public class TagMap : ClassMap<Tag>
     {
         Map(m => m.Name).Name("TagName");
         Map(m => m.Address).Name("Address");
-        Map(m => m.DataType).Name("DataType");
-        Map(m => m.DeviceCode).Name("DeviceCode");
-        Map(m => m.DriverCode).Name("DriverCode");
-        Map(m => m.Length).Name("Length").Default(0);
+        Map(m => m.Description).Name("Description").Optional();
         
-        // Custom mapping for IsWriteOnly based on RW column
-        Map(m => m.IsWriteOnly).Convert(args => 
+        Map(m => m.DataType).Name("DataType").Convert(args => 
+        {
+            var typeStr = args.Row.GetField("DataType");
+            if (Enum.TryParse<TagDataType>(typeStr, true, out var result))
+            {
+                return result;
+            }
+            // Handle aliases
+            if (string.Equals(typeStr, "Short", StringComparison.OrdinalIgnoreCase)) return TagDataType.Int16;
+            if (string.Equals(typeStr, "UShort", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt16;
+            if (string.Equals(typeStr, "Int", StringComparison.OrdinalIgnoreCase)) return TagDataType.Int32;
+            if (string.Equals(typeStr, "UInt", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt32;
+            if (string.Equals(typeStr, "Bool", StringComparison.OrdinalIgnoreCase)) return TagDataType.Boolean;
+            if (string.Equals(typeStr, "Real", StringComparison.OrdinalIgnoreCase)) return TagDataType.Float;
+            if (string.Equals(typeStr, "DInt", StringComparison.OrdinalIgnoreCase)) return TagDataType.Int32;
+            if (string.Equals(typeStr, "Word", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt16;
+            if (string.Equals(typeStr, "DWord", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt32;
+            
+            return TagDataType.Int16; // Default
+        });
+
+        Map(m => m.DeviceName).Name("DeviceName");
+        Map(m => m.ChannelName).Name("ChannelName");
+
+        Map(m => m.ArrayLength).Name("Length").Default((ushort)1).Convert(args => 
+        {
+            var lenStr = args.Row.GetField("Length");
+            if (ushort.TryParse(lenStr, out var len) && len > 0)
+            {
+                return len;
+            }
+            return (ushort)1;
+        });
+        
+        Map(m => m.AccessRights).Name("RW").Convert(args => 
         {
             var rw = args.Row.GetField("RW");
-            return string.Equals(rw, "WRITEONLY", StringComparison.OrdinalIgnoreCase);
+            if (string.Equals(rw, "R", StringComparison.OrdinalIgnoreCase)) return AccessRights.Read;
+            if (string.Equals(rw, "W", StringComparison.OrdinalIgnoreCase)) return AccessRights.Write;
+            return AccessRights.ReadWrite;
         });
     }
 }
