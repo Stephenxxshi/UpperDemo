@@ -1,10 +1,12 @@
-using System.IO;
-using System.Text.Json;
 using CsvHelper;
 using CsvHelper.Configuration;
-using System.Globalization;
-using Plant01.Upper.Domain.Models.DeviceCommunication;
+
 using Microsoft.Extensions.Logging;
+
+using Plant01.Upper.Domain.Models.DeviceCommunication;
+
+using System.Globalization;
+using System.Text.Json;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
 
@@ -26,7 +28,7 @@ public class ConfigurationLoader
 
         if (!Directory.Exists(channelsPath))
         {
-            _logger.LogWarning("Œ¥’“µΩÕ®µ¿ƒø¬º: {Path}", channelsPath);
+            _logger.LogWarning("Êú™ÊâæÂà∞ÈÄöÈÅìÁõÆÂΩï: {Path}", channelsPath);
             return channels;
         }
 
@@ -38,24 +40,44 @@ public class ConfigurationLoader
                 var json = File.ReadAllText(file);
                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 var configDict = JsonSerializer.Deserialize<Dictionary<string, object>>(json, options);
-                
+
                 if (configDict != null)
                 {
                     var config = new ChannelConfig();
-                    
-                    if (configDict.TryGetValue("Name", out var name)) config.Name = name?.ToString() ?? "";
-                    if (configDict.TryGetValue("Drive", out var drive)) config.Driver = drive?.ToString() ?? "";
-                    if (configDict.TryGetValue("Address", out var addr)) config.IpAddress = addr?.ToString() ?? "";
-                    if (configDict.TryGetValue("Port", out var port) && int.TryParse(port?.ToString(), out int p)) config.Port = p;
-                    if (configDict.TryGetValue("ScanRate", out var rate) && int.TryParse(rate?.ToString(), out int r)) config.ScanRate = r;
-                    if (configDict.TryGetValue("Enable", out var enable) && bool.TryParse(enable?.ToString(), out bool e)) config.Enable = e;
 
+                    if (configDict.TryGetValue("Name", out var name)) config.Name = name?.ToString() ?? "";
+                    if (configDict.TryGetValue("Drive", out var drive)) config.DriverType = drive?.ToString() ?? "";
+                    if (configDict.TryGetValue("Enable", out var enable) && bool.TryParse(enable?.ToString(), out bool e)) config.Enabled = e;
+
+                    // Create a default device for this channel based on old config
+                    // Assuming 1-to-1 mapping for now as per old structure
+                    var device = new DeviceConfig
+                    {
+                        Name = config.Name, // Use channel name as device name for now
+                        Enabled = config.Enabled
+                    };
+
+                    // Map old properties to Options
+                    if (configDict.TryGetValue("Address", out var addr)) device.Options["IpAddress"] = addr?.ToString() ?? "";
+                    if (configDict.TryGetValue("Port", out var port) && int.TryParse(port?.ToString(), out int p)) device.Options["Port"] = p;
+                    if (configDict.TryGetValue("ScanRate", out var rate) && int.TryParse(rate?.ToString(), out int r)) device.Options["ScanRate"] = r;
+                    
+                    // Also copy other properties that might be driver specific
+                    foreach(var kvp in configDict)
+                    {
+                        if (kvp.Key != "Name" && kvp.Key != "Drive" && kvp.Key != "Enable" && kvp.Key != "Address" && kvp.Key != "Port")
+                        {
+                            device.Options[kvp.Key] = kvp.Value;
+                        }
+                    }
+
+                    config.Devices.Add(device);
                     channels.Add(config);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "º”‘ÿÕ®µ¿≈‰÷√ ß∞‹: {File}", file);
+                _logger.LogError(ex, "Âä†ËΩΩÈÄöÈÅìÈÖçÁΩÆÂ§±Ë¥•: {File}", file);
             }
         }
 
@@ -69,7 +91,7 @@ public class ConfigurationLoader
 
         if (!File.Exists(tagsFile))
         {
-            _logger.LogWarning("Œ¥’“µΩ±Í«©Œƒº˛: {Path}", tagsFile);
+            _logger.LogWarning("Êú™ÊâæÂà∞Ê†áÁ≠æÊñá‰ª∂: {Path}", tagsFile);
             return tags;
         }
 
@@ -88,7 +110,7 @@ public class ConfigurationLoader
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "¥” {File} º”‘ÿ±Í«© ß∞‹", tagsFile);
+            _logger.LogError(ex, "‰ªé {File} Âä†ËΩΩÊ†áÁ≠æÂ§±Ë¥•", tagsFile);
         }
 
         return tags;

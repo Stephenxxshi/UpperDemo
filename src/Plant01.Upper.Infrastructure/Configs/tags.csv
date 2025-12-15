@@ -1,4 +1,4 @@
-﻿SN,TagName,DeviceCode,Name,DeviceName,CnName,Description,Address,DataType,Offset,BitOffset,RW,Length,DriverCode,GroupId,IsMonitor
+SN,TagName,DeviceCode,Name,DeviceName,CnName,Description,Address,DataType,Offset,BitOffset,RW,Length,ChannelName,GroupId,IsMonitor
 1,BZJ01.HeartBreak,BZJ01,HeartBreak,上袋机01,心跳,,DB200.0,BOOL,0,,READONLY,,PLC01,1,
 2,SDJ01.ReadBagPickerCodeEnabled,SDJ01,ReadBagPickerCodeEnabled,上袋机01,取袋允许读码,,DB200.2,BOOL,2,,READONLY,,PLC01,1,TRUE
 3,SDJ01.CurrentBagPickerCode,SDJ01,CurrentBagPickerCode,上袋机01,取袋当前袋码,,DB200.4,STRING,4,,READONLY,64,PLC01,1,

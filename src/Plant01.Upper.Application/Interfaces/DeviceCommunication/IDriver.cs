@@ -5,6 +5,10 @@ namespace Plant01.Upper.Application.Interfaces.DeviceCommunication;
 public interface IDriver : IDisposable
 {
     bool IsConnected { get; }
+    
+    void Initialize(DeviceConfig config);
+    void ValidateConfig(DeviceConfig config);
+
     Task ConnectAsync();
     Task DisconnectAsync();
     
