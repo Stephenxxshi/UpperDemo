@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
 using AppLogItem = Plant01.Upper.Application.Models.Logging.LogItem;
 using UiLogItem = Plant01.WpfUI.Models.LogItem;
@@ -30,10 +31,13 @@ namespace Plant01.Upper.Wpf.Converters
     public class MappedLogCollection : ObservableCollection<UiLogItem>
     {
         private readonly ObservableCollection<AppLogItem> _source;
+        private readonly Dispatcher _dispatcher;
 
         public MappedLogCollection(ObservableCollection<AppLogItem> source)
         {
             _source = source;
+            _dispatcher = System.Windows.Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
+            
             foreach (var item in _source)
             {
                 Add(Map(item));
@@ -42,6 +46,19 @@ namespace Plant01.Upper.Wpf.Converters
         }
 
         private void Source_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            // 确保在 UI 线程执行集合操作
+            if (_dispatcher.CheckAccess())
+            {
+                ProcessCollectionChange(e);
+            }
+            else
+            {
+                _dispatcher.InvokeAsync(() => ProcessCollectionChange(e));
+            }
+        }
+
+        private void ProcessCollectionChange(NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {

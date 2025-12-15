@@ -10,11 +10,12 @@ using System.Collections.ObjectModel;
 
 namespace Plant01.Upper.Presentation.Core.ViewModels
 {
-    public partial class DashboardViewModel : ObservableObject
+    public partial class DashboardViewModel : ObservableObject, IDisposable
     {
         private readonly ILogger<DashboardViewModel> _logger;
         private readonly ILogStore _logStore;
         private readonly IDispatcherService _dispatcherService;
+        private bool _disposed;
 
         [ObservableProperty]
         private bool _isPaused;
@@ -33,9 +34,15 @@ namespace Plant01.Upper.Presentation.Core.ViewModels
 
         private void _logStore_LogAdded(LogModel model)
         {
+            // 如果 ViewModel 已释放，忽略日志更新
+            if (_disposed) return;
+
             // 确保在 UI 线程更新集合
             _dispatcherService.Invoke(() =>
             {
+                // 双重检查，防止在 Invoke 排队期间 ViewModel 被释放
+                if (_disposed) return;
+
                 Logs.Add(new LogItem
                 {
                     Timestamp = model.Timestamp,
@@ -52,6 +59,14 @@ namespace Plant01.Upper.Presentation.Core.ViewModels
         private void Clear()
         {
             _dispatcherService.Invoke(() => Logs.Clear());
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            
+            _disposed = true;
+            _logStore.LogAdded -= _logStore_LogAdded;
         }
     }
 }
