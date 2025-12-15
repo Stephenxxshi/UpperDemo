@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace Plant01.Upper.Domain.Models.DeviceCommunication;
 
 public class DeviceConfig
@@ -6,13 +8,39 @@ public class DeviceConfig
     public string Description { get; set; } = string.Empty;
     public bool Enabled { get; set; } = true;
 
-    // ÌØ¶¨ÓÚÇı¶¯³ÌĞòµÄÑ¡Ïî£¨IP¡¢¶Ë¿Ú¡¢²å²Û¡¢»ú¼Ü¡¢²¨ÌØÂÊµÈ£©
+    // ç‰¹å®šäºé©±åŠ¨çš„é…ç½®é€‰é¡¹ï¼ˆIPã€ç«¯å£ã€æœºæ¶ã€æ’æ§½ã€æ‰«æé€Ÿç‡ç­‰ï¼‰
     public Dictionary<string, object> Options { get; set; } = new();
 
-    // ÊôÓÚ´ËÉè±¸µÄ±êÇ©
-    // ×¢Òâ£º±êÇ©¿ÉÄÜµ¥¶À¼ÓÔØ£¬µ«Âß¼­ÉÏÊôÓÚ´Ë´¦¡£
-    // Èç¹û³öÓÚĞÔÄÜ»òÆäËûÔ­Òò½«±êÇ©±£´æÔÚµ¥¶ÀµÄÆ½ÃæÁĞ±íÖĞ£¬ÎÒÃÇ¿ÉÄÜ²»»áÌî³ä´ËÁĞ±í£¬
-    // µ«¶ÔÓÚÅäÖÃÄ£ĞÍÀ´ËµÊÇÓĞÒâÒåµÄ¡£
-    // È»¶ø£¬ÒÔÇ°µÄÊµÏÖ´Ó CSV ¼ÓÔØ±êÇ©¡£
-    // Ä¿Ç°ÈÃÎÒÃÇ±£³Ö¼òµ¥¡£
+    /// <summary>
+    /// è¾…åŠ©æ–¹æ³•ï¼šå°†é€šç”¨çš„ Options å­—å…¸è½¬æ¢ä¸ºç‰¹å®šé©±åŠ¨çš„å¼ºç±»å‹é…ç½®å¯¹è±¡ã€‚
+    /// </summary>
+    /// <typeparam name="T">é©±åŠ¨ç‰¹å®šçš„é…ç½®ç±»ç±»å‹</typeparam>
+    /// <returns>å¼ºç±»å‹é…ç½®å¯¹è±¡</returns>
+    public T GetDriverConfig<T>() where T : new()
+    {
+        if (Options == null || Options.Count == 0) 
+            return new T();
+
+        try
+        {
+            // åˆ©ç”¨ System.Text.Json è¿›è¡Œä¸­è½¬è½¬æ¢
+            var json = JsonSerializer.Serialize(Options);
+            return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions 
+            { 
+                PropertyNameCaseInsensitive = true,
+                NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString
+            }) ?? new T();
+        }
+        catch
+        {
+            return new T();
+        }
+    }
+
+    // ç”¨äºå­˜å‚¨è®¾å¤‡çš„æ ‡ç­¾
+    // æ³¨æ„ï¼šæ ‡ç­¾å¯èƒ½ç‹¬ç«‹å­˜åœ¨ï¼Œå…¶é€»è¾‘å¯èƒ½ä½äºæ­¤å¤„ã€‚
+    // ä½†æ˜¯ï¼Œæ ¹æ®æ¶æ„åŸåˆ™å°†æ ‡ç­¾æ”¾ç½®äºç‹¬ç«‹å¹³é“ºåˆ—è¡¨ä¸­ï¼Œè¿™æ ·å¯èƒ½ä¸é€‚åˆæ­¤åˆ—è¡¨ã€‚
+    // æ ¹æ®å½“å‰æ¨¡å‹ï¼Œæˆ‘ä»¬è¯´å®ƒå½’å±è®¾å¤‡ã€‚
+    // ç„¶è€Œï¼Œå½“å‰å®æ–½ä» CSV è¯»å–æ ‡ç­¾ã€‚
+    // ç›®å‰ï¼Œæˆ‘ä»¬ä¿æŒç®€å•ã€‚
 }

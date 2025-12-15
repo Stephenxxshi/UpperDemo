@@ -1,0 +1,12 @@
+{
+  "DbNumber": 1,
+  "Fields": [
+    { "Name": "Heartbeat",    "DataType": "Boolean", "Offset": 0,  "BitIndex": 0, "Length": 1, "RW": "R" },
+    { "Name": "OutputCount",  "DataType": "Int32",   "Offset": 2,               "Length": 1, "RW": "R" },
+    { "Name": "AlarmCode",    "DataType": "Int16",   "Offset": 10,              "Length": 1, "RW": "R" },
+    { "Name": "RecipeNo",     "DataType": "Int16",   "Offset": 12,              "Length": 1, "RW": "RW" },
+    { "Name": "StatusBits_0", "DataType": "Boolean", "Offset": 20, "BitIndex": 0, "Length": 1, "RW": "R" },
+    { "Name": "StatusBits_1", "DataType": "Boolean", "Offset": 20, "BitIndex": 1, "Length": 1, "RW": "R" },
+    { "Name": "ProductName",  "DataType": "String",  "Offset": 100,             "Length": 16, "RW": "R" }
+  ]
+}

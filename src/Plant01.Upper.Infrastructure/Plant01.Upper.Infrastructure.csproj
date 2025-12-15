@@ -10,6 +10,7 @@
     <None Remove="Configs\Channels\PLC01.json" />
     <None Remove="Configs\Channels\PLC02.json" />
     <None Remove="Configs\Channels\PLC03.json" />
+    <None Remove="Configs\DbSchemas\DB1.schema.json" />
     <None Remove="Configs\Devices\01上袋\SDJ01.json" />
     <None Remove="Configs\Devices\01上袋\SDJ02.json" />
     <None Remove="Configs\Devices\02包装\BZJ01.json" />
@@ -34,6 +35,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Configs\Channels\PLC03.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\DbSchemas\**\*.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Configs\Devices\01上袋\SDJ01.json">
@@ -90,6 +94,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Plant01.Upper.Application\Plant01.Upper.Application.csproj" />
     <ProjectReference Include="..\Plant01.Upper.Domain\Plant01.Upper.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Configs\Stations\" />
   </ItemGroup>
 
 </Project>

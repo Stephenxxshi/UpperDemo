@@ -19,8 +19,7 @@ public class DriverFactory
         
         if (string.Equals(driverName, "SiemensS7", StringComparison.OrdinalIgnoreCase))
         {
-            // Return S7 driver when implemented
-            return new SimulationDriver(); 
+            return new SiemensS7Driver(); 
         }
         else if (string.Equals(driverName, "Modbus", StringComparison.OrdinalIgnoreCase))
         {
