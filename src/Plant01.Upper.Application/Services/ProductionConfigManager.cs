@@ -22,7 +22,7 @@ public class ProductionConfigManager
     public void LoadFromConfig(List<ProductionLine> lines)
     {
         _productionLines = lines;
-        _logger.LogInformation($"已加载 {lines.Count} 条产线到内存，共 {CountSections()} 个工段，{CountWorkstations()} 个工位，{CountEquipments()} 个设备");
+        _logger.LogInformation($"已加载 {lines.Count} 条产线到内存，共 {CountWorkstations()} 个工位，{CountEquipments()} 个设备");
     }
 
     /// <summary>
@@ -42,42 +42,13 @@ public class ProductionConfigManager
     }
 
     /// <summary>
-    /// 根据工段Code获取工段
-    /// </summary>
-    public ProductionSection? GetSectionByCode(string sectionCode)
-    {
-        return _productionLines
-            .SelectMany(x => x.Sections)
-            .FirstOrDefault(x => x.Code == sectionCode);
-    }
-
-    /// <summary>
-    /// 获取某产线的所有工段
-    /// </summary>
-    public List<ProductionSection> GetSectionsByProductionLine(string productionLineCode)
-    {
-        var line = GetProductionLineByCode(productionLineCode);
-        return line?.Sections ?? new List<ProductionSection>();
-    }
-
-    /// <summary>
     /// 根据工位Code获取工位
     /// </summary>
     public Workstation? GetWorkstationByCode(string workstationCode)
     {
         return _productionLines
-            .SelectMany(x => x.Sections)
             .SelectMany(x => x.Workstations)
             .FirstOrDefault(x => x.Code == workstationCode);
-    }
-
-    /// <summary>
-    /// 获取某工段的所有工位
-    /// </summary>
-    public List<Workstation> GetWorkstationsBySection(string sectionCode)
-    {
-        var section = GetSectionByCode(sectionCode);
-        return section?.Workstations ?? new List<Workstation>();
     }
 
     /// <summary>
@@ -86,7 +57,6 @@ public class ProductionConfigManager
     public Equipment? GetEquipmentByCode(string equipmentCode)
     {
         return _productionLines
-            .SelectMany(x => x.Sections)
             .SelectMany(x => x.Workstations)
             .SelectMany(x => x.Equipments)
             .FirstOrDefault(x => x.Code == equipmentCode);
@@ -102,21 +72,11 @@ public class ProductionConfigManager
     }
 
     /// <summary>
-    /// 获取工位所属的工段
+    /// 获取工位所属的产线
     /// </summary>
-    public ProductionSection? GetSectionByWorkstation(string workstationCode)
+    public ProductionLine? GetProductionLineByWorkstation(string workstationCode)
     {
-        return _productionLines
-            .SelectMany(x => x.Sections)
-            .FirstOrDefault(x => x.Workstations.Any(w => w.Code == workstationCode));
-    }
-
-    /// <summary>
-    /// 获取工段所属的产线
-    /// </summary>
-    public ProductionLine? GetProductionLineBySection(string sectionCode)
-    {
-        return _productionLines.FirstOrDefault(x => x.Sections.Any(s => s.Code == sectionCode));
+        return _productionLines.FirstOrDefault(x => x.Workstations.Any(w => w.Code == workstationCode));
     }
 
     /// <summary>
@@ -125,18 +85,8 @@ public class ProductionConfigManager
     public Workstation? GetWorkstationByEquipment(string equipmentCode)
     {
         return _productionLines
-            .SelectMany(x => x.Sections)
             .SelectMany(x => x.Workstations)
             .FirstOrDefault(x => x.Equipments.Any(e => e.Code == equipmentCode));
-    }
-
-    /// <summary>
-    /// 获取设备所属的工段
-    /// </summary>
-    public ProductionSection? GetSectionByEquipment(string equipmentCode)
-    {
-        var workstation = GetWorkstationByEquipment(equipmentCode);
-        return workstation != null ? GetSectionByWorkstation(workstation.Code) : null;
     }
 
     /// <summary>
@@ -144,25 +94,17 @@ public class ProductionConfigManager
     /// </summary>
     public ProductionLine? GetProductionLineByEquipment(string equipmentCode)
     {
-        var section = GetSectionByEquipment(equipmentCode);
-        return section != null ? GetProductionLineBySection(section.Code) : null;
+        var workstation = GetWorkstationByEquipment(equipmentCode);
+        return workstation != null ? GetProductionLineByWorkstation(workstation.Code) : null;
     }
 
     /// <summary>
-    /// 获取工段的分配策略（JSON字符串）
+    /// 获取产线的分配策略（JSON字符串）
     /// </summary>
-    public string? GetSectionStrategyJson(string sectionCode)
+    public string? GetLineStrategyJson(string lineCode)
     {
-        var section = GetSectionByCode(sectionCode);
-        return section?.StrategyConfigJson;
-    }
-
-    /// <summary>
-    /// 统计总工段数
-    /// </summary>
-    private int CountSections()
-    {
-        return _productionLines.Sum(x => x.Sections.Count);
+        var line = GetProductionLineByCode(lineCode);
+        return line?.StrategyConfigJson;
     }
 
     /// <summary>
@@ -170,7 +112,7 @@ public class ProductionConfigManager
     /// </summary>
     private int CountWorkstations()
     {
-        return _productionLines.Sum(x => x.Sections.Sum(s => s.Workstations.Count));
+        return _productionLines.Sum(x => x.Workstations.Count);
     }
 
     /// <summary>
@@ -178,7 +120,7 @@ public class ProductionConfigManager
     /// </summary>
     private int CountEquipments()
     {
-        return _productionLines.Sum(x => x.Sections.Sum(s => s.Workstations.Sum(w => w.Equipments.Count)));
+        return _productionLines.Sum(x => x.Workstations.Sum(w => w.Equipments.Count));
     }
 
     /// <summary>
@@ -186,6 +128,6 @@ public class ProductionConfigManager
     /// </summary>
     public string GetConfigSummary()
     {
-        return $"产线数: {_productionLines.Count}, 工段数: {CountSections()}, 工位数: {CountWorkstations()}, 设备数: {CountEquipments()}";
+        return $"产线数: {_productionLines.Count}, 工位数: {CountWorkstations()}, 设备数: {CountEquipments()}";
     }
 }

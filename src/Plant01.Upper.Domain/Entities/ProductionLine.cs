@@ -28,9 +28,14 @@ public class ProductionLine
     public bool Enabled { get; set; } = true;
 
     /// <summary>
-    /// 包含的工段列表
+    /// 策略配置（JSON格式，原工段策略移至此处）
     /// </summary>
-    public List<ProductionSection> Sections { get; set; } = new();
+    public string? StrategyConfigJson { get; set; }
+
+    /// <summary>
+    /// 包含的工位列表
+    /// </summary>
+    public List<Workstation> Workstations { get; set; } = new();
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }

@@ -1,10 +1,11 @@
-using System.Text.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Plant01.Domain.Shared.Models.Equipment;
+
 using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Infrastructure.Configs.Models;
+
+using System.Text.Json;
 
 namespace Plant01.Upper.Infrastructure.Services;
 
@@ -34,10 +35,7 @@ public class ProductionLineConfigService : BackgroundService
         {
             try
             {
-                var configPath = Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    "Configs",
-                    "production_lines.json");
+                var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "Lines", "production_lines.json");
 
                 if (!File.Exists(configPath))
                 {
@@ -51,7 +49,7 @@ public class ProductionLineConfigService : BackgroundService
 
                 // 将 DTO 转换为实体对象，并使用 EquipmentConfigService 加载设备
                 var productionLines = new List<ProductionLine>();
-                
+
                 foreach (var lineDto in lineDtos)
                 {
                     var line = new ProductionLine
@@ -59,45 +57,31 @@ public class ProductionLineConfigService : BackgroundService
                         Code = lineDto.Code,
                         Name = lineDto.Name,
                         Description = lineDto.Description,
-                        Sections = new List<ProductionSection>()
+                        StrategyConfigJson = lineDto.StrategyConfigJson,
+                        Workstations = new List<Workstation>()
                     };
 
-                    foreach (var sectionDto in lineDto.Sections)
+                    foreach (var workstationDto in lineDto.Workstations)
                     {
-                        var section = new ProductionSection
+                        // 通过 EquipmentConfigService 加载工位的设备
+                        var equipments = _equipmentConfigService.GetEquipmentsByRefs(workstationDto.EquipmentRefs);
+
+                        var workstation = new Workstation
                         {
-                            Code = sectionDto.Code,
-                            Name = sectionDto.Name,
-                            Sequence = sectionDto.Sequence,
-                            StrategyConfigJson = sectionDto.StrategyConfigJson,
+                            Code = workstationDto.Code,
+                            Name = workstationDto.Name,
+                            Sequence = workstationDto.Sequence,
                             ProductionLine = line,
-                            Workstations = new List<Workstation>()
+                            Equipments = equipments
                         };
 
-                        foreach (var workstationDto in sectionDto.Workstations)
+                        // 设置设备的工位关联
+                        foreach (var equipment in equipments)
                         {
-                            // 通过 EquipmentConfigService 加载工位的设备
-                            var equipments = _equipmentConfigService.GetEquipmentsByRefs(workstationDto.EquipmentRefs);
-                            
-                            var workstation = new Workstation
-                            {
-                                Code = workstationDto.Code,
-                                Name = workstationDto.Name,
-                                Sequence = workstationDto.Sequence,
-                                ProductionSection = section,
-                                Equipments = equipments
-                            };
-
-                            // 设置设备的工位关联
-                            foreach (var equipment in equipments)
-                            {
-                                equipment.Workstation = workstation;
-                            }
-
-                            section.Workstations.Add(workstation);
+                            equipment.Workstation = workstation;
                         }
 
-                        line.Sections.Add(section);
+                        line.Workstations.Add(workstation);
                     }
 
                     productionLines.Add(line);

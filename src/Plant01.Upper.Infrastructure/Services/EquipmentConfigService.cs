@@ -1,9 +1,11 @@
-using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 using Plant01.Domain.Shared.Models.Equipment;
 using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Infrastructure.Configs.Models;
+
+using System.Text.Json;
 
 namespace Plant01.Upper.Infrastructure.Services;
 
@@ -14,7 +16,7 @@ public class EquipmentConfigService
 {
     private readonly string _configPath;
     private readonly ILogger<EquipmentConfigService> _logger;
-    
+
     // 内存缓存
     private Dictionary<string, EquipmentTemplateDto> _equipmentCache = new();
     private Dictionary<string, List<TagMappingDto>> _mappingCache = new();
@@ -24,7 +26,7 @@ public class EquipmentConfigService
         IConfiguration configuration,
         ILogger<EquipmentConfigService> logger)
     {
-        _configPath = configuration["ConfigsPath"] ?? 
+        _configPath = configuration["ConfigsPath"] ??
                       Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs");
         _logger = logger;
         LoadConfigs();
@@ -40,13 +42,13 @@ public class EquipmentConfigService
             try
             {
                 // 加载设备模板
-                var equipmentFile = Path.Combine(_configPath, "Equipments", "equipment_templates.json");
+                var equipmentFile = Path.Combine(_configPath, "Lines", "Equipments", "equipment_templates.json");
                 if (File.Exists(equipmentFile))
                 {
                     var json = File.ReadAllText(equipmentFile);
-                    var equipments = JsonSerializer.Deserialize<List<EquipmentTemplateDto>>(json, 
+                    var equipments = JsonSerializer.Deserialize<List<EquipmentTemplateDto>>(json,
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    _equipmentCache = equipments?.ToDictionary(e => e.Code, StringComparer.OrdinalIgnoreCase) 
+                    _equipmentCache = equipments?.ToDictionary(e => e.Code, StringComparer.OrdinalIgnoreCase)
                         ?? new();
                     _logger.LogInformation("已加载 {Count} 个设备模板", _equipmentCache.Count);
                 }
@@ -56,7 +58,7 @@ public class EquipmentConfigService
                 }
 
                 // 加载设备映射
-                var mappingFile = Path.Combine(_configPath, "Equipments", "equipment_mappings.json");
+                var mappingFile = Path.Combine(_configPath, "Lines", "Equipments", "equipment_mappings.json");
                 if (File.Exists(mappingFile))
                 {
                     var json = File.ReadAllText(mappingFile);

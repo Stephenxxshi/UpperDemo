@@ -2,8 +2,6 @@ using CsvHelper;
 using CsvHelper.Configuration;
 
 using Microsoft.Extensions.Logging;
-
-using Plant01.Upper.Domain.Models.DeviceCommunication;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Parsers;
 
@@ -11,6 +9,7 @@ using System.Globalization;
 using System.Text.Json;
 using Plant01.Upper.Infrastructure.DeviceCommunication.DeviceAddressing;
 using System.Text;
+using Plant01.Upper.Application.Models.DeviceCommunication;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
 

@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace Plant01.Upper.Domain.Models.DeviceCommunication;
+namespace Plant01.Upper.Application.Models.DeviceCommunication;
 
 public class DeviceConfig
 {

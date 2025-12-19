@@ -18,7 +18,7 @@ using Plant01.Upper.Infrastructure.Repository;
 using Plant01.Upper.Infrastructure.Services;
 using Plant01.Upper.Presentation.Core.ViewModels;
 using Plant01.Upper.Infrastructure.DeviceCommunication;
-using Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
+using Plant01.Upper.Application.Models.DeviceCommunication;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Engine;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
@@ -26,6 +26,7 @@ using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Serilog;
 using Plant01.Upper.Infrastructure.Workstations;
 using Plant01.Upper.Infrastructure.Workstations.Processors;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
 
 namespace Plant01.Upper.Presentation.Bootstrapper;
 

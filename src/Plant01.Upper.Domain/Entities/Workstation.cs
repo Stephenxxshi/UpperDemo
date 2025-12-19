@@ -18,14 +18,14 @@ public class Workstation
     public required string Name { get; set; }
 
     /// <summary>
-    /// 所属工段ID
+    /// 所属产线ID
     /// </summary>
-    public int ProductionSectionId { get; set; }
+    public int ProductionLineId { get; set; }
 
     /// <summary>
-    /// 所属工段
+    /// 所属产线
     /// </summary>
-    public ProductionSection? ProductionSection { get; set; }
+    public ProductionLine? ProductionLine { get; set; }
 
     /// <summary>
     /// 工站状态

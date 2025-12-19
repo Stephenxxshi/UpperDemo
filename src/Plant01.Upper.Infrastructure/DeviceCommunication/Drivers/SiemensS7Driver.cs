@@ -3,12 +3,12 @@ using HslCommunication;
 using HslCommunication.Profinet.Siemens;
 
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
-using Plant01.Upper.Domain.Models.DeviceCommunication;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
 using Plant01.Upper.Infrastructure.DeviceCommunication.DeviceAddressing;
 using Plant01.Upper.Infrastructure.DeviceCommunication.DriverConfigs;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Extensions;
 using System.ComponentModel.DataAnnotations;
+using Plant01.Upper.Application.Models.DeviceCommunication;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
 

@@ -1,4 +1,5 @@
-using Plant01.Upper.Domain.Models.DeviceCommunication;
+
+using Plant01.Upper.Application.Models.DeviceCommunication;
 
 namespace Plant01.Upper.Application.Interfaces.DeviceCommunication;
 
