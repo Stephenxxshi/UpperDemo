@@ -222,7 +222,7 @@ var summary = configManager.GetConfigSummary(); // "产线数: 2, 工段数: 10,
 ### 基础设施层 (Infrastructure Layer)
 | 项目名称 | 职责说明 |
 | :--- | :--- |
-| **Plant01.Upper.Infrastructure** | **基础设施实现**。包含数据仓储实现 (`Repository`)、数据库上下文、**消息调度 (`TriggerDispatcher`)**、**领域事件总线 (`DomainEventBus`)**、**设备通信核心 (DeviceCommunication)**。**⭐ 架构重构** (2025-12-19): ① **分层解耦** - 将通信层 `Tag` 重构为 `CommunicationTag`（包含 ChannelName/DeviceName/Address），Domain 层使用轻量级 `TagValue`（纯领域模型）。② **强类型配置** - `ConfigurationLoader`（JsonDocument解析）、`SiemensS7Config/ModbusTcpConfig/SimulationConfig`（强类型配置类）、`DeviceConfigExtensions`（验证扩展）、`channel-config.schema.json`（JSON Schema）。③ **通道-设备正交** - 修复架构错误，1个 Channel 管理多个 Device（而非每个 Device 一个 Channel）。**其他**: `TagGenerationServiceImpl`（标签生成）、`S7AddressScanner`（地址扫描）、`S7AddressParser`（地址解析）、`SiemensS7Driver`（西门子S7驱动）。 |
+| **Plant01.Upper.Infrastructure** | **基础设施实现**。包含数据仓储实现 (`Repository`)、数据库上下文、**消息调度 (`TriggerDispatcher`)**、**领域事件总线 (`DomainEventBus`)**、**设备通信核心 (DeviceCommunication)**。**⭐ 架构重构** (2025-12-19): ① **分层解耦** - 将通信层 `Tag` 重构为 `CommunicationTag`（包含 ChannelName/DeviceName/Address），Domain 层使用轻量级 `TagValue`（纯领域模型）。② **强类型配置** - `ConfigurationLoader`（JsonDocument解析）、`SiemensS7Config/ModbusTcpConfig/SimulationConfig`（强类型配置类）、`DeviceConfigExtensions`（验证扩展）、`channel-config.schema.json`（JSON Schema）。③ **通道-设备正交** - 修复架构错误，1个 Channel 管理多个 Device（而非每个 Device 一个 Channel）。**其他**: `TagGenerationServiceImpl`（标签生成）、`S7AddressScanner`（地址扫描）、`S7AddressParser`（地址解析）、`SiemensS7Driver`（西门子S7驱动，支持**智能批量读取**与**自动降级**）。 |
 | **Plant01.Infrastructure.Shared** | **共享基础设施**。包含通用服务实现（如 `HttpService`）、扩展方法。 |
 | **Plant01.Core** | **核心工具库**。包含基础框架代码、通用工具类 (`Utilities`)、扩展方法 (`Extensions`)。 |
 
@@ -682,3 +682,19 @@ services.AddSingleton<ITagGenerationService, TagGenerationServiceImpl>();
 - **快速入门**: `docs/Workstation-Equipment-QuickStart.md` (5分钟上手)
 - **完整架构**: `docs/Workstation-Equipment-Architecture.md` (8章节详解)
 - **文档索引**: `docs/README-Architecture-Index.md` (导航目录)
+
+## 9. 更新日志 (Changelog)
+
+### 2025-12-20 通信层优化与修复
+1.  **S7 智能批量读取 (Smart Batch Reading)**:
+    -   在 `SiemensS7Driver` 中实现了基于地址连续性的批量读取。
+    -   引入 `MaxByteGap` (默认 200 字节) 参数，自动将地址间隙过大的标签拆分为多个请求，避免无效数据读取。
+    -   优化了 TCP 包大小，显著提升了大量标签读取时的吞吐量。
+2.  **回调机制修复**:
+    -   修复了 `Channel` 与 `Driver` 职责不清导致的数据变更回调丢失问题。
+    -   **变更**: 移除了 Driver (S7/Modbus) 内部的 `tag.UpdateValue()` 调用。
+    -   **规范**: Driver 仅负责返回原始数据，统一由 `Channel` 负责比对旧值、更新 `CommunicationTag` 并触发 `OnTagValueChanged` 事件。
+3.  **启动事件控制**:
+    -   在 `Channel` 中增加了 `isFirstLoad` 逻辑，支持区分"首次加载"与"运行时变更"（目前默认保留首次触发，以确保 UI 初始化状态正确）。
+4.  **乱码修复**:
+    -   修复了 `PlcMonitorService.cs` 的文件编码问题，确保中文注释和日志正常显示。

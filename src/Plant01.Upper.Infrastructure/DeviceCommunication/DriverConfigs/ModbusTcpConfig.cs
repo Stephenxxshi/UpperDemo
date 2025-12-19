@@ -37,4 +37,10 @@ public class ModbusTcpConfig
     /// </summary>
     [Range(1000, 60000, ErrorMessage = "ConnectTimeout 必须在 1000-60000 毫秒之间")]
     public int ConnectTimeout { get; set; } = 5000;
+
+    /// <summary>
+    /// 接收超时 (毫秒, 默认: 5000)
+    /// </summary>
+    [Range(1000, 60000, ErrorMessage = "ReceiveTimeout 必须在 1000-60000 毫秒之间")]
+    public int ReceiveTimeout { get; set; } = 5000;
 }

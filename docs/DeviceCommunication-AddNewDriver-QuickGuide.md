@@ -349,8 +349,127 @@ public int OptionalParam { get; set; } = 默认值;
 
 ---
 
+## 扩展属性支持 (ExtendedProperties)
+
+从 v2.0 开始，`CommunicationTag` 支持扩展属性，允许驱动存储特定的额外字段。
+
+### 为什么需要扩展属性？
+
+不同驱动可能需要额外的标签配置：
+- **Modbus**: 需要 `StationId`（从站地址）、`FunctionCode`（功能码）
+- **Siemens S7**: 需要 `DbNumber`、`Offset`、`BitOffset`
+- **OPC UA**: 需要 `NodeId`、`NamespaceIndex`
+
+### 使用方法
+
+#### 1. 在驱动中读取扩展属性
+
+```csharp
+using Plant01.Upper.Infrastructure.DeviceCommunication.Extensions;
+
+public Task<Dictionary<string, object?>> ReadTagsAsync(IEnumerable<object> tags)
+{
+    foreach (var tagObj in tags)
+    {
+        var tag = tagObj as CommunicationTag;
+        
+        // 使用扩展方法获取驱动特定属性
+        var stationId = tag.GetModbusStationId(defaultValue: 1);
+        var functionCode = tag.GetModbusFunctionCode(defaultValue: 3);
+        
+        // 使用属性进行通信
+        _client.Station = stationId;
+        var result = _client.Read(tag.Address, functionCode);
+        // ...
+    }
+}
+```
+
+#### 2. 在配置文件中设置扩展属性
+
+```json
+{
+  "Tags": [
+    {
+      "Name": "Temperature",
+      "Address": "40001",
+      "DataType": "Int16",
+      "ExtendedProperties": {
+        "ModbusStationId": 1,
+        "ModbusFunctionCode": 3
+      }
+    }
+  ]
+}
+```
+
+#### 3. 验证扩展属性
+
+```csharp
+public void ValidateConfig(DeviceConfig config)
+{
+    var driverConfig = config.GetAndValidateDriverConfig<ModbusTcpConfig>();
+    
+    // 验证标签的扩展属性
+    foreach (var tag in config.Tags)
+    {
+        if (tag.ExtendedProperties?.ContainsKey("ModbusStationId") == true)
+        {
+            var stationId = Convert.ToByte(tag.ExtendedProperties["ModbusStationId"]);
+            if (stationId < 1 || stationId > 247)
+            {
+                throw new ValidationException($"标签 {tag.Name} 的 ModbusStationId 必须在 1-247 范围内");
+            }
+        }
+    }
+}
+```
+
+### 内置扩展方法
+
+#### Modbus 驱动
+- `GetModbusStationId()` / `SetModbusStationId()`
+- `GetModbusFunctionCode()` / `SetModbusFunctionCode()`
+
+#### Siemens S7 驱动
+- `GetS7DbNumber()` / `SetS7DbNumber()`
+- `GetS7Offset()` / `SetS7Offset()`
+- `GetS7BitOffset()` / `SetS7BitOffset()`
+
+#### OPC UA 驱动
+- `GetOpcUaNodeId()` / `SetOpcUaNodeId()`
+- `GetOpcUaNamespaceIndex()` / `SetOpcUaNamespaceIndex()`
+
+### 添加自定义扩展方法
+
+在 `CommunicationTagExtensions.cs` 中添加：
+
+```csharp
+public static class CommunicationTagExtensions
+{
+    #region YourDriver 特定扩展属性
+    
+    public static string GetYourDriverProperty(this CommunicationTag tag, string defaultValue = "")
+    {
+        return tag.GetExtendedProperty("YourDriverProperty", defaultValue);
+    }
+    
+    public static void SetYourDriverProperty(this CommunicationTag tag, string value)
+    {
+        tag.SetExtendedProperty("YourDriverProperty", value);
+    }
+    
+    #endregion
+}
+```
+
+**详细文档**: `docs/DeviceCommunication-ExtendedProperties-Guide.md`
+
+---
+
 ## 参考资料
 
+- **扩展属性指南**: `docs/DeviceCommunication-ExtendedProperties-Guide.md` ⭐
 - **完整实施总结**: `docs/DeviceCommunication-StrongTypedConfig-Implementation.md`
 - **配置文档**: `src/Plant01.Upper.Infrastructure/Configs/DeviceCommunications/README.md`
 - **架构指南**: `docs/Project-Summary-and-Guidelines.md`

@@ -7,7 +7,7 @@ using Plant01.Upper.Application.Models;
 namespace Plant01.Upper.Infrastructure.Services;
 
 /// <summary>
-/// PLC ��ط���
+/// PLC 监控服务
 /// </summary>
 public class PlcMonitorService : BackgroundService
 {
@@ -27,9 +27,9 @@ public class PlcMonitorService : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("PLC ��ط������������Ž�ģʽ����");
+        _logger.LogInformation("PLC 监控服务已启动，正在监听事件模式...");
         
-        // ���ı�ǩ�仯�¼�
+        // 订阅标签变化事件
         _deviceService.TagChanged += OnTagChanged;
         
         return Task.CompletedTask;
@@ -37,22 +37,22 @@ public class PlcMonitorService : BackgroundService
 
     private async void OnTagChanged(object? sender, TagChangeEventArgs e)
     {
-        // ����Ҫ����������ر�ǩ
-        // Ŀǰ�����Ǽ����κα�ǩ�仯���Ǵ����������ݸ���
+        // 这里不需要过滤特定标签
+        // 目前策略是监听任何标签变化，由调度器进行数据过滤
         
-        // ʾ��ӳ���߼���
-        // �����ǩ������ "ST" ��ͷ����������վ�㴥����
-        // ���� "ST01_Loading.Trigger"
+        // 示例映射逻辑：
+        // 如果标签名以 "ST" 开头，则作为站点触发器
+        // 例如 "ST01_Loading.Trigger"
         
         try
         {
-            // ���߼���Ŀǰֻ��ת��һ�У����ض���ǩ����
-            // ����ʵӦ���У������� "TriggerMap" �в��ұ�ǩ
+            // 此逻辑目前只做转发，不处理特定标签逻辑
+            // 在真实应用中，可能在 "TriggerMap" 中查找标签
             
-            // ʾ�������ֵΪ���� TRUE���򴥷��¼�
+            // 示例：当值为 TRUE 时触发事件
             if (e.NewValue.Value is bool bVal && bVal)
             {
-                // �� TagName ����ȡ StationId������ "SDJ01.HeartBreak" -> "SDJ01"��
+                // 从 TagName 中提取 StationId（例如 "SDJ01.HeartBreak" -> "SDJ01"）
                 var parts = e.TagName.Split('.');
                 var stationId = parts.Length > 0 ? parts[0] : "Unknown";
                 
@@ -61,13 +61,13 @@ public class PlcMonitorService : BackgroundService
                     source: TriggerSourceType.PLC,
                     payload: $"{e.TagName}={e.NewValue.Value}",
                     priority: TriggerPriority.Normal,
-                    debounceKey: e.TagName // ����ǩ����ȥ��
+                    debounceKey: e.TagName // 按标签名防抖
                 );
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "������ǩ�仯ʱ���� {Tag}", e.TagName);
+            _logger.LogError(ex, "处理标签变化时出错 {Tag}", e.TagName);
         }
     }
 

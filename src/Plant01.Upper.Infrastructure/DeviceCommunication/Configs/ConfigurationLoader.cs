@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Domain.Models.DeviceCommunication;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Parsers;
 
 using System.Globalization;
 using System.Text.Json;
@@ -17,11 +18,22 @@ public class ConfigurationLoader
 {
     private readonly string _configsPath;
     private readonly ILogger<ConfigurationLoader> _logger;
+    private readonly Dictionary<string, IDriverTagParser> _tagParsers;
 
     public ConfigurationLoader(string configsPath, ILogger<ConfigurationLoader> logger)
     {
         _configsPath = configsPath;
         _logger = logger;
+        
+        // 注册驱动标签解析器
+        _tagParsers = new Dictionary<string, IDriverTagParser>(StringComparer.OrdinalIgnoreCase);
+        RegisterParser(new S7TagParser());
+        // RegisterParser(new ModbusTagParser()); // 将来添加
+    }
+
+    private void RegisterParser(IDriverTagParser parser)
+    {
+        _tagParsers[parser.DriverType] = parser;
     }
 
     public List<ChannelConfig> LoadChannels()
@@ -185,7 +197,38 @@ public class ConfigurationLoader
             });
 
             csv.Context.RegisterClassMap<TagMap>();
-            tags = csv.GetRecords<CommunicationTag>().ToList();
+            
+            // 手动读取以支持动态扩展属性解析
+            var records = new List<CommunicationTag>();
+            while (csv.Read())
+            {
+                var tag = csv.GetRecord<CommunicationTag>();
+                if (tag == null) continue;
+
+                // 尝试根据 ChannelCode 查找对应的驱动类型
+                // 注意：这里简化处理，假设 CSV 中有 DriverType 列，或者通过 ChannelCode -> ChannelConfig -> DriverType 查找
+                // 由于当前 CSV 结构中只有 ChannelCode，我们需要先加载 Channels 才能知道 DriverType
+                // 或者，我们可以尝试对所有解析器进行匹配（如果 CSV 列名唯一）
+                
+                // 更好的方式：遍历所有注册的解析器，尝试解析
+                // 因为不同驱动的扩展属性列名通常不同（如 S7DbNumber vs ModbusStationId）
+                foreach (var parser in _tagParsers.Values)
+                {
+                    var props = parser.ParseExtendedProperties(csv);
+                    if (props.Count > 0)
+                    {
+                        tag.ExtendedProperties ??= new Dictionary<string, object>();
+                        foreach (var kvp in props)
+                        {
+                            tag.ExtendedProperties[kvp.Key] = kvp.Value;
+                        }
+                    }
+                }
+                
+                records.Add(tag);
+            }
+            
+            tags = records;
         }
         catch (Exception ex)
         {

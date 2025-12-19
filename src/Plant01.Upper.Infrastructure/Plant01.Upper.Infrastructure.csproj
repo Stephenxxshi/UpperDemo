@@ -18,9 +18,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <!-- Production Lines -->
-    <Content Include="Configs\production_lines.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Compile Remove="Configs\Stations\**" />
     <EmbeddedResource Remove="Configs\Stations\**" />
     <None Remove="Configs\Stations\**" />
