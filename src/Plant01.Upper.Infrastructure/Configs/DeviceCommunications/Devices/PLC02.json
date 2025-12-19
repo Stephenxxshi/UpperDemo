@@ -1,0 +1,10 @@
+{
+  "Code": "PLC02",
+  "Name": "上袋机2PLC",
+  "Enable": false,
+  "Description": "上袋机2PLC",
+  "Channel": "SiemensS7Tcp",
+  "Address": "10.168.1.22",
+  "Port": 102,
+  "ScanRate": 100
+}

@@ -1,15 +1,18 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
+using Plant01.Upper.Domain.Models;
 using Plant01.Upper.Domain.Models.DeviceCommunication;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Engine;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication;
 
 /// <summary>
-/// Éè±¸Í¨ĞÅ·şÎñ
+/// è®¾å¤‡é€šä¿¡æœåŠ¡
 /// </summary>
 public class DeviceCommunicationService : IDeviceCommunicationService, IHostedService, IDisposable
 {
@@ -19,7 +22,7 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
     private readonly TagEngine _tagEngine;
     private readonly ILogger<DeviceCommunicationService> _logger;
     private readonly ILoggerFactory _loggerFactory;
-    
+
     private readonly List<Channel> _channels = new();
     private readonly object _reloadLock = new();
     private bool _isRunning;
@@ -47,8 +50,8 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
     public async Task StartAsync(CancellationToken cancellationToken = default)
     {
         if (_isRunning) return;
-        
-        _logger.LogInformation("ÕıÔÚÆô¶¯Éè±¸Í¨ĞÅ·şÎñ...");
+
+        _logger.LogInformation("æ­£åœ¨å¯åŠ¨è®¾å¤‡é€šä¿¡æœåŠ¡...");
         await ReloadAsync();
         _isRunning = true;
     }
@@ -57,7 +60,7 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
     {
         if (!_isRunning) return;
 
-        _logger.LogInformation("ÕıÔÚÍ£Ö¹Éè±¸Í¨ĞÅ·şÎñ...");
+        _logger.LogInformation("æ­£åœ¨åœæ­¢è®¾å¤‡é€šä¿¡æœåŠ¡...");
         await StopChannelsAsync();
         _isRunning = false;
     }
@@ -73,70 +76,76 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
         {
             try
             {
-                _logger.LogInformation("ÕıÔÚÖØĞÂ¼ÓÔØÅäÖÃ...");
+                _logger.LogInformation("æ­£åœ¨é‡æ–°åŠ è½½é…ç½®...");
 
-                // 1. Í£Ö¹ÏÖÓĞÍ¨µÀ
+                // 1. åœæ­¢ç°æœ‰é€šé“
                 await StopChannelsAsync();
 
-                // 2. Çå³ı±êÇ©
+                // 2. æ¸…é™¤æ ‡ç­¾
                 _tagEngine.Clear();
 
-                // 3. ¼ÓÔØÅäÖÃ
+                // 3. åŠ è½½é…ç½®
                 var channelConfigs = _configLoader.LoadChannels();
                 var allTags = _configLoader.LoadTags();
 
-                // 4. ³õÊ¼»¯Í¨µÀºÍÉè±¸
+                // 4. åˆå§‹åŒ–é€šé“å’Œè®¾å¤‡
                 foreach (var channelConfig in channelConfigs)
                 {
                     if (!channelConfig.Enabled) continue;
 
-                    foreach (var deviceConfig in channelConfig.Devices)
+                    try
                     {
-                        if (!deviceConfig.Enabled) continue;
+                        // ä¸ºæ¯ä¸ªé€šé“åˆ›å»ºä¸€ä¸ª Channel å®ä¾‹
+                        var channelLogger = _loggerFactory.CreateLogger<Channel>();
+                        var channel = new Channel(
+                            channelConfig,
+                            driverType => _driverFactory.CreateDriver(driverType),
+                            channelLogger,
+                            _loggerFactory,
+                            OnTagValueChanged);
 
-                        // ¹ıÂË´ËÉè±¸µÄ±êÇ©
-                        var deviceTags = allTags.Where(t => 
-                            t.ChannelName.Equals(channelConfig.Name, StringComparison.OrdinalIgnoreCase) &&
-                            t.DeviceName.Equals(deviceConfig.Name, StringComparison.OrdinalIgnoreCase)
-                        ).ToList();
-                        
-                        // ×¢²á±êÇ©
-                        foreach (var tag in deviceTags)
+                        // ä¸ºé€šé“æ·»åŠ æ‰€æœ‰å¯ç”¨çš„è®¾å¤‡
+                        foreach (var deviceConfig in channelConfig.Devices)
                         {
-                            _tagEngine.RegisterTag(tag);
+                            if (!deviceConfig.Enabled) continue;
+
+                            // è¿‡æ»¤æ­¤è®¾å¤‡çš„æ ‡ç­¾
+                            var deviceTags = allTags.Where(t =>
+                                t.ChannelCode.Equals(channelConfig.Code, StringComparison.OrdinalIgnoreCase) &&
+                                t.DeviceCode.Equals(deviceConfig.Name, StringComparison.OrdinalIgnoreCase)
+                            ).ToList();
+
+                            // æ³¨å†Œæ ‡ç­¾åˆ°å¼•æ“
+                            foreach (var tag in deviceTags)
+                            {
+                                _tagEngine.RegisterTag(tag);
+                            }
+
+                            // å°†è®¾å¤‡æ·»åŠ åˆ°é€šé“
+                            channel.AddDevice(deviceConfig, deviceTags);
+                            _logger.LogInformation("å·²æ·»åŠ è®¾å¤‡ {Device} åˆ°é€šé“ {Channel}ï¼ŒåŒ…å« {TagCount} ä¸ªæ ‡ç­¾",
+                                deviceConfig.Name, channelConfig.Name, deviceTags.Count);
                         }
 
-                        try 
-                        {
-                            // ´´½¨Çı¶¯
-                            var driver = _driverFactory.CreateDriver(channelConfig.DriverType);
-                            driver.Initialize(deviceConfig);
-                            driver.ValidateConfig(deviceConfig);
-
-                            // ´´½¨Í¨µÀ£¨Éè±¸Á¬½Ó£©
-                            var channelLogger = _loggerFactory.CreateLogger<Channel>();
-                            var channel = new Channel(deviceConfig, driver, deviceTags, channelLogger, OnTagValueChanged);
-                            
-                            _channels.Add(channel);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError(ex, "ÔÚÍ¨µÀ {Channel} ÖĞ³õÊ¼»¯Éè±¸ {Device} Ê§°Ü", deviceConfig.Name, channelConfig.Name);
-                        }
+                        _channels.Add(channel);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "åˆå§‹åŒ–é€šé“ {Channel} å¤±è´¥", channelConfig.Name);
                     }
                 }
 
-                // 5. Æô¶¯Í¨µÀ
+                // 5. å¯åŠ¨é€šé“
                 foreach (var channel in _channels)
                 {
                     channel.Start();
                 }
 
-                _logger.LogInformation("ÖØĞÂ¼ÓÔØÍê³É¡£Æô¶¯ÁË {Count} ¸öÉè±¸Á¬½Ó¡£", _channels.Count);
+                _logger.LogInformation("é‡æ–°åŠ è½½å®Œæˆã€‚å¯åŠ¨äº† {Count} ä¸ªé€šé“ã€‚", _channels.Count);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "ÖØĞÂ¼ÓÔØÊ§°Ü¡£");
+                _logger.LogError(ex, "é‡æ–°åŠ è½½å¤±è´¥ã€‚");
             }
             finally
             {
@@ -155,19 +164,22 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
         _channels.Clear();
     }
 
-    private void OnTagValueChanged(Tag tag)
+    private void OnTagValueChanged(CommunicationTag tag)
     {
-        TagChanged?.Invoke(this, new TagChangeEventArgs(tag.Name, tag.GetSnapshot()));
+        var snapshot = tag.GetSnapshot();
+        var tagValue = new TagValue(tag.Name, snapshot.Value, (Domain.Models.TagQuality)snapshot.Quality, snapshot.Timestamp);
+        TagChanged?.Invoke(this, new TagChangeEventArgs(tag.Name, tagValue));
     }
 
-    public TagData GetTagValue(string tagName)
+    public TagValue GetTagValue(string tagName)
     {
         var tag = _tagEngine.GetTag(tagName);
         if (tag == null)
         {
-            return new TagData(null, TagQuality.Bad, DateTime.MinValue);
+            return new TagValue(tagName, null, Domain.Models.TagQuality.Bad, DateTime.MinValue);
         }
-        return tag.GetSnapshot();
+        var snapshot = tag.GetSnapshot();
+        return new TagValue(tag.Name, snapshot.Value, (Domain.Models.TagQuality)snapshot.Quality, snapshot.Timestamp);
     }
 
     public T GetTagValue<T>(string tagName, T defaultValue = default)
@@ -181,13 +193,13 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
         var tag = _tagEngine.GetTag(tagName);
         if (tag == null)
         {
-            throw new KeyNotFoundException($"±êÇ© '{tagName}' Î´ÕÒµ½¡£");
+            throw new KeyNotFoundException($"æ ‡ç­¾ '{tagName}' æœªæ‰¾åˆ°ã€‚");
         }
 
-        var channel = _channels.FirstOrDefault(c => c.Name == tag.DeviceName);
+        var channel = _channels.FirstOrDefault(c => c.Name.Equals(tag.ChannelCode, StringComparison.OrdinalIgnoreCase));
         if (channel == null)
         {
-             throw new InvalidOperationException($"±êÇ© '{tagName}' µÄÍ¨µÀ/Éè±¸Î´ÕÒµ½¡£");
+            throw new InvalidOperationException($"æ ‡ç­¾ '{tagName}' çš„é€šé“ '{tag.ChannelCode}' æœªæ‰¾åˆ°ã€‚");
         }
 
         await channel.WriteTagAsync(tagName, value);

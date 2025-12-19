@@ -1,5 +1,6 @@
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Domain.Models.DeviceCommunication;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
 
@@ -32,14 +33,17 @@ public class SimulationDriver : IDriver
         return Task.CompletedTask;
     }
 
-    public Task<Dictionary<string, object?>> ReadTagsAsync(IEnumerable<Tag> tags)
+    public Task<Dictionary<string, object?>> ReadTagsAsync(IEnumerable<object> tags)
     {
         var result = new Dictionary<string, object?>();
         
         if (!_isConnected) return Task.FromResult(result);
 
-        foreach (var tag in tags)
+        foreach (var tagObj in tags)
         {
+            var tag = tagObj as CommunicationTag;
+            if (tag == null) continue;
+            
             // Simple simulation logic
             object? val = null;
             
@@ -91,7 +95,7 @@ public class SimulationDriver : IDriver
         return Task.FromResult(result);
     }
 
-    public Task WriteTagAsync(Tag tag, object value)
+    public Task WriteTagAsync(object tag, object value)
     {
         return Task.CompletedTask;
     }

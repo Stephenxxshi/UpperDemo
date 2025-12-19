@@ -1,17 +1,17 @@
 using System.Collections.Concurrent;
-using Plant01.Upper.Domain.Models.DeviceCommunication;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Engine;
 
 /// <summary>
-/// ±êÇ©ÒıÇæ
+/// æ ‡ç­¾å¼•æ“ï¼ˆInfrastructure å±‚ - ä½¿ç”¨ CommunicationTagï¼‰
 /// </summary>
 public class TagEngine
 {
-    // Ïß³Ì°²È«µÄ×Öµä£¬ÓÃÓÚ O(1) ²éÕÒ
-    private readonly ConcurrentDictionary<string, Tag> _tags = new(StringComparer.OrdinalIgnoreCase);
+    // çº¿ç¨‹å®‰å…¨çš„å­—å…¸ï¼Œæä¾› O(1) æŸ¥è¯¢
+    private readonly ConcurrentDictionary<string, CommunicationTag> _tags = new(StringComparer.OrdinalIgnoreCase);
 
-    public void RegisterTag(Tag tag)
+    public void RegisterTag(CommunicationTag tag)
     {
         _tags[tag.Name] = tag;
     }
@@ -21,13 +21,13 @@ public class TagEngine
         _tags.Clear();
     }
 
-    public Tag? GetTag(string tagName)
+    public CommunicationTag? GetTag(string tagName)
     {
         _tags.TryGetValue(tagName, out var tag);
         return tag;
     }
 
-    public IEnumerable<Tag> GetAllTags()
+    public IEnumerable<CommunicationTag> GetAllTags()
     {
         return _tags.Values;
     }

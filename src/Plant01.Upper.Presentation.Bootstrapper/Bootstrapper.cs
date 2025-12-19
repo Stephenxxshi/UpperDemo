@@ -24,6 +24,8 @@ using Plant01.Upper.Infrastructure.DeviceCommunication.Engine;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 
 using Serilog;
+using Plant01.Upper.Infrastructure.Workstations;
+using Plant01.Upper.Infrastructure.Workstations.Processors;
 
 namespace Plant01.Upper.Presentation.Bootstrapper;
 
@@ -100,7 +102,8 @@ public static class Bootstrapper
         // 注册应用服务
         services.AddSingleton<IMesWebApi, MesWebApi>();
         services.AddScoped<IMesService, MesService>();
-        services.AddSingleton<WorkOrderPushCommandHandle, WorkOrderPushCommandHandle>(); // 改为 Singleton
+        services.AddSingleton<WorkOrderPushCommandHandle>();
+        services.AddSingleton<IWorkOrderPushCommandHandle>(sp => sp.GetRequiredService<WorkOrderPushCommandHandle>());
         
         // 注册通用触发与监控服务
         services.AddSingleton<TriggerDispatcherService>();
@@ -123,6 +126,15 @@ public static class Bootstrapper
 
         services.AddScoped<IProductionQueryService, ProductionQueryService>();
         services.AddScoped<IWorkOrderRepository, WorkOrderRepository>();
+
+        // 注册产线配置管理器(内存式管理)
+        services.AddSingleton<ProductionConfigManager>();
+        
+        // 注册设备配置服务(从独立配置文件加载)
+        services.AddSingleton<EquipmentConfigService>();
+        
+        // 注册产线配置初始化服务(依赖 EquipmentConfigService)
+        services.AddHostedService<ProductionLineConfigService>();
 
         // 注册 AutoMapper
         services.AddAutoMapper(cfg => cfg.AddProfile<ProductionMappingProfile>());
@@ -186,6 +198,14 @@ public static class Bootstrapper
         services.AddSingleton<IDeviceCommunicationService>(sp => sp.GetRequiredService<DeviceCommunicationService>());
         services.AddHostedService<DeviceCommunicationService>(sp => sp.GetRequiredService<DeviceCommunicationService>());
 
+        // ⭐ 注册工位流程管理（新增）
+        // 1. 注册工位处理器
+        services.AddSingleton<IWorkstationProcessor, PackagingWorkstationProcessor>();
+        // services.AddSingleton<IWorkstationProcessor, WeighingWorkstationProcessor>();  // 未来添加
+        // services.AddSingleton<IWorkstationProcessor, PalletizingWorkstationProcessor>(); // 未来添加
+        
+        // 2. 注册工位流程服务（监听触发标签）
+        services.AddHostedService<WorkstationProcessService>();
 
         // 这里可以继续注册其他通用服务，例如 AutoMapper 等
     }

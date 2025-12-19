@@ -23,7 +23,7 @@ public record FinishPalletizingRequest
     /// <summary>
     /// MES生产任务ID，非空
     /// </summary>
-    public required string JobId { get; init; }
+    public required string JobNo { get; init; }
 
     /// <summary>
     /// 打包明细，非空

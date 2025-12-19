@@ -2,11 +2,11 @@
     x:Class="Plant01.Upper.Wpf.Views.MesDebugView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:Plant01.Upper.Wpf.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Plant01.Upper.Presentation.Core.ViewModels;assembly=Plant01.Upper.Presentation.Core"
     xmlns:wpfui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
-    xmlns:converters="clr-namespace:Plant01.Upper.Wpf.Converters"
     d:DataContext="{d:DesignInstance vm:MesDebugViewModel}"
     d:DesignHeight="800"
     d:DesignWidth="1200"
@@ -161,7 +161,7 @@
                                     Grid.Row="1"
                                     Grid.Column="3"
                                     Margin="0,0,0,5"
-                                    Text="{Binding JobId, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IntToStringConverter}}" />
+                                    Text="{Binding JobId, UpdateSourceTrigger=PropertyChanged}" />
 
                                 <TextBlock
                                     Grid.Row="2"

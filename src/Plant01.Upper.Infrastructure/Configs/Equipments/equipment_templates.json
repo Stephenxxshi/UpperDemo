@@ -1,0 +1,178 @@
+[
+  {
+    "Code": "L1_BP01",
+    "Name": "1#线-1号上袋机",
+    "Type": "BagPicker",
+    "Capabilities": "Heartbeat, AlarmReport",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_PM01",
+    "Name": "1#线-1号包装机",
+    "Type": "PackageMachine",
+    "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+    "Sequence": 2,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_BP02",
+    "Name": "1#线-2号上袋机",
+    "Type": "BagPicker",
+    "Capabilities": "Heartbeat, AlarmReport",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_PM02",
+    "Name": "1#线-2号包装机",
+    "Type": "PackageMachine",
+    "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+    "Sequence": 2,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_BP03",
+    "Name": "1#线-3号上袋机",
+    "Type": "BagPicker",
+    "Capabilities": "Heartbeat, AlarmReport",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_PM03",
+    "Name": "1#线-3号包装机",
+    "Type": "PackageMachine",
+    "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+    "Sequence": 2,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_BP04",
+    "Name": "1#线-4号上袋机",
+    "Type": "BagPicker",
+    "Capabilities": "Heartbeat, AlarmReport",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_PM04",
+    "Name": "1#线-4号包装机",
+    "Type": "PackageMachine",
+    "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+    "Sequence": 2,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_BP05",
+    "Name": "1#线-5号上袋机",
+    "Type": "BagPicker",
+    "Capabilities": "Heartbeat, AlarmReport",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_PM05",
+    "Name": "1#线-5号包装机",
+    "Type": "PackageMachine",
+    "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+    "Sequence": 2,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_BP06",
+    "Name": "1#线-6号上袋机",
+    "Type": "BagPicker",
+    "Capabilities": "Heartbeat, AlarmReport",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_PM06",
+    "Name": "1#线-6号包装机",
+    "Type": "PackageMachine",
+    "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+    "Sequence": 2,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_BP07",
+    "Name": "1#线-7号上袋机",
+    "Type": "BagPicker",
+    "Capabilities": "Heartbeat, AlarmReport",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_PM07",
+    "Name": "1#线-7号包装机",
+    "Type": "PackageMachine",
+    "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+    "Sequence": 2,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_BP08",
+    "Name": "1#线-8号上袋机",
+    "Type": "BagPicker",
+    "Capabilities": "Heartbeat, AlarmReport",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_PM08",
+    "Name": "1#线-8号包装机",
+    "Type": "PackageMachine",
+    "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+    "Sequence": 2,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_WGH01",
+    "Name": "1#线-称重机",
+    "Type": "Weigher",
+    "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_PAL01",
+    "Name": "1#线-1号码垛机",
+    "Type": "Palletizer",
+    "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_PAL02",
+    "Name": "1#线-2号码垛机",
+    "Type": "Palletizer",
+    "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_PAL03",
+    "Name": "1#线-3号码垛机",
+    "Type": "Palletizer",
+    "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_WRAP01",
+    "Name": "1#线-缠绕机",
+    "Type": "StretchWrapper",
+    "Capabilities": "Heartbeat, AlarmReport",
+    "Sequence": 1,
+    "Enabled": true
+  },
+  {
+    "Code": "L1_LBL01",
+    "Name": "1#线-贴标机",
+    "Type": "LabelPrinter",
+    "Capabilities": "Heartbeat, AlarmReport",
+    "Sequence": 1,
+    "Enabled": true
+  }
+]

@@ -75,17 +75,12 @@ public partial class App : System.Windows.Application
     {
         try
         {
-            // 确保 MesCommandService 被实例化并订阅事件
-            var mesCommandService = Host.Services.GetRequiredService<IWorkOrderPushCommandHandle>();
+            // 获取并启动 WorkOrderPushCommandHandle 服务
+            var workOrderPushCommandHandle = Host.Services.GetRequiredService<IWorkOrderPushCommandHandle>();
+            await workOrderPushCommandHandle.StartAsync();
             
-            var mesWebApi = Host.Services.GetRequiredService<IMesWebApi>();
             var logger = Host.Services.GetService<ILogger<App>>();
-            
-            if (!mesWebApi.IsRunning)
-            {
-                await mesWebApi.StartAsync();
-                logger?.LogInformation("MES Web API 服务已自动启动");
-            }
+            logger?.LogInformation("MES Web API 服务已自动启动");
         }
         catch (Exception ex)
         {

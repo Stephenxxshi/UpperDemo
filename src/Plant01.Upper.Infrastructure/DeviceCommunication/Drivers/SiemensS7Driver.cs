@@ -1,8 +1,12 @@
-﻿using Plant01.Upper.Application.Interfaces.DeviceCommunication;
+﻿using HslCommunication.Profinet.Siemens;
+
+using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Domain.Models.DeviceCommunication;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
 using Plant01.Upper.Infrastructure.DeviceCommunication.DeviceAddressing;
-using HslCommunication;
-using HslCommunication.Profinet.Siemens;
+using Plant01.Upper.Infrastructure.DeviceCommunication.DriverConfigs;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
 
@@ -21,37 +25,33 @@ public class SiemensS7Driver : IDriver
 
     public void ValidateConfig(DeviceConfig config)
     {
-        if (!config.Options.ContainsKey("IpAddress"))
-            throw new ArgumentException("IpAddress is required for SiemensS7Driver");
+        // 使用强类型配置和自动验证
+        var driverConfig = config.GetAndValidateDriverConfig<SiemensS7Config>();
         
-        if (!config.Options.ContainsKey("Port"))
-            throw new ArgumentException("Port is required for SiemensS7Driver");
+        // 验证已通过 DataAnnotations 自动完成
+        // 如需额外的业务验证,可在此添加
     }
 
     public Task ConnectAsync()
     {
-        if (_config == null) throw new InvalidOperationException("Driver not initialized");
+        if (_config == null) throw new InvalidOperationException("驱动程序未初始化");
 
-        var ip = _config.Options.TryGetValue("IpAddress", out var ipObj) ? ipObj?.ToString() : null;
-        var port = _config.Options.TryGetValue("Port", out var portObj) && int.TryParse(portObj?.ToString(), out var p) ? p : 102;
-        var rack = _config.Options.TryGetValue("Rack", out var rackObj) && int.TryParse(rackObj?.ToString(), out var r) ? r : 0;
-        var slot = _config.Options.TryGetValue("Slot", out var slotObj) && int.TryParse(slotObj?.ToString(), out var s) ? s : 1;
+        // 使用强类型配置类
+        var driverConfig = _config.GetDriverConfig<SiemensS7Config>();
 
-        if (string.IsNullOrWhiteSpace(ip)) throw new ArgumentException("IpAddress is required for SiemensS7Driver");
-
-        _client = new SiemensS7Net(SiemensPLCS.S1200, ip)
+        _client = new SiemensS7Net(SiemensPLCS.S1200, driverConfig.IpAddress)
         {
-            Port = port,
-            Rack = (byte)rack,
-            Slot = (byte)slot,
-            ConnectTimeOut = 5000
+            Port = driverConfig.Port,
+            Rack = (byte)driverConfig.Rack,
+            Slot = (byte)driverConfig.Slot,
+            ConnectTimeOut = driverConfig.ConnectTimeout
         };
 
         var res = _client.ConnectServer();
         _isConnected = res.IsSuccess;
         if (!_isConnected)
         {
-            throw new InvalidOperationException($"S7 connect failed: {res.Message}");
+            throw new InvalidOperationException($"S7 连接失败: {res.Message}");
         }
         return Task.CompletedTask;
     }
@@ -75,13 +75,16 @@ public class SiemensS7Driver : IDriver
         DisconnectAsync().Wait();
     }
 
-    public Task<Dictionary<string, object?>> ReadTagsAsync(IEnumerable<Tag> tags)
+    public Task<Dictionary<string, object?>> ReadTagsAsync(IEnumerable<object> tags)
     {
-        if (_client == null || !_isConnected) throw new InvalidOperationException("S7 not connected");
+        if (_client == null || !_isConnected) throw new InvalidOperationException("S7 未连接");
         var dict = new Dictionary<string, object?>();
 
-        foreach (var tag in tags)
+        foreach (var tagObj in tags)
         {
+            var tag = tagObj as CommunicationTag;
+            if (tag == null) continue;
+            
             if (!S7AddressParser.TryParse(tag.Address, out var addr))
             {
                 dict[tag.Name] = null;
@@ -90,7 +93,7 @@ public class SiemensS7Driver : IDriver
 
             try
             {
-                // String: use ArrayLength as length parameter
+                // 字符串：使用 ArrayLength 作为长度参数
                 if (tag.DataType == TagDataType.String)
                 {
                     var len = Math.Max(1, (int)tag.ArrayLength);
@@ -99,7 +102,7 @@ public class SiemensS7Driver : IDriver
                     continue;
                 }
 
-                // Arrays for numeric types: sequential offsets by type size
+                // 数值类型数组：按类型大小顺序偏移
                 int count = Math.Max(1, (int)tag.ArrayLength);
                 if (count > 1 && addr.Kind != S7AddressKind.DBX)
                 {
@@ -118,9 +121,12 @@ public class SiemensS7Driver : IDriver
         return Task.FromResult(dict);
     }
 
-    public Task WriteTagAsync(Tag tag, object value)
+    public Task WriteTagAsync(object tagObj, object value)
     {
-        if (_client == null || !_isConnected) throw new InvalidOperationException("S7 not connected");
+        var tag = tagObj as CommunicationTag;
+        if (tag == null) throw new ArgumentException("Invalid tag type");
+        
+        if (_client == null || !_isConnected) throw new InvalidOperationException("S7 未连接");
         if (!S7AddressParser.TryParse(tag.Address, out var addr)) return Task.CompletedTask;
 
         // String: ArrayLength作为长度
@@ -166,7 +172,7 @@ public class SiemensS7Driver : IDriver
         return Task.CompletedTask;
     }
 
-    private static object? ReadScalar(SiemensS7Net client, TagDataType type, S7Address addr)
+    private static object? ReadScalar(SiemensS7Net client, Models.TagDataType type, S7Address addr)
     {
         switch (type)
         {
@@ -221,14 +227,14 @@ public class SiemensS7Driver : IDriver
                     return r.IsSuccess ? r.Content : null;
                 }
             case TagDataType.String:
-                // handled outside with length
+                // 在外部处理长度
                 return null;
             default:
                 return null;
         }
     }
 
-    private static object ReadArray(SiemensS7Net client, TagDataType type, S7Address addr, int count)
+    private static object ReadArray(SiemensS7Net client, Models.TagDataType type, S7Address addr, int count)
     {
         int size = type switch
         {

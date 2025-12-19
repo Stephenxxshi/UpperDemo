@@ -41,8 +41,8 @@ public class MesService : IMesService
 
         try
         {
-            _logger.LogInformation("调用锐派码垛完成接口，AGV: {AgvDeviceCode}, 托盘ID: {PalletId}, 任务ID: {JobId}",
-                request.AgvDeviceCode, request.PalletId, request.JobId);
+            _logger.LogInformation("调用锐派码垛完成接口，AGV: {AgvDeviceCode}, 托盘ID: {PalletId}, No: {JobNo}",
+                request.AgvDeviceCode, request.PalletId, request.JobNo);
 
             // 生成认证密钥
             var authKey = GenerateAuthKey();
@@ -57,7 +57,7 @@ public class MesService : IMesService
                 agvDeviceCode = request.AgvDeviceCode,
                 palletId = request.PalletId,
                 deviceCode = request.DeviceCode,
-                jobId = request.JobId,
+                jobNo = request.JobNo,
                 list = request.List.Select(item => new
                 {
                     bagNums = item.BagNums,
@@ -69,19 +69,19 @@ public class MesService : IMesService
 
             if (response?.IsSuccess == true)
             {
-                _logger.LogInformation("锐派码垛完成接口调用成功，任务ID: {JobId}", request.JobId);
+                _logger.LogInformation("锐派码垛完成接口调用成功，任务ID: {jobNo}", request.JobNo);
             }
             else
             {
-                _logger.LogWarning("锐派码垛完成接口调用失败，任务ID: {JobId}, 错误码: {ErrorCode}, 错误信息: {ErrorMsg}",
-                    request.JobId, response?.ErrorCode, response?.ErrorMsg);
+                _logger.LogWarning("锐派码垛完成接口调用失败，任务ID: {jobNo}, 错误码: {ErrorCode}, 错误信息: {ErrorMsg}",
+                    request.JobNo, response?.ErrorCode, response?.ErrorMsg);
             }
 
             return response ?? new MesApiResponse { ErrorCode = -1, ErrorMsg = "响应为空" };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "调用锐派码垛完成接口异常，任务ID: {JobId}", request.JobId);
+            _logger.LogError(ex, "调用锐派码垛完成接口异常，任务ID: {jobNo}", request.JobNo);
             throw;
         }
     }
@@ -187,7 +187,7 @@ public class MesService : IMesService
             AgvDeviceCode = "AGV_DEFAULT", // TODO: 配置或查找
             PalletId = palletCode,
             DeviceCode = "ROBOT_01",       // TODO: 配置
-            JobId = workOrderCode,
+            JobNo = workOrderCode,
             List = new List<PackageDetail>() // TODO: 查询托盘内的包明细
         };
 

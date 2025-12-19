@@ -4,10 +4,12 @@ using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Domain.Models.DeviceCommunication;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
 
 using System.Globalization;
 using System.Text.Json;
 using Plant01.Upper.Infrastructure.DeviceCommunication.DeviceAddressing;
+using System.Text;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
 
@@ -25,7 +27,7 @@ public class ConfigurationLoader
     public List<ChannelConfig> LoadChannels()
     {
         var channels = new List<ChannelConfig>();
-        var channelsPath = Path.Combine(_configsPath, "Channels");
+        var channelsPath = Path.Combine(_configsPath, "DeviceCommunications", "Channels");
 
         if (!Directory.Exists(channelsPath))
         {
@@ -39,40 +41,63 @@ public class ConfigurationLoader
             try
             {
                 var json = File.ReadAllText(file);
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var configDict = JsonSerializer.Deserialize<Dictionary<string, object>>(json, options);
-
-                if (configDict != null)
+                
+                // 使用 Utf8JsonReader 以支持尾随逗号和注释的解析
+                var utf8 = Encoding.UTF8.GetBytes(json);
+                var readerOptions = new JsonReaderOptions
                 {
-                    var config = new ChannelConfig();
+                    CommentHandling = JsonCommentHandling.Skip,
+                    AllowTrailingCommas = true
+                };
+                var reader = new Utf8JsonReader(utf8, readerOptions);
 
-                    // 提取 Channel 级别的属性
-                    if (configDict.TryGetValue("Name", out var name)) config.Name = name?.ToString() ?? "";
-                    if (configDict.TryGetValue("Drive", out var drive)) config.DriverType = drive?.ToString() ?? "";
-                    if (configDict.TryGetValue("Enable", out var enable) && bool.TryParse(enable?.ToString(), out bool e)) config.Enabled = e;
+                using var doc = JsonDocument.ParseValue(ref reader);
+                var root = doc.RootElement;
 
-                    // 为此通道创建默认设备（根据旧结构假设 1:1 映射）
-                    var device = new DeviceConfig
+                var config = new ChannelConfig();
+                
+                // 提取 Channel 级别的标准字段
+                if (root.TryGetProperty("Code", out var code)) 
+                    config.Code = code.GetString() ?? "";
+                if (root.TryGetProperty("Name", out var name)) 
+                    config.Name = name.GetString() ?? "";
+                if (root.TryGetProperty("Enable", out var enable)) 
+                    config.Enabled = enable.GetBoolean();
+                if (root.TryGetProperty("Description", out var desc)) 
+                    config.Description = desc.GetString() ?? "";
+                if (root.TryGetProperty("Drive", out var drive)) 
+                    config.DriverType = drive.GetString() ?? "";
+                if (root.TryGetProperty("DriveModel", out var driveModel)) 
+                    config.DriveModel = driveModel.GetString() ?? "";
+
+                // 解析 Devices 数组
+                if (root.TryGetProperty("Devices", out var devicesElement) && 
+                    devicesElement.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var deviceElement in devicesElement.EnumerateArray())
                     {
-                        Name = config.Name, // 暂时使用通道名称作为设备名称
-                        Enabled = config.Enabled
-                    };
-
-                    // 将所有其他配置项原封不动地放入 Options 字典
-                    // 不做任何字段映射或类型转换，完全由驱动自己解释
-                    foreach (var kvp in configDict)
-                    {
-                        // 跳过 Channel 级别的属性
-                        if (kvp.Key == "Name" || kvp.Key == "Drive" || kvp.Key == "Enable")
-                            continue;
-
-                        // 所有驱动特定的配置都放进 Options
-                        device.Options[kvp.Key] = kvp.Value;
+                        var device = ParseDevice(deviceElement);
+                        if (device != null)
+                        {
+                            config.Devices.Add(device);
+                        }
                     }
-
-                    config.Devices.Add(device);
-                    channels.Add(config);
                 }
+
+                // 其他 Channel 级别字段放入 Options (如果需要)
+                foreach (var prop in root.EnumerateObject())
+                {
+                    if (prop.Name == "Code" || prop.Name == "Name" || prop.Name == "Enable" || 
+                        prop.Name == "Description" || prop.Name == "Drive" || prop.Name == "DriveModel" || 
+                        prop.Name == "Devices" || prop.Name == "$schema")
+                        continue;
+                        
+                    config.Options[prop.Name] = JsonElementToObject(prop.Value);
+                }
+
+                channels.Add(config);
+                _logger.LogInformation("已加载通道 {Channel},包含 {DeviceCount} 个设备", 
+                    config.Name, config.Devices.Count);
             }
             catch (Exception ex)
             {
@@ -83,10 +108,65 @@ public class ConfigurationLoader
         return channels;
     }
 
-    public List<Tag> LoadTags()
+    /// <summary>
+    /// 解析单个 Device
+    /// </summary>
+    private DeviceConfig? ParseDevice(JsonElement deviceElement)
     {
-        var tags = new List<Tag>();
-        var tagsFile = Path.Combine(_configsPath, "tags.csv");
+        try
+        {
+            var device = new DeviceConfig();
+            
+            // 提取 Device 标准字段
+            if (deviceElement.TryGetProperty("Name", out var name))
+                device.Name = name.GetString() ?? "";
+            if (deviceElement.TryGetProperty("Description", out var desc))
+                device.Description = desc.GetString() ?? "";
+            if (deviceElement.TryGetProperty("Enable", out var enable))
+                device.Enabled = enable.GetBoolean();
+
+            // 将所有其他字段放入 Device.Options
+            foreach (var prop in deviceElement.EnumerateObject())
+            {
+                if (prop.Name == "Name" || prop.Name == "Description" || prop.Name == "Enable")
+                    continue;
+                    
+                device.Options[prop.Name] = JsonElementToObject(prop.Value);
+            }
+
+            return device;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "解析设备配置失败");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// JsonElement 转换为 object
+    /// </summary>
+    private static object? JsonElementToObject(JsonElement element)
+    {
+        return element.ValueKind switch
+        {
+            JsonValueKind.String => element.GetString(),
+            JsonValueKind.Number => element.TryGetInt32(out int i) ? i : 
+                                   element.TryGetInt64(out long l) ? l : element.GetDouble(),
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            JsonValueKind.Array => element.EnumerateArray()
+                .Select(JsonElementToObject).ToArray(),
+            JsonValueKind.Object => element.EnumerateObject()
+                .ToDictionary(p => p.Name, p => JsonElementToObject(p.Value)),
+            _ => null
+        };
+    }
+
+    public List<CommunicationTag> LoadTags()
+    {
+        var tags = new List<CommunicationTag>();
+        var tagsFile = Path.Combine(_configsPath, "DeviceCommunications", "Tags", "tags.csv");
 
         if (!File.Exists(tagsFile))
         {
@@ -105,7 +185,7 @@ public class ConfigurationLoader
             });
 
             csv.Context.RegisterClassMap<TagMap>();
-            tags = csv.GetRecords<Tag>().ToList();
+            tags = csv.GetRecords<CommunicationTag>().ToList();
         }
         catch (Exception ex)
         {
@@ -158,22 +238,22 @@ public class ConfigurationLoader
                 t.ArrayLength = arrayLen;
                 if (!string.IsNullOrWhiteSpace(s.RW))
                 {
-                    t.AccessRights = s.RW.Equals("R", StringComparison.OrdinalIgnoreCase) ? AccessRights.Read
-                        : s.RW.Equals("W", StringComparison.OrdinalIgnoreCase) ? AccessRights.Write
-                        : AccessRights.ReadWrite;
+                    t.AccessRights = s.RW.Equals("R", StringComparison.OrdinalIgnoreCase) ? Models.AccessRights.Read
+                        : s.RW.Equals("W", StringComparison.OrdinalIgnoreCase) ? Models.AccessRights.Write
+                        : Models.AccessRights.ReadWrite;
                 }
             }
             else
             {
-                existing.Add(new Tag
+                existing.Add(new CommunicationTag
                 {
                     Name = s.TagName,
                     Address = s.Address,
                     DataType = dataType,
                     ArrayLength = arrayLen,
-                    AccessRights = string.IsNullOrWhiteSpace(s.RW) ? AccessRights.Read :
-                        s.RW.Equals("R", StringComparison.OrdinalIgnoreCase) ? AccessRights.Read :
-                        s.RW.Equals("W", StringComparison.OrdinalIgnoreCase) ? AccessRights.Write : AccessRights.ReadWrite
+                    AccessRights = string.IsNullOrWhiteSpace(s.RW) ? Models.AccessRights.Read :
+                        s.RW.Equals("R", StringComparison.OrdinalIgnoreCase) ? Models.AccessRights.Read :
+                        s.RW.Equals("W", StringComparison.OrdinalIgnoreCase) ? Models.AccessRights.Write : Models.AccessRights.ReadWrite
                 });
             }
         }
@@ -229,19 +309,19 @@ public class ConfigurationLoader
         }
     }
 
-    private static TagDataType ParseDataType(string typeStr)
+    private static Models.TagDataType ParseDataType(string typeStr)
     {
-        if (Enum.TryParse<TagDataType>(typeStr, true, out var result))
+        if (Enum.TryParse<Models.TagDataType>(typeStr, true, out var result))
             return result;
-        if (string.Equals(typeStr, "Short", StringComparison.OrdinalIgnoreCase)) return TagDataType.Int16;
-        if (string.Equals(typeStr, "UShort", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt16;
-        if (string.Equals(typeStr, "Int", StringComparison.OrdinalIgnoreCase)) return TagDataType.Int32;
-        if (string.Equals(typeStr, "UInt", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt32;
-        if (string.Equals(typeStr, "Bool", StringComparison.OrdinalIgnoreCase)) return TagDataType.Boolean;
-        if (string.Equals(typeStr, "Real", StringComparison.OrdinalIgnoreCase)) return TagDataType.Float;
-        if (string.Equals(typeStr, "DInt", StringComparison.OrdinalIgnoreCase)) return TagDataType.Int32;
-        if (string.Equals(typeStr, "Word", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt16;
-        if (string.Equals(typeStr, "DWord", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt32;
-        return TagDataType.Int16;
+        if (string.Equals(typeStr, "Short", StringComparison.OrdinalIgnoreCase)) return Models.TagDataType.Int16;
+        if (string.Equals(typeStr, "UShort", StringComparison.OrdinalIgnoreCase)) return Models.TagDataType.UInt16;
+        if (string.Equals(typeStr, "Int", StringComparison.OrdinalIgnoreCase)) return Models.TagDataType.Int32;
+        if (string.Equals(typeStr, "UInt", StringComparison.OrdinalIgnoreCase)) return Models.TagDataType.UInt32;
+        if (string.Equals(typeStr, "Bool", StringComparison.OrdinalIgnoreCase)) return Models.TagDataType.Boolean;
+        if (string.Equals(typeStr, "Real", StringComparison.OrdinalIgnoreCase)) return Models.TagDataType.Float;
+        if (string.Equals(typeStr, "DInt", StringComparison.OrdinalIgnoreCase)) return Models.TagDataType.Int32;
+        if (string.Equals(typeStr, "Word", StringComparison.OrdinalIgnoreCase)) return Models.TagDataType.UInt16;
+        if (string.Equals(typeStr, "DWord", StringComparison.OrdinalIgnoreCase)) return Models.TagDataType.UInt32;
+        return Models.TagDataType.Int16;
     }
 }

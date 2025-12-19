@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Plant01.Domain.Shared.Models.Equipment;
 
 namespace Plant01.Upper.Domain.Entities;
@@ -60,8 +61,9 @@ public class Equipment
     public string? ConfigJson { get; set; }
     
     /// <summary>
-    /// 该设备关联的标签映射列表
+    /// 该设备关联的标签映射列表（从配置文件加载，不持久化到数据库）
     /// </summary>
+    [NotMapped]
     public List<EquipmentTagMapping> TagMappings { get; set; } = new();
     
     public DateTime CreatedAt { get; set; } = DateTime.Now;

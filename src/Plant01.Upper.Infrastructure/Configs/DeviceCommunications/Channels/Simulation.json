@@ -1,0 +1,25 @@
+{
+  "$schema": "../Schemas/channel-config.schema.json",
+  "Code": "Simulation",
+  "Name": "仿真通道",
+  "Enable": false,
+  "Description": "用于测试和开发的仿真通道",
+  "Drive": "Simulation",
+  "DriveModel": "Virtual",
+  "Devices": [
+    {
+      "Name": "SimDevice01",
+      "Description": "仿真设备1",
+      "Enable": true,
+      "SimulationDelay": 50,
+      "RandomSeed": 12345
+    },
+    {
+      "Name": "SimDevice02",
+      "Description": "仿真设备2",
+      "Enable": true,
+      "SimulationDelay": 100,
+      "RandomSeed": 0
+    }
+  ]
+}

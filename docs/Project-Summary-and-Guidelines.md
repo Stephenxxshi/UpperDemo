@@ -30,6 +30,176 @@
     - **依赖倒置**: `ITagGenerationService` 接口位于应用层，实现位于基础设施层，避免循环依赖。
 - **Ant Design 风格**: UI 库必须严格遵循 Ant Design 5.x 的设计令牌（Design Tokens）系统。
 
+## 2.5 产线-工段-工位架构 (生产线建模)
+
+本项目采用 **三层产线模型** 进行生产线建模，通过配置文件驱动，内存高效维护：
+
+### 架构层级
+```
+产线 (ProductionLine)
+  └─ 工段 (ProductionSection) [Sequence排序]
+      ├─ 分配策略 (StrategyConfigJson)
+      └─ 工位 (Workstation) [Sequence排序]
+          └─ 设备 (Equipment) [Sequence排序]
+              └─ 标签映射 (EquipmentTagMapping)
+```
+
+### 核心特点
+1. **配置驱动**: 通过 `production_lines.json` 定义产线拓扑，通过 `equipment_templates.json` + `equipment_mappings.json` 定义设备
+2. **配置分离**: 设备定义与产线拓扑分离，`production_lines.json` 使用 `EquipmentRefs` 引用设备
+3. **内存管理**: 使用 `ProductionConfigManager` 和 `EquipmentConfigService` 在内存中高效维护所有配置，零数据库开销
+4. **程序启动时初始化**: `ProductionLineConfigService` 作为 `BackgroundService` 在启动时加载配置
+5. **高效查询**: 提供丰富的查询方法（按Code、按关系、按能力等），支持LINQ内存查询
+
+### 关键设计决策
+- **为什么不用数据库**: 产线/工段/工位/设备结构是**静态配置**，启动时一次加载，运行时**不需要动态修改**。用内存方案性能更优（无SQL IO）
+- **为什么要工段**: 工段是**策略配置层**，可在 `StrategyConfigJson` 中存储"哪些包装机对应哪个码垛机"等分配规则
+- **工位状态是运行时的**: `Workstation.Status`、`Workstation.CurrentBatchCode` 等状态字段在内存中更新，用于**流程调度和二维码追踪**
+- **⭐ 为什么分离设备配置**: 设备定义可被多个产线/工位复用，独立配置便于维护和版本控制，避免 `production_lines.json` 过于庞大
+
+### 配置文件结构
+#### 1. 产线拓扑配置 (`production_lines.json`)
+- **位置**: `src/Plant01.Upper.Infrastructure/Configs/production_lines.json`
+- **内容**: 定义产线-工段-工位层级，工位使用 `EquipmentRefs` 字符串数组引用设备
+- **示例**:
+  ```json
+  {
+    "Code": "Line01",
+    "Sections": [{
+      "Code": "SEC_PACKAGE",
+      "Workstations": [{
+        "Code": "L1_WS_PKG01",
+        "EquipmentRefs": ["L1_BP01", "L1_PM01"]  // 引用设备模板
+      }]
+    }]
+  }
+  ```
+
+#### 2. 设备模板配置 (`equipment_templates.json`)
+- **位置**: `src/Plant01.Upper.Infrastructure/Configs/Equipments/equipment_templates.json`
+- **内容**: 定义所有设备的基础信息（Code, Name, Type, Capabilities, Sequence）
+- **示例**:
+  ```json
+  [
+    {
+      "Code": "L1_BP01",
+      "Name": "1#线-1号上袋机",
+      "Type": "BagPicker",
+      "Capabilities": "Heartbeat, AlarmReport",
+      "Sequence": 1,
+      "Enabled": true
+    }
+  ]
+  ```
+
+#### 3. 设备标签映射配置 (`equipment_mappings.json`)
+- **位置**: `src/Plant01.Upper.Infrastructure/Configs/Equipments/equipment_mappings.json`
+- **内容**: 定义设备到通信标签的映射关系，包含 `Purpose`（业务用途）和 `IsCritical`（关键标签标识）
+- **示例**:
+  ```json
+  [
+    {
+      "EquipmentCode": "L1_BP01",
+      "TagMappings": [
+        {
+          "TagName": "SDJ01.HeartBreak",
+          "Purpose": "Heartbeat",
+          "IsCritical": true,
+          "ChannelName": "PLC01",
+          "Remarks": "设备心跳信号"
+        }
+      ]
+    }
+  ]
+  ```
+
+### 设备-标签映射的业务语义
+
+#### TagPurpose（标签用途）
+**作用**: 标识标签在业务逻辑中的语义角色，使业务代码可以按用途筛选和处理标签
+
+**预定义用途** (位于 `EquipmentTagMapping.cs`):
+- `Heartbeat` - 心跳信号
+- `Alarm` / `AlarmCode` - 报警状态/代码
+- `OutputCount` - 产量统计
+- `Status` / `Mode` - 设备状态/模式
+- `Quality` / `Recipe` - 质量数据/配方
+- `Speed` / `Temperature` / `Pressure` - 工艺参数
+
+**业务层应用示例**:
+```csharp
+// 场景1: 心跳监控 - 自动筛选所有心跳标签
+var heartbeatMappings = equipment.TagMappings
+    .Where(m => m.Purpose == TagPurpose.Heartbeat);
+foreach (var mapping in heartbeatMappings)
+{
+    var isAlive = tagEngine.GetTagValue<bool>(mapping.TagName);
+    if (!isAlive) 
+        _logger.LogWarning($"设备 {equipment.Code} 心跳丢失");
+}
+
+// 场景2: 产量统计 - 按用途聚合
+var totalOutput = equipment.TagMappings
+    .Where(m => m.Purpose == TagPurpose.OutputCount)
+    .Sum(m => tagEngine.GetTagValue<int>(m.TagName));
+
+// 场景3: 报警路由 - 根据用途分发到不同处理器
+if (mapping.Purpose == TagPurpose.Alarm)
+    await _alarmService.HandleAlarmAsync(equipment, tagValue);
+```
+
+#### IsCritical（关键标签标识）
+**作用**: 标记关键业务标签，用于差异化监控策略和告警升级
+
+**业务层应用示例**:
+```csharp
+// 场景1: 差异化扫描频率
+var criticalTags = equipment.TagMappings.Where(m => m.IsCritical);
+var normalTags = equipment.TagMappings.Where(m => !m.IsCritical);
+await ScanTagsAsync(criticalTags, scanRate: 100);   // 关键标签100ms
+await ScanTagsAsync(normalTags, scanRate: 500);     // 普通标签500ms
+
+// 场景2: 故障告警升级
+if (mapping.IsCritical && hasError)
+    await _notificationService.SendUrgentAlert(equipment, error);
+
+// 场景3: 历史数据优先级
+if (mapping.IsCritical)
+    await _historianService.StoreWithHighPriority(tag, value);
+```
+
+#### 为什么不直接写入 tags.csv？
+**推荐**: 将 `Purpose` 和 `IsCritical` 保留在 `equipment_mappings.json` 中
+
+**原因**:
+- ✅ **分层清晰**: `tags.csv` 属于通信层配置（地址、数据类型），`equipment_mappings.json` 属于业务层配置（用途、优先级）
+- ✅ **复用灵活**: 同一个 PLC 标签可能被多个设备引用，业务用途可能不同（如 DB200.0 既是上袋机心跳，也是包装机心跳）
+- ✅ **维护解耦**: 修改业务逻辑（调整用途/优先级）不需要重新生成通信配置
+
+**如果确实要合并到 tags.csv** (不推荐):
+可以在 CSV 中添加 `Purpose` 和 `IsCritical` 列，但会失去上述灵活性。
+
+### 查询接口
+```csharp
+ProductionConfigManager configManager = ...; // DI注入
+
+// 按Code查询
+var equipment = configManager.GetEquipmentByCode("L1_BP01");
+var workstation = configManager.GetWorkstationByCode("L1_WS_PKG01");
+var section = configManager.GetSectionByCode("SEC_PACKING");
+
+// 按关系查询
+var workstations = configManager.GetWorkstationsBySection("SEC_PACKING");
+var equipments = configManager.GetEquipmentsByWorkstation("L1_WS_PKG01");
+var section = configManager.GetSectionByEquipment("L1_BP01");
+
+// 查询分配策略
+var strategyJson = configManager.GetSectionStrategyJson("SEC_PALLETIZING");
+
+// 配置统计
+var summary = configManager.GetConfigSummary(); // "产线数: 2, 工段数: 10, 工位数: 18, 设备数: 30"
+```
+
 ## 3. 项目结构说明
 
 ### 表现层 (Presentation Layer)
@@ -52,7 +222,7 @@
 ### 基础设施层 (Infrastructure Layer)
 | 项目名称 | 职责说明 |
 | :--- | :--- |
-| **Plant01.Upper.Infrastructure** | **基础设施实现**。包含数据仓储实现 (`Repository`)、数据库上下文、**消息调度 (`TriggerDispatcher`)**、**领域事件总线 (`DomainEventBus`)**、**设备通信核心 (DeviceCommunication)**。**新增**: `TagGenerationServiceImpl` (标签生成实现)、`S7AddressScanner` (S7地址扫描)、`S7AddressParser` (S7地址解析)、`SiemensS7Driver` (西门子S7驱动)、`ConfigurationLoader` (配置加载与标签生成)。 |
+| **Plant01.Upper.Infrastructure** | **基础设施实现**。包含数据仓储实现 (`Repository`)、数据库上下文、**消息调度 (`TriggerDispatcher`)**、**领域事件总线 (`DomainEventBus`)**、**设备通信核心 (DeviceCommunication)**。**⭐ 架构重构** (2025-12-19): ① **分层解耦** - 将通信层 `Tag` 重构为 `CommunicationTag`（包含 ChannelName/DeviceName/Address），Domain 层使用轻量级 `TagValue`（纯领域模型）。② **强类型配置** - `ConfigurationLoader`（JsonDocument解析）、`SiemensS7Config/ModbusTcpConfig/SimulationConfig`（强类型配置类）、`DeviceConfigExtensions`（验证扩展）、`channel-config.schema.json`（JSON Schema）。③ **通道-设备正交** - 修复架构错误，1个 Channel 管理多个 Device（而非每个 Device 一个 Channel）。**其他**: `TagGenerationServiceImpl`（标签生成）、`S7AddressScanner`（地址扫描）、`S7AddressParser`（地址解析）、`SiemensS7Driver`（西门子S7驱动）。 |
 | **Plant01.Infrastructure.Shared** | **共享基础设施**。包含通用服务实现（如 `HttpService`）、扩展方法。 |
 | **Plant01.Core** | **核心工具库**。包含基础框架代码、通用工具类 (`Utilities`)、扩展方法 (`Extensions`)。 |
 
@@ -85,19 +255,54 @@
 
 ## 5. 关键文件索引
 
+### 产线-工段-工位架构（内存式配置管理 + 配置分离）
+- **产线实体**: `src/Plant01.Upper.Domain/Entities/ProductionLine.cs`
+- **工段实体**: `src/Plant01.Upper.Domain/Entities/ProductionSection.cs`
+- **工位实体**: `src/Plant01.Upper.Domain/Entities/Workstation.cs`
+- **设备实体**: `src/Plant01.Upper.Domain/Entities/Equipment.cs` (TagMappings标记为[NotMapped]，运行时加载)
+- **标签映射**: `src/Plant01.Upper.Domain/Entities/EquipmentTagMapping.cs` (纯内存对象，包含Purpose和IsCritical)
+- **⭐ 配置管理器**: `src/Plant01.Upper.Application/Services/ProductionConfigManager.cs` (产线拓扑查询接口)
+- **⭐ 设备配置服务**: `src/Plant01.Upper.Infrastructure/Services/EquipmentConfigService.cs` (设备模板和映射加载，支持热重载)
+- **⭐ 配置DTO**: `src/Plant01.Upper.Infrastructure/Configs/Models/EquipmentConfigDto.cs` (EquipmentTemplateDto, EquipmentMappingDto)
+- **配置加载服务**: `src/Plant01.Upper.Infrastructure/Services/ProductionLineConfigService.cs` (BackgroundService，启动时加载并集成设备配置)
+
 ### 核心服务与基础设施
 - **服务注册**: `src/Plant01.Upper.Presentation.Bootstrapper/Bootstrapper.cs`
 - **事件注册**: `src/Plant01.Upper.Presentation.Bootstrapper/EventRegistrationService.cs`
 - **触发器调度**: `src/Plant01.Upper.Infrastructure/Services/TriggerDispatcherService.cs`
-- **设备通信服务**: `src/Plant01.Upper.Infrastructure/DeviceCommunication/DeviceCommunicationService.cs`
-- **HTTP 服务**: `src/Plant01.Infrastructure.Shared/Services/HttpService.cs`
+- **设备通信服务**: `src/Plant01.Upper.Infrastructure/DeviceCommunication/DeviceCommunicationService.cs` (⭐ 已重构为 1通道→N设备)
+- **通道管理**: `src/Plant01.Upper.Infrastructure/DeviceCommunication/Engine/Channel.cs` (包含内部 DeviceConnection 类)
+- **标签引擎**: `src/Plant01.Upper.Infrastructure/DeviceCommunication/Engine/TagEngine.cs` (使用 CommunicationTag)
+### 设备通信架构 (⭐ 重构 - 2025-12-19)
+#### 分层模型
+- **⭐ 通信标签**: `src/Plant01.Upper.Infrastructure/DeviceCommunication/Models/CommunicationTag.cs` (Infrastructure 层，包含通信属性)
+- **⭐ 领域标签值**: `src/Plant01.Upper.Domain/Models/TagValue.cs` (Domain 层，纯领域模型)
+- **⭐ 配置加载器**: `src/Plant01.Upper.Infrastructure/DeviceCommunication/Configs/ConfigurationLoader.cs` (使用 CommunicationTag)
+- **⭐ CSV 映射**: `src/Plant01.Upper.Infrastructure/DeviceCommunication/Configs/TagMap.cs` (映射为 CommunicationTag)
+
+#### 强类型配置系统
+- **强类型配置类**:
+  - `src/Plant01.Upper.Infrastructure/DeviceCommunication/DriverConfigs/SiemensS7Config.cs`
+  - `src/Plant01.Upper.Infrastructure/DeviceCommunication/DriverConfigs/ModbusTcpConfig.cs`
+  - `src/Plant01.Upper.Infrastructure/DeviceCommunication/DriverConfigs/SimulationConfig.cs`
+- **验证扩展**: `src/Plant01.Upper.Infrastructure/DeviceCommunication/Extensions/DeviceConfigExtensions.cs`
+- **JSON Schema**: `src/Plant01.Upper.Infrastructure/Configs/DeviceCommunications/Schemas/channel-config.schema.json`
+
+#### 驱动实现
+- **西门子 S7**: `src/Plant01.Upper.Infrastructure/DeviceCommunication/Drivers/SiemensS7Driver.cs` (使用 CommunicationTag)
+- **仿真驱动**: `src/Plant01.Upper.Infrastructure/DeviceCommunication/Drivers/SimulationDriver.cs` (使用 CommunicationTag)
+- **配置文件目录**: `src/Plant01.Upper.Infrastructure/Configs/DeviceCommunications/`
+  - `Channels/` - 通道配置JSON
+  - `Schemas/` - JSON Schema定义
+  - `Tags/` - 标签CSV文件
+  - `README.md` - 配置结构说明hema定义
+  - `Tags/` - 标签CSV文件
+  - `README.md` - 配置结构说明
 
 ### 工位-设备-标签架构
-- **工位实体**: `src/Plant01.Upper.Domain/Entities/Workstation.cs`
-- **设备实体**: `src/Plant01.Upper.Domain/Entities/Equipment.cs`
 - **标签映射**: `src/Plant01.Upper.Domain/Entities/EquipmentTagMapping.cs`
-- **设备类型枚举**: `src/Plant01.Domain.Shared/Models/Equipment/EquipmentType.cs`
-- **设备能力枚举**: `src/Plant01.Domain.Shared/Models/Equipment/Capabilities.cs`
+- **设备类型枚举**: `src/Plant01.Domain.Shared/Models/Equipment/EquipmentType.cs` (已新增 `StretchWrapper = 11` 缠绕机)
+- **设备能力枚举**: `src/Plant01.Domain.Shared/Models/Equipment/Capabilities.cs` (8种能力: Heartbeat, AlarmReport, OutputCount等)
 - **标签生成接口**: `src/Plant01.Upper.Application/Services/TagGenerationService.cs`
 - **标签生成实现**: `src/Plant01.Upper.Infrastructure/Services/TagGenerationServiceImpl.cs`
 - **配置加载器**: `src/Plant01.Upper.Infrastructure/DeviceCommunication/Configs/ConfigurationLoader.cs`
@@ -108,15 +313,28 @@
 ### UI 主题系统
 - **主题管理**: `src/Plant01.WpfUI/Helpers/ThemeManager.cs`
 - **设计令牌**: `src/Plant01.WpfUI/Themes/DesignTokenKeys.cs`
-
-### 配置文件
-- **通道配置**: `src/Plant01.Upper.Infrastructure/Configs/channels.csv`
-- **标签配置**: `src/Plant01.Upper.Infrastructure/Configs/tags.csv`
+### 文档
+- **⭐ 项目开发指南**: `docs/Project-Summary-and-Guidelines.md` (本文档，包含架构汇总和开发规范)
+- **设备通信架构** (2025-12-19重构):
+  - 强类型配置实现: `docs/DeviceCommunication-StrongTypedConfig-Implementation.md`
+  - 快速指南: `docs/DeviceCommunication-AddNewDriver-QuickGuide.md`
+  - 测试计划: `docs/DeviceCommunication-Testing-Plan.md`
+  - **架构分层说明**: 见本文档第 7.1 节（CommunicationTag vs TagValue）
+- **工位设备架构**:
+  - 快速入门: `docs/Workstation-Equipment-QuickStart.md`
+  - 完整说明: `docs/Workstation-Equipment-Architecture.md`
+- **架构索引**: `docs/README-Architecture-Index.md`quipments/equipment_templates.json` - 设备模板定义
+  - `src/Plant01.Upper.Infrastructure/Configs/Equipments/equipment_mappings.json` - 设备标签映射(含Purpose和IsCritical)
 - **Schema示例**: `src/Plant01.Upper.Infrastructure/Configs/DbSchemas/DB1.schema.json`
 
 ### 文档
-- **架构快速入门**: `docs/Workstation-Equipment-QuickStart.md`
-- **架构完整说明**: `docs/Workstation-Equipment-Architecture.md`
+- **⭐ 设备通信强类型配置** (新增):
+  - 完整实现: `docs/DeviceCommunication-StrongTypedConfig-Implementation.md`
+  - 快速指南: `docs/DeviceCommunication-AddNewDriver-QuickGuide.md`
+  - 测试计划: `docs/DeviceCommunication-Testing-Plan.md`
+- **工位设备架构**:
+  - 快速入门: `docs/Workstation-Equipment-QuickStart.md`
+  - 完整说明: `docs/Workstation-Equipment-Architecture.md`
 - **架构索引**: `docs/README-Architecture-Index.md`
 
 ## 6. 开发流程建议
@@ -130,72 +348,233 @@
 ### 7.1 架构模型
 系统采用 **Channel -> Device -> Tag** 的三层层级结构，严格区分驱动逻辑与设备连接参数。
 
-- **Channel (通道)**: 定义驱动类型（如 SiemensS7, ModbusTCP）。一个通道可包含多个设备。
-- **Device (设备)**: 定义具体的连接参数（如 IP, Port, Slot, Rack）。
+- **Channel (通道)**: 定义驱动类型（如 SiemensS7, ModbusTCP）。**⭐ 1个通道管理多个设备**（共享驱动逻辑）。
+- **Device (设备)**: 定义具体的连接参数（如 IP, Port, Slot, Rack）。**每个设备独立连接和轮询**。
 - **Tag (标签)**: 定义数据点属性（地址, 数据类型, 读写权限）。
 
+**⭐ 架构分层** (2025-12-19重构):
+- **Infrastructure 层**: `CommunicationTag` 类（包含 ChannelName、DeviceName、Address 等通信层概念）
+- **Domain 层**: `TagValue` 结构体（纯领域模型，仅包含 Name、Value、Quality、Timestamp）
+- **Application 层**: `IDeviceCommunicationService` 接口返回 `TagValue`（而非通信层的 `TagData`）
+
+**依赖方向**: Domain ← Application ← Infrastructure（符合 DDD 依赖倒置原则）
+
 ### 7.2 配置规范
-- **通道与设备**: 使用 JSON 配置。`Options` 字典存储驱动特定的连接参数。
-- **标签定义**: 使用 CSV 统一管理。
-    - **DataType**: 必须使用标准类型名称 (`Int16`, `Float`, `Boolean`, `String` 等)，严禁使用驱动特定名称（如 `Word`, `Real`）。
-    - **RW (权限)**: 使用 `R` (只读), `W` (只写), `RW` (读写)。
-    - **Length**: 对于数组，指定数组长度；对于字符串，指定字节长度。
+
+#### 7.2.1 通道与设备配置 (JSON)
+**⭐ 已实现强类型配置系统** (2025-12-19更新)
+
+系统现已支持驱动特定的强类型配置类 + JSON Schema验证：
+
+**配置文件结构**:
+```
+Configs/DeviceCommunications/
+  ├─ Channels/          # 通道配置JSON文件
+  │   ├─ SiemensS7Tcp.json
+  │   ├─ ModbusTcp.json
+  │   └─ Simulation.json
+  ├─ Schemas/           # JSON Schema文件
+  │   └─ channel-config.schema.json
+  ├─ Tags/              # 标签CSV文件
+  │   └─ tags.csv
+  └─ README.md          # 配置文档
+```
+
+**强类型配置类** (位于 `Infrastructure/DeviceCommunication/DriverConfigs/`):
+- `SiemensS7Config.cs` - 西门子S7 PLC配置
+- `ModbusTcpConfig.cs` - Modbus TCP配置
+- `SimulationConfig.cs` - 仿真驱动配置
+
+**配置示例** (`SiemensS7Tcp.json`):
+```json
+{
+  "$schema": "../Schemas/channel-config.schema.json",
+  "Name": "SiemensS7Tcp",
+  "Description": "西门子S7 TCP通道",
+  "Drive": "SiemensS7",
+  "Enable": true,
+  "Devices": [
+    {
+      "Name": "PLC01",
+      "Description": "1#包装机PLC",
+      "Enable": true,
+      "Code": "L1_PLC01",
+      "IpAddress": "192.168.1.100",
+      "Port": 102,
+      "Rack": 0,
+      "Slot": 1,
+      "ScanRate": 100,
+      "ConnectTimeout": 5000,
+      "PlcModel": "S7_1200"
+    }
+  ]
+}
+```
+
+**验证机制**:
+1. **JSON Schema** - IDE实时验证(VS Code IntelliSense支持)
+2. **DataAnnotations** - 运行时强类型验证
+
+**驱动使用示例**:
+```csharp
+// 在驱动的ValidateConfig中
+public override Task ValidateConfig(DeviceConfig config)
+{
+    var driverConfig = config.GetAndValidateDriverConfig<SiemensS7Config>();
+    // 自动验证IP格式、端口范围、必填字段
+    return Task.CompletedTask;
+}
+
+// 在ConnectAsync中使用强类型配置
+public override async Task<bool> ConnectAsync()
+{
+    var driverConfig = _config.GetDriverConfig<SiemensS7Config>();
+    var ip = driverConfig.IpAddress;  // 直接属性访问,类型安全
+    var port = driverConfig.Port;
+    var timeout = driverConfig.ConnectTimeout;  // 不再硬编码
+    // ...
+}
+```
+
+**关键类**:
+- `ConfigurationLoader.cs` - 重构为使用`JsonDocument`解析,修复Devices数组读取问题
+- `DeviceConfigExtensions.cs` - 提供`GetAndValidateDriverConfig<T>()`扩展方法
+
+### 7.3 开发注意事项
+1.  **类型安全**: 应用层获取数据时，**必须**使用泛型方法 `GetTagValue<T>("TagName")`，避免手动拆箱。
+2.  **⭐ 架构分层** (2025-12-19新增):
+    - **Infrastructure 层**: 使用 `CommunicationTag` 类进行底层通信（包含 ChannelName、DeviceName、Address）
+    - **Application 层**: `IDeviceCommunicationService` 接口返回 `TagValue` 结构体（纯领域模型）
+    - **驱动接口**: `IDriver` 使用 `object` 参数，实现层转换为 `CommunicationTag`
+    - **命名空间分离**: 避免 `TagDataType`/`AccessRights`/`TagQuality` 冲突，使用 `Models.TagDataType` 限定
+3.  **驱动开发**:
+    - 必须实现 `Initialize(DeviceConfig)` 和 `ValidateConfig(DeviceConfig)`。
+    - ⭐ `ValidateConfig` 中使用 `config.GetAndValidateDriverConfig<TConfig>()` 自动验证驱动配置。
+    - ⭐ `ConnectAsync` 等方法中使用 `config.GetDriverConfig<TConfig>()` 获取强类型配置。
+    - ⭐ `ReadTagsAsync` 中将 `IEnumerable<object>` 转换为 `CommunicationTag`：`var tag = tagObj as CommunicationTag;`
+    - 驱动内部负责将标准 `TagDataType` 映射为协议特定的读取指令。
+4.  **通道-设备正交** (⭐ 关键架构):
+    - **错误**: 每个 Device 创建一个 Channel 实例
+    - **正确**: 每个 ChannelConfig 创建**1个** Channel 实例，内部管理多个 DeviceConnection
+    - **示例**: 3个 PLC（同驱动）= 1个 SiemensS7 Channel + 3个 DeviceConnection
+5.  **数组处理**: 当 CSV 中 `Length > 1` (且非 String) 时，驱动返回的是数组对象。应用层应使用 `GetTagValue<int[]>` 等方式接收。
+6.  **⭐ 配置热重载**: 系统支持运行时监测配置文件变更,自动重新加载并重新连接设备。Boolean`, `String` 等)，严禁使用驱动特定名称（如 `Word`, `Real`）。
+- **RW (权限)**: 使用 `R` (只读), `W` (只写), `RW` (读写)。
+- **Length**: 对于数组，指定数组长度；对于字符串，指定字节长度。
 
 ### 7.3 开发注意事项
 1.  **类型安全**: 应用层获取数据时，**必须**使用泛型方法 `GetTagValue<T>("TagName")`，避免手动拆箱。
 2.  **驱动开发**:
     - 必须实现 `Initialize(DeviceConfig)` 和 `ValidateConfig(DeviceConfig)`。
-    - `ValidateConfig` 中必须校验 IP、端口等关键参数，缺失时抛出异常。
+    - ⭐ **新规范**: `ValidateConfig` 中使用 `config.GetAndValidateDriverConfig<TConfig>()` 自动验证驱动配置。
+    - ⭐ **新规范**: `ConnectAsync` 等方法中使用 `config.GetDriverConfig<TConfig>()` 获取强类型配置。
     - 驱动内部负责将标准 `TagDataType` 映射为协议特定的读取指令。
 3.  **数组处理**: 当 CSV 中 `Length > 1` (且非 String) 时，驱动返回的是数组对象。应用层应使用 `GetTagValue<int[]>` 等方式接收。
+4.  **⭐ 配置热重载**: 系统支持运行时监测配置文件变更,自动重新加载并重新连接设备。
 
 ## 8. 工位-设备管理开发规范 (Workstation & Equipment Management)
 
-### 8.1 架构概述
-系统采用 **双层模型** 设计，将业务语义与通讯实现分离：
+### 8.1 架构概述 - 三层产线模型 + 内存管理
 
-#### 通讯层 (底层 - KEPServer架构)
-```
-Channel (通道/驱动) -> Device (设备连接) -> Tag (数据点)
-```
-- **职责**: 处理底层通讯协议 (S7, Modbus, OPC UA 等)
-- **特点**: 标签寻址 O(1)、配置热重载、多驱动插件化
+系统采用 **三层产线模型** + **内存配置管理** 的设计，不使用数据库持久化：
 
-#### 业务层 (上层 - 工位设备模型)
+#### 产线-工段-工位-设备层级
 ```
-Workstation (工位) -> Equipment (设备) -> EquipmentTagMapping (标签映射)
+ProductionLine (产线) - 顶级容器
+  ├─ Code: "Line01", Name: "1# 生产线"
+  └─ Sections: ProductionSection[]
+      ├─ Code: "SEC_PACKAGE", Sequence: 1
+      ├─ StrategyConfigJson: 策略配置（JSON）
+      └─ Workstations: Workstation[]
+          ├─ Code: "L1_WS_PKG01", Sequence: 1
+          └─ Equipments: Equipment[]
+              ├─ Code: "L1_BP01" (上袋机)
+              └─ Code: "L1_PM01" (包装机)
 ```
-- **职责**: 业务语义建模、设备状态管理、工位逻辑
-- **特点**: 多对多映射、动态绑定、类型化能力
+
+#### 为什么不用数据库
+- ✅ 产线/工段/工位结构是**完全静态**的，不需要运行时动态修改
+- ✅ 配置文件 (`production_lines.json`) 一次性加载到内存
+- ✅ 查询完全在内存中进行，性能最优（无SQL IO）
+- ✅ 运行时状态（`Status`, `CurrentBatchCode`）存储在内存对象中，用于流程调度
+
+#### ProductionConfigManager - 内存查询引擎
+核心服务，提供丰富的查询接口，所有查询都在内存中高效执行：
+```csharp
+// 按Code查询
+GetEquipmentByCode(code)
+GetWorkstationByCode(code)
+GetSectionByCode(code)
+GetProductionLineByCode(code)
+
+// 按关系查询
+GetEquipmentsByWorkstation(code)
+GetWorkstationsBySection(code)
+GetSectionsByProductionLine(code)
+GetSectionByEquipment(code)
+GetWorkstationByEquipment(code)
+GetProductionLineByEquipment(code)
+
+// 查询配置
+GetSectionStrategyJson(sectionCode)  // 查询工段分配策略
+GetConfigSummary()                   // 统计信息
+```
+
+#### 初始化流程
+1. `ProductionLineConfigService` 作为 `BackgroundService` 启动时执行
+2. 读取 `Configs/production_lines.json` 文件
+3. 反序列化为 `List<ProductionLine>`
+4. 补全导航属性（ProductionLine → ProductionSection → Workstation → Equipment）
+5. 通过 `ProductionConfigManager.LoadFromConfig()` 加载到内存
+6. 业务代码通过 DI 注入 `ProductionConfigManager` 进行查询
+
+#### 为什么要工段（ProductionSection）
+- **分配策略层**：在 `StrategyConfigJson` 中存储"哪些包装机对应哪个码垛机"等分配规则
+  ```json
+  {
+    "Code": "SEC_PALLETIZING",
+    "StrategyConfigJson": "{\"Palletizers\": [{\"Code\":\"L1_PAL01\", \"SourcePackers\":[\"L1_PM01\",\"L1_PM02\",\"L1_PM03\"]}]}"
+  }
+  ```
+- **状态聚合**：可以监控整个工段的状态（所有工位故障 → 工段故障）
+- **生产流程**：通过 `Sequence` 字段定义生产流程顺序（1=包装, 2=称重, 3=码垛, 4=缠绕, 5=贴标）
 
 ### 8.2 核心实体
 
+#### ProductionLine (产线)
+```csharp
+public class ProductionLine
+{
+    public int Id { get; set; }
+    public required string Code { get; set; }        // "Line01"
+    public required string Name { get; set; }        // "1# 生产线"
+    public string? Description { get; set; }
+    public bool Enabled { get; set; } = true;
+    public List<ProductionSection> Sections { get; set; } = new();  // 包含的工段
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}
+```
+
+#### ProductionSection (工段)
+```csharp
+public class ProductionSection
+{
+    public int Id { get; set; }
+    public required string Code { get; set; }            // "SEC_PACKING"
+    public required string Name { get; set; }            // "包装工段"
+    public int Sequence { get; set; }                    // 1,2,3...（流程顺序）
+    public string? StrategyConfigJson { get; set; }      // 分配策略（JSON）
+    public bool Enabled { get; set; } = true;
+    public int ProductionLineId { get; set; }
+    public ProductionLine? ProductionLine { get; set; }
+    public List<Workstation> Workstations { get; set; } = new();
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}
+```
+
 #### Workstation (工位)
-- **定义**: 生产线上的独立作业单元，可包含多个设备
-- **关键属性**:
-  - `Code`: 工位编码 (唯一标识)
-  - `SectionCode`: 所属工段编码
-  - `Status`: 工位状态 (Running/Stopped/Fault/Maintenance)
-  - `Equipments`: 包含的设备集合
-- **方法**: `AddEquipment()`, `RemoveEquipment()`, `UpdateStatus()`
-
-#### Equipment (设备)
-- **定义**: 物理设备实例，具有类型、能力、状态
-- **关键属性**:
-  - `Code`: 设备编码 (唯一标识)
-  - `EquipmentType`: 设备类型枚举 (10种: BagPicker, PackageMachine, Weigher, Robot, AGV 等)
-  - `Capabilities`: 设备能力 Flags (8种: Heartbeat, AlarmReport, OutputCount, RemoteControl 等)
-  - `Status`: 设备状态 (Running/Stopped/Fault/Maintenance/Offline)
-  - `TagMappings`: 标签映射集合
-- **方法**: `AddTagMapping()`, `RemoveTagMapping()`, `UpdateCapabilities()`, `UpdateStatus()`
-
-#### EquipmentTagMapping (标签映射)
-- **定义**: 业务设备与通讯层标签的关联关系
-- **关键属性**:
-  - `TagName`: 关联的通讯层标签名称 (如 "WS01_Heartbeat")
-  - `Purpose`: 用途分类 (常量: "Heartbeat", "AlarmCode", "OutputCount", "RecipeNo" 等)
-  - `Direction`: 数据流向 (R/W/RW)
-- **设计原则**: 通过 `TagName` 字符串动态关联，支持热配置
 
 ### 8.3 标签自动生成规范
 

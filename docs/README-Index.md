@@ -1,158 +1,158 @@
-# MES ºÍ HttpService ÎÄµµË÷Òı
+# MES å’Œ HttpService æ–‡æ¡£ç´¢å¼•
 
-## ?? ÎÄµµµ¼º½
+## ?? æ–‡æ¡£å¯¼èˆª
 
-### ?? ¿ìËÙ¿ªÊ¼£¨ÍÆ¼ö´ÓÕâÀï¿ªÊ¼£©
+### ?? å¿«é€Ÿå¼€å§‹ï¼ˆæ¨èä»è¿™é‡Œå¼€å§‹ï¼‰
 
-1. **[MES ÈñÅÉ½Ó¿Ú¿ìËÙ¿ªÊ¼](MesService-QuickStart.md)**
-   - ?? 5·ÖÖÓ¿ìËÙ¿ªÊ¼
-   - ?? ×î³£ÓÃµÄ´úÂëÊ¾Àı
-   - ? Á¢¼´¿ÉÓÃµÄ´úÂëÆ¬¶Î
+1. **[MES é”æ´¾æ¥å£å¿«é€Ÿå¼€å§‹](MesService-QuickStart.md)**
+   - ?? 5åˆ†é’Ÿå¿«é€Ÿå¼€å§‹
+   - ?? æœ€å¸¸ç”¨çš„ä»£ç ç¤ºä¾‹
+   - ? ç«‹å³å¯ç”¨çš„ä»£ç ç‰‡æ®µ
 
-2. **[HttpService ¿ìËÙ²Î¿¼](HttpService-QuickReference.md)**
-   - ?? API ËÙ²é±í
-   - ?? ³£ÓÃ²Ù×÷Ê¾Àı
-   - ? ¿ìËÙ½â¾öÎÊÌâ
+2. **[HttpService å¿«é€Ÿå‚è€ƒ](HttpService-QuickReference.md)**
+   - ?? API é€ŸæŸ¥è¡¨
+   - ?? å¸¸ç”¨æ“ä½œç¤ºä¾‹
+   - ? å¿«é€Ÿè§£å†³é—®é¢˜
 
-### ?? ÏêÏ¸Ö¸ÄÏ
+### ?? è¯¦ç»†æŒ‡å—
 
-3. **[MES ÈñÅÉ½Ó¿ÚÏêÏ¸Ö¸ÄÏ](MesService-Revopac-Guide.md)**
-   - ?? ÈÏÖ¤»úÖÆÏê½â
-   - ?? ÍêÕûµÄÇëÇó/ÏìÓ¦Ê¾Àı
-   - ?? ¹ÊÕÏÅÅ³ıÖ¸ÄÏ
-   - ?? µ¥Ôª²âÊÔÊ¾Àı
-   - ?? ×î¼ÑÊµ¼ù
+3. **[MES é”æ´¾æ¥å£è¯¦ç»†æŒ‡å—](MesService-Revopac-Guide.md)**
+   - ?? è®¤è¯æœºåˆ¶è¯¦è§£
+   - ?? å®Œæ•´çš„è¯·æ±‚/å“åº”ç¤ºä¾‹
+   - ?? æ•…éšœæ’é™¤æŒ‡å—
+   - ?? å•å…ƒæµ‹è¯•ç¤ºä¾‹
+   - ?? æœ€ä½³å®è·µ
 
-4. **[HttpService Ê¹ÓÃÖ¸ÄÏ](HttpService-Usage.md)**
-   - ??? ¼Ü¹¹Éè¼ÆËµÃ÷
-   - ?? ÏÖ´ú»¯¼¼ÊõÌØĞÔ
-   - ?? ¸ß¼¶ÅäÖÃÑ¡Ïî
-   - ?? Ç¨ÒÆÖ¸ÄÏ
-   - ?? ĞÔÄÜÓÅ»¯½¨Òé
+4. **[HttpService ä½¿ç”¨æŒ‡å—](HttpService-Usage.md)**
+   - ??? æ¶æ„è®¾è®¡è¯´æ˜
+   - ?? ç°ä»£åŒ–æŠ€æœ¯ç‰¹æ€§
+   - ?? é«˜çº§é…ç½®é€‰é¡¹
+   - ?? è¿ç§»æŒ‡å—
+   - ?? æ€§èƒ½ä¼˜åŒ–å»ºè®®
 
-### ?? ÊµÏÖ×Ü½á
+### ?? å®ç°æ€»ç»“
 
-5. **[MES ·şÎñÊµÏÖ×Ü½á](MesService-Implementation-Summary.md)**
-   - ? Íê³ÉµÄ¹¤×÷Çåµ¥
-   - ?? ÈÏÖ¤ÊµÏÖÏ¸½Ú
-   - ?? ¼¼ÊõÁÁµã
-   - ?? ´úÂëÖÊÁ¿·ÖÎö
-   - ?? À©Õ¹½¨Òé
+5. **[MES æœåŠ¡å®ç°æ€»ç»“](MesService-Implementation-Summary.md)**
+   - ? å®Œæˆçš„å·¥ä½œæ¸…å•
+   - ?? è®¤è¯å®ç°ç»†èŠ‚
+   - ?? æŠ€æœ¯äº®ç‚¹
+   - ?? ä»£ç è´¨é‡åˆ†æ
+   - ?? æ‰©å±•å»ºè®®
 
-6. **[HttpService ÊµÏÖ×Ü½á](HttpService-Implementation-Summary.md)**
-   - ? ÒÑ´´½¨µÄÎÄ¼ş
-   - ??? ¼Ü¹¹½¨Òé
-   - ?? Óë¾É´úÂë¶Ô±È
-   - ?? ĞÔÄÜ¶Ô±È
-   - ?? ÏÂÒ»²½½¨Òé
-
----
-
-## ??? °´Ê¹ÓÃ³¡¾°µ¼º½
-
-### ³¡¾° 1: ÎÒÊÇĞÂÊÖ£¬µÚÒ»´ÎÊ¹ÓÃ
-1. ÔÄ¶Á ¡ú **[MES ÈñÅÉ½Ó¿Ú¿ìËÙ¿ªÊ¼](MesService-QuickStart.md)**
-2. ²Î¿¼ ¡ú **[HttpService ¿ìËÙ²Î¿¼](HttpService-QuickReference.md)**
-3. ²é¿´Ê¾Àı´úÂë ¡ú `src/Plant01.Upper.Presentation.Core/ViewModels/MesRevopacViewModel.cs`
-
-### ³¡¾° 2: ÎÒĞèÒª¼¯³É MES ½Ó¿Ú
-1. ÅäÖÃ ¡ú ´ò¿ª `appsettings.json`£¬Ìí¼Ó MES ÅäÖÃ
-2. ×¢Èë ¡ú ÔÚ¹¹Ôìº¯ÊıÖĞ×¢Èë `IMesService`
-3. µ÷ÓÃ ¡ú ²Î¿¼ **[MES ÈñÅÉ½Ó¿Ú¿ìËÙ¿ªÊ¼](MesService-QuickStart.md)** ÖĞµÄ´úÂëÊ¾Àı
-
-### ³¡¾° 3: ÎÒĞèÒªµ÷ÓÃÆäËû HTTP ½Ó¿Ú
-1. Ñ§Ï° ¡ú **[HttpService Ê¹ÓÃÖ¸ÄÏ](HttpService-Usage.md)**
-2. ²Î¿¼ ¡ú **[HttpService ¿ìËÙ²Î¿¼](HttpService-QuickReference.md)**
-3. ÊµÏÖ ¡ú ²Î¿¼ `src/Plant01.Upper.Application/Services/MesService.cs`
-
-### ³¡¾° 4: ÎÒÓöµ½ÁËÎÊÌâ
-1. ²é¿´ ¡ú **[MES ÈñÅÉ½Ó¿ÚÏêÏ¸Ö¸ÄÏ](MesService-Revopac-Guide.md)** ÖĞµÄ"¹ÊÕÏÅÅ³ı"²¿·Ö
-2. ¼ì²é ¡ú **[HttpService ¿ìËÙ²Î¿¼](HttpService-QuickReference.md)** ÖĞµÄ"¹ÊÕÏÅÅ³ı"²¿·Ö
-3. ²é¿´ÈÕÖ¾ ¡ú Ê¹ÓÃ Debug ÈÕÖ¾¼¶±ğ²é¿´ÏêÏ¸ĞÅÏ¢
-
-### ³¡¾° 5: ÎÒÏëÁË½âÊµÏÖÏ¸½Ú
-1. ÔÄ¶Á ¡ú **[MES ·şÎñÊµÏÖ×Ü½á](MesService-Implementation-Summary.md)**
-2. ÔÄ¶Á ¡ú **[HttpService ÊµÏÖ×Ü½á](HttpService-Implementation-Summary.md)**
-3. ²é¿´Ô´Âë ¡ú `src/Plant01.Infrastructure.Shared/Services/HttpService.cs`
-
-### ³¡¾° 6: ÎÒĞèÒªÌí¼ÓĞÂµÄ MES ½Ó¿Ú
-1. ²Î¿¼ ¡ú **[MES ·şÎñÊµÏÖ×Ü½á](MesService-Implementation-Summary.md)** ÖĞµÄ"ºóĞøÀ©Õ¹½¨Òé"
-2. Ä£·Â ¡ú `src/Plant01.Upper.Application/Services/MesService.cs` ÖĞµÄÏÖÓĞÊµÏÖ
-3. ²âÊÔ ¡ú ²Î¿¼ **[MES ÈñÅÉ½Ó¿ÚÏêÏ¸Ö¸ÄÏ](MesService-Revopac-Guide.md)** ÖĞµÄ²âÊÔÊ¾Àı
+6. **[HttpService å®ç°æ€»ç»“](HttpService-Implementation-Summary.md)**
+   - ? å·²åˆ›å»ºçš„æ–‡ä»¶
+   - ??? æ¶æ„å»ºè®®
+   - ?? ä¸æ—§ä»£ç å¯¹æ¯”
+   - ?? æ€§èƒ½å¯¹æ¯”
+   - ?? ä¸‹ä¸€æ­¥å»ºè®®
 
 ---
 
-## ?? ÎÄ¼şÇåµ¥
+## ??? æŒ‰ä½¿ç”¨åœºæ™¯å¯¼èˆª
 
-### ºËĞÄ´úÂëÎÄ¼ş
+### åœºæ™¯ 1: æˆ‘æ˜¯æ–°æ‰‹ï¼Œç¬¬ä¸€æ¬¡ä½¿ç”¨
+1. é˜…è¯» â†’ **[MES é”æ´¾æ¥å£å¿«é€Ÿå¼€å§‹](MesService-QuickStart.md)**
+2. å‚è€ƒ â†’ **[HttpService å¿«é€Ÿå‚è€ƒ](HttpService-QuickReference.md)**
+3. æŸ¥çœ‹ç¤ºä¾‹ä»£ç  â†’ `src/Plant01.Upper.Presentation.Core/ViewModels/MesRevopacViewModel.cs`
 
-| ÎÄ¼ş | ËµÃ÷ | Î»ÖÃ |
-|------|------|------|
-| `IHttpService.cs` | HTTP ·şÎñ½Ó¿Ú | `src/Plant01.Domain.Shared/Interfaces/` |
-| `HttpService.cs` | HTTP ·şÎñÊµÏÖ | `src/Plant01.Infrastructure.Shared/Services/` |
-| `HttpServiceExtensions.cs` | DI ×¢²áÀ©Õ¹ | `src/Plant01.Infrastructure.Shared/Extensions/` |
-| `IMesService.cs` | MES ·şÎñ½Ó¿Ú | `src/Plant01.Upper.Application/Interfaces/` |
-| `MesService.cs` | MES ·şÎñÊµÏÖ | `src/Plant01.Upper.Application/Services/` |
-| `Bootstrapper.cs` | ·şÎñ×¢²á | `src/Plant01.Upper.Presentation.Bootstrapper/` |
+### åœºæ™¯ 2: æˆ‘éœ€è¦é›†æˆ MES æ¥å£
+1. é…ç½® â†’ æ‰“å¼€ `appsettings.json`ï¼Œæ·»åŠ  MES é…ç½®
+2. æ³¨å…¥ â†’ åœ¨æ„é€ å‡½æ•°ä¸­æ³¨å…¥ `IMesService`
+3. è°ƒç”¨ â†’ å‚è€ƒ **[MES é”æ´¾æ¥å£å¿«é€Ÿå¼€å§‹](MesService-QuickStart.md)** ä¸­çš„ä»£ç ç¤ºä¾‹
 
-### Ê¾Àı´úÂëÎÄ¼ş
+### åœºæ™¯ 3: æˆ‘éœ€è¦è°ƒç”¨å…¶ä»– HTTP æ¥å£
+1. å­¦ä¹  â†’ **[HttpService ä½¿ç”¨æŒ‡å—](HttpService-Usage.md)**
+2. å‚è€ƒ â†’ **[HttpService å¿«é€Ÿå‚è€ƒ](HttpService-QuickReference.md)**
+3. å®ç° â†’ å‚è€ƒ `src/Plant01.Upper.Application/Services/MesService.cs`
 
-| ÎÄ¼ş | ËµÃ÷ | Î»ÖÃ |
-|------|------|------|
-| `MesWebApi.cs` | HttpService Ê¹ÓÃÊ¾Àı | `src/Plant01.Upper.Application/Services/` |
-| `MesRevopacViewModel.cs` | MES ½Ó¿ÚÊ¹ÓÃÊ¾Àı | `src/Plant01.Upper.Presentation.Core/ViewModels/` |
-| `MesLoginExampleViewModel.cs` | µÇÂ¼½Ó¿ÚÊ¾Àı | `src/Plant01.Upper.Presentation.Core/ViewModels/` |
+### åœºæ™¯ 4: æˆ‘é‡åˆ°äº†é—®é¢˜
+1. æŸ¥çœ‹ â†’ **[MES é”æ´¾æ¥å£è¯¦ç»†æŒ‡å—](MesService-Revopac-Guide.md)** ä¸­çš„"æ•…éšœæ’é™¤"éƒ¨åˆ†
+2. æ£€æŸ¥ â†’ **[HttpService å¿«é€Ÿå‚è€ƒ](HttpService-QuickReference.md)** ä¸­çš„"æ•…éšœæ’é™¤"éƒ¨åˆ†
+3. æŸ¥çœ‹æ—¥å¿— â†’ ä½¿ç”¨ Debug æ—¥å¿—çº§åˆ«æŸ¥çœ‹è¯¦ç»†ä¿¡æ¯
 
-### ÎÄµµÎÄ¼ş
+### åœºæ™¯ 5: æˆ‘æƒ³äº†è§£å®ç°ç»†èŠ‚
+1. é˜…è¯» â†’ **[MES æœåŠ¡å®ç°æ€»ç»“](MesService-Implementation-Summary.md)**
+2. é˜…è¯» â†’ **[HttpService å®ç°æ€»ç»“](HttpService-Implementation-Summary.md)**
+3. æŸ¥çœ‹æºç  â†’ `src/Plant01.Infrastructure.Shared/Services/HttpService.cs`
 
-| ÎÄµµ | ËµÃ÷ | Î»ÖÃ |
-|------|------|------|
-| `MesService-QuickStart.md` | MES ¿ìËÙ¿ªÊ¼ | `docs/` |
-| `MesService-Revopac-Guide.md` | MES ÏêÏ¸Ö¸ÄÏ | `docs/` |
-| `MesService-Implementation-Summary.md` | MES ÊµÏÖ×Ü½á | `docs/` |
-| `HttpService-QuickReference.md` | HttpService ¿ìËÙ²Î¿¼ | `docs/` |
-| `HttpService-Usage.md` | HttpService Ê¹ÓÃÖ¸ÄÏ | `docs/` |
-| `HttpService-Implementation-Summary.md` | HttpService ÊµÏÖ×Ü½á | `docs/` |
-| `README-Index.md` | ±¾ÎÄµµ£¨Ë÷Òı£© | `docs/` |
+### åœºæ™¯ 6: æˆ‘éœ€è¦æ·»åŠ æ–°çš„ MES æ¥å£
+1. å‚è€ƒ â†’ **[MES æœåŠ¡å®ç°æ€»ç»“](MesService-Implementation-Summary.md)** ä¸­çš„"åç»­æ‰©å±•å»ºè®®"
+2. æ¨¡ä»¿ â†’ `src/Plant01.Upper.Application/Services/MesService.cs` ä¸­çš„ç°æœ‰å®ç°
+3. æµ‹è¯• â†’ å‚è€ƒ **[MES é”æ´¾æ¥å£è¯¦ç»†æŒ‡å—](MesService-Revopac-Guide.md)** ä¸­çš„æµ‹è¯•ç¤ºä¾‹
 
 ---
 
-## ?? ºËĞÄ¸ÅÄîËÙ²é
+## ?? æ–‡ä»¶æ¸…å•
 
-### IHttpService - HTTP Í¨ĞÅ·şÎñ
+### æ ¸å¿ƒä»£ç æ–‡ä»¶
+
+| æ–‡ä»¶ | è¯´æ˜ | ä½ç½® |
+|------|------|------|
+| `IHttpService.cs` | HTTP æœåŠ¡æ¥å£ | `src/Plant01.Domain.Shared/Interfaces/` |
+| `HttpService.cs` | HTTP æœåŠ¡å®ç° | `src/Plant01.Infrastructure.Shared/Services/` |
+| `HttpServiceExtensions.cs` | DI æ³¨å†Œæ‰©å±• | `src/Plant01.Infrastructure.Shared/Extensions/` |
+| `IMesService.cs` | MES æœåŠ¡æ¥å£ | `src/Plant01.Upper.Application/Interfaces/` |
+| `MesService.cs` | MES æœåŠ¡å®ç° | `src/Plant01.Upper.Application/Services/` |
+| `Bootstrapper.cs` | æœåŠ¡æ³¨å†Œ | `src/Plant01.Upper.Presentation.Bootstrapper/` |
+
+### ç¤ºä¾‹ä»£ç æ–‡ä»¶
+
+| æ–‡ä»¶ | è¯´æ˜ | ä½ç½® |
+|------|------|------|
+| `MesWebApi.cs` | HttpService ä½¿ç”¨ç¤ºä¾‹ | `src/Plant01.Upper.Application/Services/` |
+| `MesRevopacViewModel.cs` | MES æ¥å£ä½¿ç”¨ç¤ºä¾‹ | `src/Plant01.Upper.Presentation.Core/ViewModels/` |
+| `MesLoginExampleViewModel.cs` | ç™»å½•æ¥å£ç¤ºä¾‹ | `src/Plant01.Upper.Presentation.Core/ViewModels/` |
+
+### æ–‡æ¡£æ–‡ä»¶
+
+| æ–‡æ¡£ | è¯´æ˜ | ä½ç½® |
+|------|------|------|
+| `MesService-QuickStart.md` | MES å¿«é€Ÿå¼€å§‹ | `docs/` |
+| `MesService-Revopac-Guide.md` | MES è¯¦ç»†æŒ‡å— | `docs/` |
+| `MesService-Implementation-Summary.md` | MES å®ç°æ€»ç»“ | `docs/` |
+| `HttpService-QuickReference.md` | HttpService å¿«é€Ÿå‚è€ƒ | `docs/` |
+| `HttpService-Usage.md` | HttpService ä½¿ç”¨æŒ‡å— | `docs/` |
+| `HttpService-Implementation-Summary.md` | HttpService å®ç°æ€»ç»“ | `docs/` |
+| `README-Index.md` | æœ¬æ–‡æ¡£ï¼ˆç´¢å¼•ï¼‰ | `docs/` |
+
+---
+
+## ?? æ ¸å¿ƒæ¦‚å¿µé€ŸæŸ¥
+
+### IHttpService - HTTP é€šä¿¡æœåŠ¡
 
 ```csharp
-// ×¢Èë
+// æ³¨å…¥
 public MyService(IHttpService httpService) { }
 
-// GET ÇëÇó
+// GET è¯·æ±‚
 var data = await _httpService.GetAsync<T>(url);
 
 // POST JSON
 var response = await _httpService.PostJsonAsync<TReq, TRes>(url, request);
 
-// ÈÏÖ¤
+// è®¤è¯
 _httpService.SetBearerToken(token);
 _httpService.AddHeader("X-Key", "value");
 ```
 
-### IMesService - MES ½Ó¿Ú·şÎñ
+### IMesService - MES æ¥å£æœåŠ¡
 
 ```csharp
-// ×¢Èë
+// æ³¨å…¥
 public MyService(IMesService mesService) { }
 
-// Âë¶âÍê³É
+// ç å›å®Œæˆ
 var response = await _mesService.FinishPalletizingAsync(request);
 
-// ÍĞÅÌÈ±ÉÙ
+// æ‰˜ç›˜ç¼ºå°‘
 var response = await _mesService.ReportLackPalletAsync(request);
 
-// ÅĞ¶Ï³É¹¦
-if (response.IsSuccess) { /* ³É¹¦ */ }
+// åˆ¤æ–­æˆåŠŸ
+if (response.IsSuccess) { /* æˆåŠŸ */ }
 ```
 
-### ÅäÖÃ
+### é…ç½®
 
 ```json
 {
@@ -166,38 +166,38 @@ if (response.IsSuccess) { /* ³É¹¦ */ }
 
 ---
 
-## ? ³£¼ûÎÊÌâ¿ìËÙÁ´½Ó
+## ? å¸¸è§é—®é¢˜å¿«é€Ÿé“¾æ¥
 
-| ÎÊÌâ | ²é¿´ÎÄµµ |
+| é—®é¢˜ | æŸ¥çœ‹æ–‡æ¡£ |
 |------|---------|
-| ÈçºÎ¿ªÊ¼Ê¹ÓÃ MES ½Ó¿Ú£¿ | [MES ¿ìËÙ¿ªÊ¼](MesService-QuickStart.md) |
-| ÈÏÖ¤ÃÜÔ¿ÈçºÎÉú³É£¿ | [MES ÏêÏ¸Ö¸ÄÏ - ÈÏÖ¤»úÖÆ](MesService-Revopac-Guide.md#-ÈÏÖ¤»úÖÆ) |
-| ÈçºÎµ÷ÓÃÆäËû HTTP ½Ó¿Ú£¿ | [HttpService Ê¹ÓÃÖ¸ÄÏ](HttpService-Usage.md) |
-| ÇëÇó³¬Ê±ÔõÃ´°ì£¿ | [HttpService ¿ìËÙ²Î¿¼ - ¹ÊÕÏÅÅ³ı](HttpService-QuickReference.md#-¹ÊÕÏÅÅ³ı) |
-| ÈçºÎ´¦Àí´íÎó£¿ | [MES ¿ìËÙ¿ªÊ¼ - ³£¼ûÎÊÌâ](MesService-QuickStart.md#-³£¼ûÎÊÌâ) |
-| IHttpService ½Ó¿ÚÓ¦¸Ã·ÅÔÚÄÄÀï£¿ | [HttpService ÊµÏÖ×Ü½á - ¼Ü¹¹½¨Òé](HttpService-Implementation-Summary.md#-¹ØÓÚ½Ó¿ÚÎ»ÖÃµÄ½¨Òé) |
-| ÈçºÎ½øĞĞµ¥Ôª²âÊÔ£¿ | [MES ÏêÏ¸Ö¸ÄÏ - µ¥Ôª²âÊÔ](MesService-Revopac-Guide.md#-µ¥Ôª²âÊÔ) |
-| ÈçºÎÌí¼ÓĞÂµÄ MES ½Ó¿Ú£¿ | [MES ÊµÏÖ×Ü½á - À©Õ¹½¨Òé](MesService-Implementation-Summary.md#-ºóĞøÀ©Õ¹½¨Òé) |
+| å¦‚ä½•å¼€å§‹ä½¿ç”¨ MES æ¥å£ï¼Ÿ | [MES å¿«é€Ÿå¼€å§‹](MesService-QuickStart.md) |
+| è®¤è¯å¯†é’¥å¦‚ä½•ç”Ÿæˆï¼Ÿ | [MES è¯¦ç»†æŒ‡å— - è®¤è¯æœºåˆ¶](MesService-Revopac-Guide.md#-è®¤è¯æœºåˆ¶) |
+| å¦‚ä½•è°ƒç”¨å…¶ä»– HTTP æ¥å£ï¼Ÿ | [HttpService ä½¿ç”¨æŒ‡å—](HttpService-Usage.md) |
+| è¯·æ±‚è¶…æ—¶æ€ä¹ˆåŠï¼Ÿ | [HttpService å¿«é€Ÿå‚è€ƒ - æ•…éšœæ’é™¤](HttpService-QuickReference.md#-æ•…éšœæ’é™¤) |
+| å¦‚ä½•å¤„ç†é”™è¯¯ï¼Ÿ | [MES å¿«é€Ÿå¼€å§‹ - å¸¸è§é—®é¢˜](MesService-QuickStart.md#-å¸¸è§é—®é¢˜) |
+| IHttpService æ¥å£åº”è¯¥æ”¾åœ¨å“ªé‡Œï¼Ÿ | [HttpService å®ç°æ€»ç»“ - æ¶æ„å»ºè®®](HttpService-Implementation-Summary.md#-å…³äºæ¥å£ä½ç½®çš„å»ºè®®) |
+| å¦‚ä½•è¿›è¡Œå•å…ƒæµ‹è¯•ï¼Ÿ | [MES è¯¦ç»†æŒ‡å— - å•å…ƒæµ‹è¯•](MesService-Revopac-Guide.md#-å•å…ƒæµ‹è¯•) |
+| å¦‚ä½•æ·»åŠ æ–°çš„ MES æ¥å£ï¼Ÿ | [MES å®ç°æ€»ç»“ - æ‰©å±•å»ºè®®](MesService-Implementation-Summary.md#-åç»­æ‰©å±•å»ºè®®) |
 
 ---
 
-## ?? ¿ìËÙÌø×ª
+## ?? å¿«é€Ÿè·³è½¬
 
-- ?? **Á¢¼´¿ªÊ¼** ¡ú [MES ÈñÅÉ½Ó¿Ú¿ìËÙ¿ªÊ¼](MesService-QuickStart.md)
-- ?? **ÉîÈëÑ§Ï°** ¡ú [MES ÈñÅÉ½Ó¿ÚÏêÏ¸Ö¸ÄÏ](MesService-Revopac-Guide.md)
-- ?? **API ²Î¿¼** ¡ú [HttpService ¿ìËÙ²Î¿¼](HttpService-QuickReference.md)
-- ?? **×î¼ÑÊµ¼ù** ¡ú [HttpService Ê¹ÓÃÖ¸ÄÏ](HttpService-Usage.md)
-- ?? **ÊµÏÖÏ¸½Ú** ¡ú [MES ·şÎñÊµÏÖ×Ü½á](MesService-Implementation-Summary.md)
-
----
-
-## ?? ĞèÒª°ïÖú£¿
-
-1. ²é¿´±¾ÎÄµµË÷Òı£¬ÕÒµ½¶ÔÓ¦µÄÎÄµµ
-2. ²é¿´Ê¾Àı´úÂë (`src/Plant01.Upper.Presentation.Core/ViewModels/`)
-3. ²é¿´ÈÕÖ¾Êä³ö£¨ÆôÓÃ Debug ¼¶±ğ£©
-4. ²é¿´µ¥Ôª²âÊÔÊ¾Àı
+- ?? **ç«‹å³å¼€å§‹** â†’ [MES é”æ´¾æ¥å£å¿«é€Ÿå¼€å§‹](MesService-QuickStart.md)
+- ?? **æ·±å…¥å­¦ä¹ ** â†’ [MES é”æ´¾æ¥å£è¯¦ç»†æŒ‡å—](MesService-Revopac-Guide.md)
+- ?? **API å‚è€ƒ** â†’ [HttpService å¿«é€Ÿå‚è€ƒ](HttpService-QuickReference.md)
+- ?? **æœ€ä½³å®è·µ** â†’ [HttpService ä½¿ç”¨æŒ‡å—](HttpService-Usage.md)
+- ?? **å®ç°ç»†èŠ‚** â†’ [MES æœåŠ¡å®ç°æ€»ç»“](MesService-Implementation-Summary.md)
 
 ---
 
-**?? ×£ÄúÊ¹ÓÃÓä¿ì£¡** ÈçÓĞÎÊÌâ£¬Çë²Î¿¼ÉÏÊöÎÄµµ¡£
+## ?? éœ€è¦å¸®åŠ©ï¼Ÿ
+
+1. æŸ¥çœ‹æœ¬æ–‡æ¡£ç´¢å¼•ï¼Œæ‰¾åˆ°å¯¹åº”çš„æ–‡æ¡£
+2. æŸ¥çœ‹ç¤ºä¾‹ä»£ç  (`src/Plant01.Upper.Presentation.Core/ViewModels/`)
+3. æŸ¥çœ‹æ—¥å¿—è¾“å‡ºï¼ˆå¯ç”¨ Debug çº§åˆ«ï¼‰
+4. æŸ¥çœ‹å•å…ƒæµ‹è¯•ç¤ºä¾‹
+
+---
+
+**?? ç¥æ‚¨ä½¿ç”¨æ„‰å¿«ï¼** å¦‚æœ‰é—®é¢˜ï¼Œè¯·å‚è€ƒä¸Šè¿°æ–‡æ¡£ã€‚

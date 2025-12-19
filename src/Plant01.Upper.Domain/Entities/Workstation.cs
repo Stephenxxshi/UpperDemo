@@ -1,5 +1,3 @@
-using Plant01.Domain.Shared.Models.Equipment;
-
 namespace Plant01.Upper.Domain.Entities;
 
 /// <summary>
@@ -8,42 +6,47 @@ namespace Plant01.Upper.Domain.Entities;
 public class Workstation
 {
     public int Id { get; set; }
-    
+
     /// <summary>
     /// 工站编号（唯一标识）
     /// </summary>
     public required string Code { get; set; }
-    
+
     /// <summary>
     /// 工站名称
     /// </summary>
     public required string Name { get; set; }
-    
+
     /// <summary>
-    /// 所属工段/区域编号
+    /// 所属工段ID
     /// </summary>
-    public string? SectionCode { get; set; }
-    
+    public int ProductionSectionId { get; set; }
+
+    /// <summary>
+    /// 所属工段
+    /// </summary>
+    public ProductionSection? ProductionSection { get; set; }
+
     /// <summary>
     /// 工站状态
     /// </summary>
     public WorkstationStatus Status { get; set; } = WorkstationStatus.Idle;
-    
+
     /// <summary>
     /// 是否启用
     /// </summary>
     public bool Enabled { get; set; } = true;
-    
+
     /// <summary>
     /// 排序序号
     /// </summary>
     public int Sequence { get; set; }
-    
+
     /// <summary>
     /// 该工站包含的设备列表
     /// </summary>
     public List<Equipment> Equipments { get; set; } = new();
-    
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
 }

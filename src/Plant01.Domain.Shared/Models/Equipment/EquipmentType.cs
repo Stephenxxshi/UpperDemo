@@ -12,5 +12,6 @@ public enum EquipmentType
     Conveyor = 7,
     RobotArm = 8,
     VisionSystem = 9,
-    MesGateway = 10
+    MesGateway = 10,
+    StretchWrapper = 11
 }

@@ -71,8 +71,11 @@ public sealed class HttpService : IHttpService
             var response = await httpClient.GetAsync(url, cancellationToken);
             response.EnsureSuccessStatusCode();
             
-            var result = await response.Content.ReadFromJsonAsync<T>(DefaultJsonOptions, cancellationToken);
-            _logger.LogDebug("GET 请求成功并反序列化: {Url}", url);
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
+            _logger.LogDebug("GET 请求成功: {Url}, 响应 JSON: {Json}", url, content);
+            
+            var result = JsonSerializer.Deserialize<T>(content, DefaultJsonOptions);
+            _logger.LogDebug("反序列化成功: {Url}", url);
             
             return result;
         }
@@ -135,13 +138,13 @@ public sealed class HttpService : IHttpService
         
         try
         {
-            _logger.LogDebug("发送 POST JSON 请求: {Url}, 内容长度: {Length}", url, jsonContent.Length);
+            _logger.LogDebug("发送 POST JSON 请求: {Url}, 内容: {Json}", url, jsonContent);
             
             var response = await httpClient.PostAsync(url, content, cancellationToken);
             response.EnsureSuccessStatusCode();
             
             var result = await response.Content.ReadAsStringAsync(cancellationToken);
-            _logger.LogDebug("POST JSON 请求成功: {Url}, 响应长度: {Length}", url, result.Length);
+            _logger.LogDebug("POST JSON 请求成功: {Url}, 响应: {Json}", url, result);
             
             return result;
         }
@@ -166,14 +169,18 @@ public sealed class HttpService : IHttpService
         
         try
         {
-            _logger.LogDebug("发送 POST JSON 请求: {Url}, 请求类型: {RequestType}, 响应类型: {ResponseType}", 
-                url, typeof(TRequest).Name, typeof(TResponse).Name);
+            var requestJson = JsonSerializer.Serialize(request, DefaultJsonOptions);
+            _logger.LogDebug("发送 POST JSON 请求: {Url}, 请求类型: {RequestType}, 响应类型: {ResponseType}, 请求 JSON: {Json}", 
+                url, typeof(TRequest).Name, typeof(TResponse).Name, requestJson);
             
             var response = await httpClient.PostAsJsonAsync(url, request, DefaultJsonOptions, cancellationToken);
             response.EnsureSuccessStatusCode();
             
-            var result = await response.Content.ReadFromJsonAsync<TResponse>(DefaultJsonOptions, cancellationToken);
-            _logger.LogDebug("POST JSON 请求成功并反序列化: {Url}", url);
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            _logger.LogDebug("POST JSON 请求成功: {Url}, 响应 JSON: {Json}", url, responseContent);
+            
+            var result = JsonSerializer.Deserialize<TResponse>(responseContent, DefaultJsonOptions);
+            _logger.LogDebug("反序列化成功: {Url}", url);
             
             return result;
         }

@@ -1,9 +1,9 @@
 using CsvHelper.Configuration;
-using Plant01.Upper.Domain.Models.DeviceCommunication;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
 
-public class TagMap : ClassMap<Tag>
+public class TagMap : ClassMap<CommunicationTag>
 {
     public TagMap()
     {
@@ -32,8 +32,8 @@ public class TagMap : ClassMap<Tag>
             return TagDataType.Int16; // Default
         });
 
-        Map(m => m.DeviceName).Name("DeviceName");
-        Map(m => m.ChannelName).Name("ChannelName");
+        Map(m => m.DeviceCode).Name("DeviceCode");
+        Map(m => m.ChannelCode).Name("ChannelCode");
 
         Map(m => m.ArrayLength).Name("Length").Default((ushort)1).Convert(args => 
         {

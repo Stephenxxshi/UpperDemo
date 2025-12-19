@@ -7,7 +7,7 @@ using Plant01.Upper.Application.Models;
 namespace Plant01.Upper.Infrastructure.Services;
 
 /// <summary>
-/// PLC ¼à¿Ø·þÎñ
+/// PLC ï¿½ï¿½Ø·ï¿½ï¿½ï¿½
 /// </summary>
 public class PlcMonitorService : BackgroundService
 {
@@ -27,9 +27,9 @@ public class PlcMonitorService : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("PLC ¼à¿Ø·þÎñÒÑÆô¶¯£¨ÇÅ½ÓÄ£Ê½£©¡£");
+        _logger.LogInformation("PLC ï¿½ï¿½Ø·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½");
         
-        // ¶©ÔÄ±êÇ©±ä»¯ÊÂ¼þ
+        // ï¿½ï¿½ï¿½Ä±ï¿½Ç©ï¿½ä»¯ï¿½Â¼ï¿½
         _deviceService.TagChanged += OnTagChanged;
         
         return Task.CompletedTask;
@@ -37,37 +37,37 @@ public class PlcMonitorService : BackgroundService
 
     private async void OnTagChanged(object? sender, TagChangeEventArgs e)
     {
-        // ÈçÐèÒª£¬½ö¹ýÂËÏà¹Ø±êÇ©
-        // Ä¿Ç°£¬ÎÒÃÇ¼ÙÉèÈÎºÎ±êÇ©±ä»¯¶¼ÊÇ´¥·¢Æ÷»òÊý¾Ý¸üÐÂ
+        // ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½Ç©
+        // Ä¿Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Ç¼ï¿½ï¿½ï¿½ï¿½ÎºÎ±ï¿½Ç©ï¿½ä»¯ï¿½ï¿½ï¿½Ç´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½
         
-        // Ê¾ÀýÓ³ÉäÂß¼­£º
-        // Èç¹û±êÇ©Ãû³ÆÒÔ "ST" ¿ªÍ·£¬Ëü¿ÉÄÜÊÇÕ¾µã´¥·¢Æ÷
-        // ÀýÈç "ST01_Loading.Trigger"
+        // Ê¾ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "ST" ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¾ï¿½ã´¥ï¿½ï¿½ï¿½ï¿½
+        // ï¿½ï¿½ï¿½ï¿½ "ST01_Loading.Trigger"
         
         try
         {
-            // ¼òµ¥Âß¼­£ºÄ¿Ç°Ö»ÊÇ×ª·¢Ò»ÇÐ£¬»ò°´ÌØ¶¨±êÇ©¹ýÂË
-            // ÔÚÕæÊµÓ¦ÓÃÖÐ£¬Äú»áÔÚ "TriggerMap" ÖÐ²éÕÒ±êÇ©
+            // ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½Ä¿Ç°Ö»ï¿½ï¿½×ªï¿½ï¿½Ò»ï¿½Ð£ï¿½ï¿½ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ï¿½ÊµÓ¦ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "TriggerMap" ï¿½Ð²ï¿½ï¿½Ò±ï¿½Ç©
             
-            // Ê¾Àý£ºÈç¹ûÖµÎª²¼¶û TRUE£¬Ôò´¥·¢ÊÂ¼þ
-            if (e.NewData.Value is bool bVal && bVal)
+            // Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÎªï¿½ï¿½ï¿½ï¿½ TRUEï¿½ï¿½ï¿½ò´¥·ï¿½ï¿½Â¼ï¿½
+            if (e.NewValue.Value is bool bVal && bVal)
             {
-                // ´Ó TagName ÖÐÌáÈ¡ StationId£¨ÀýÈç "SDJ01.HeartBreak" -> "SDJ01"£©
+                // ï¿½ï¿½ TagName ï¿½ï¿½ï¿½ï¿½È¡ StationIdï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "SDJ01.HeartBreak" -> "SDJ01"ï¿½ï¿½
                 var parts = e.TagName.Split('.');
                 var stationId = parts.Length > 0 ? parts[0] : "Unknown";
                 
                 await _dispatcher.EnqueueAsync(
                     stationId: stationId,
                     source: TriggerSourceType.PLC,
-                    payload: $"{e.TagName}={e.NewData.Value}",
+                    payload: $"{e.TagName}={e.NewValue.Value}",
                     priority: TriggerPriority.Normal,
-                    debounceKey: e.TagName // °´±êÇ©Ãû³ÆÈ¥¶¶
+                    debounceKey: e.TagName // ï¿½ï¿½ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½È¥ï¿½ï¿½
                 );
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "´¦Àí±êÇ©±ä»¯Ê±³ö´í {Tag}", e.TagName);
+            _logger.LogError(ex, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç©ï¿½ä»¯Ê±ï¿½ï¿½ï¿½ï¿½ {Tag}", e.TagName);
         }
     }
 

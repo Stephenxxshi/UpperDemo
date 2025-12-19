@@ -36,7 +36,7 @@ public partial class MesDebugViewModel : ObservableObject
     private string _palletId = "P00001";
 
     [ObservableProperty]
-    private string _deviceCode = "PMJ1";
+    private string _deviceCode = "MDJ1";
 
     [ObservableProperty]
     private string _jobId = "MO010604:1";
@@ -320,7 +320,7 @@ public partial class MesDebugViewModel : ObservableObject
                 AgvDeviceCode = AgvDeviceCode,
                 PalletId = PalletId,
                 DeviceCode = DeviceCode,
-                JobId = JobId,
+                JobNo = JobId,
                 List = new List<PackageDetail>
                 {
                     new() { BagNums = BagNum1, Quan = Quantity1 },

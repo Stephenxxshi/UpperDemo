@@ -1,0 +1,307 @@
+[
+  {
+    "Code": "Line01",
+    "Name": "1# 生产线",
+    "Description": "1号包装码垛线",
+    "Sections": [
+      {
+        "Code": "SEC_PACKAGE",
+        "Name": "包装工段",
+        "Sequence": 1,
+        "StrategyConfigJson": null,
+        "Workstations": [
+          {
+            "Code": "L1_WS_PKG01",
+            "Name": "1#线-1号包装工位",
+            "Sequence": 1,
+            "Equipments": [
+              {
+                "Code": "L1_BP01",
+                "Name": "1#线-1号上袋机",
+                "Type": "BagPicker",
+                "Capabilities": "Heartbeat, AlarmReport",
+                "Sequence": 1
+              },
+              {
+                "Code": "L1_PM01",
+                "Name": "1#线-1号包装机",
+                "Type": "PackageMachine",
+                "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+                "Sequence": 2
+              }
+            ]
+          },
+          {
+            "Code": "L1_WS_PKG02",
+            "Name": "1#线-2号包装工位",
+            "Sequence": 2,
+            "Equipments": [
+              {
+                "Code": "L1_BP02",
+                "Name": "1#线-2号上袋机",
+                "Type": "BagPicker",
+                "Capabilities": "Heartbeat, AlarmReport",
+                "Sequence": 1
+              },
+              {
+                "Code": "L1_PM02",
+                "Name": "1#线-2号包装机",
+                "Type": "PackageMachine",
+                "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+                "Sequence": 2
+              }
+            ]
+          },
+          {
+            "Code": "L1_WS_PKG03",
+            "Name": "1#线-3号包装工位",
+            "Sequence": 3,
+            "Equipments": [
+              {
+                "Code": "L1_BP03",
+                "Name": "1#线-3号上袋机",
+                "Type": "BagPicker",
+                "Capabilities": "Heartbeat, AlarmReport",
+                "Sequence": 1
+              },
+              {
+                "Code": "L1_PM03",
+                "Name": "1#线-3号包装机",
+                "Type": "PackageMachine",
+                "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+                "Sequence": 2
+              }
+            ]
+          },
+          {
+            "Code": "L1_WS_PKG04",
+            "Name": "1#线-4号包装工位",
+            "Sequence": 4,
+            "Equipments": [
+              {
+                "Code": "L1_BP04",
+                "Name": "1#线-4号上袋机",
+                "Type": "BagPicker",
+                "Capabilities": "Heartbeat, AlarmReport",
+                "Sequence": 1
+              },
+              {
+                "Code": "L1_PM04",
+                "Name": "1#线-4号包装机",
+                "Type": "PackageMachine",
+                "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+                "Sequence": 2
+              }
+            ]
+          },
+          {
+            "Code": "L1_WS_PKG05",
+            "Name": "1#线-5号包装工位",
+            "Sequence": 5,
+            "Equipments": [
+              {
+                "Code": "L1_BP05",
+                "Name": "1#线-5号上袋机",
+                "Type": "BagPicker",
+                "Capabilities": "Heartbeat, AlarmReport",
+                "Sequence": 1
+              },
+              {
+                "Code": "L1_PM05",
+                "Name": "1#线-5号包装机",
+                "Type": "PackageMachine",
+                "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+                "Sequence": 2
+              }
+            ]
+          },
+          {
+            "Code": "L1_WS_PKG06",
+            "Name": "1#线-6号包装工位",
+            "Sequence": 6,
+            "Equipments": [
+              {
+                "Code": "L1_BP06",
+                "Name": "1#线-6号上袋机",
+                "Type": "BagPicker",
+                "Capabilities": "Heartbeat, AlarmReport",
+                "Sequence": 1
+              },
+              {
+                "Code": "L1_PM06",
+                "Name": "1#线-6号包装机",
+                "Type": "PackageMachine",
+                "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+                "Sequence": 2
+              }
+            ]
+          },
+          {
+            "Code": "L1_WS_PKG07",
+            "Name": "1#线-7号包装工位",
+            "Sequence": 7,
+            "Equipments": [
+              {
+                "Code": "L1_BP07",
+                "Name": "1#线-7号上袋机",
+                "Type": "BagPicker",
+                "Capabilities": "Heartbeat, AlarmReport",
+                "Sequence": 1
+              },
+              {
+                "Code": "L1_PM07",
+                "Name": "1#线-7号包装机",
+                "Type": "PackageMachine",
+                "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+                "Sequence": 2
+              }
+            ]
+          },
+          {
+            "Code": "L1_WS_PKG08",
+            "Name": "1#线-8号包装工位",
+            "Sequence": 8,
+            "Equipments": [
+              {
+                "Code": "L1_BP08",
+                "Name": "1#线-8号上袋机",
+                "Type": "BagPicker",
+                "Capabilities": "Heartbeat, AlarmReport",
+                "Sequence": 1
+              },
+              {
+                "Code": "L1_PM08",
+                "Name": "1#线-8号包装机",
+                "Type": "PackageMachine",
+                "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+                "Sequence": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Code": "SEC_WEIGH",
+        "Name": "称重工段",
+        "Sequence": 2,
+        "StrategyConfigJson": null,
+        "Workstations": [
+          {
+            "Code": "L1_WS_WEIGH",
+            "Name": "1#线-称重工位",
+            "Sequence": 1,
+            "Equipments": [
+              {
+                "Code": "L1_WGH01",
+                "Name": "1#线-称重机",
+                "Type": "Weigher",
+                "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+                "Sequence": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Code": "SEC_PALLETIZING",
+        "Name": "码垛工段",
+        "Sequence": 3,
+        "StrategyConfigJson": "{\"AllocationMode\": \"Dynamic\", \"Palletizers\": [{\"Code\": \"L1_PAL01\", \"SourcePackers\": [\"L1_PM01\", \"L1_PM02\", \"L1_PM03\"]}, {\"Code\": \"L1_PAL02\", \"SourcePackers\": [\"L1_PM04\", \"L1_PM05\", \"L1_PM06\"]}, {\"Code\": \"L1_PAL03\", \"SourcePackers\": [\"L1_PM07\", \"L1_PM08\"]}]}",
+        "Workstations": [
+          {
+            "Code": "L1_WS_PAL01",
+            "Name": "1#线-1号码垛工位",
+            "Sequence": 1,
+            "Equipments": [
+              {
+                "Code": "L1_PAL01",
+                "Name": "1#线-1号码垛机",
+                "Type": "Palletizer",
+                "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+                "Sequence": 1
+              }
+            ]
+          },
+          {
+            "Code": "L1_WS_PAL02",
+            "Name": "1#线-2号码垛工位",
+            "Sequence": 2,
+            "Equipments": [
+              {
+                "Code": "L1_PAL02",
+                "Name": "1#线-2号码垛机",
+                "Type": "Palletizer",
+                "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+                "Sequence": 1
+              }
+            ]
+          },
+          {
+            "Code": "L1_WS_PAL03",
+            "Name": "1#线-3号码垛工位",
+            "Sequence": 3,
+            "Equipments": [
+              {
+                "Code": "L1_PAL03",
+                "Name": "1#线-3号码垛机",
+                "Type": "Palletizer",
+                "Capabilities": "Heartbeat, AlarmReport, OutputCount",
+                "Sequence": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Code": "SEC_WRAP",
+        "Name": "缠绕工段",
+        "Sequence": 4,
+        "StrategyConfigJson": null,
+        "Workstations": [
+          {
+            "Code": "L1_WS_WRAP",
+            "Name": "1#线-缠绕工位",
+            "Sequence": 1,
+            "Equipments": [
+              {
+                "Code": "L1_WRAP01",
+                "Name": "1#线-缠绕机",
+                "Type": "StretchWrapper",
+                "Capabilities": "Heartbeat, AlarmReport",
+                "Sequence": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Code": "SEC_LABEL",
+        "Name": "贴标工段",
+        "Sequence": 5,
+        "StrategyConfigJson": null,
+        "Workstations": [
+          {
+            "Code": "L1_WS_LABEL",
+            "Name": "1#线-贴标工位",
+            "Sequence": 1,
+            "Equipments": [
+              {
+                "Code": "L1_LBL01",
+                "Name": "1#线-贴标机",
+                "Type": "LabelPrinter",
+                "Capabilities": "Heartbeat, AlarmReport",
+                "Sequence": 1
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Code": "Line02",
+    "Name": "2# 生产线",
+    "Description": "2号包装码垛线",
+    "Sections": []
+  }
+]

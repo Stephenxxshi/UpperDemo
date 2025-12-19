@@ -24,7 +24,7 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
 
     public void Receive(StationTriggerMessage message)
     {
-        _logger.LogInformation("Received trigger for processing: {StationId}", message.StationId);
+        _logger.LogInformation("收到处理触发：{StationId}", message.StationId);
 
         // 使用 Task.Run 避免阻塞 Messenger 分发线程 (虽然 Dispatcher 已经在后台，但为了保险)
         Task.Run(async () =>
@@ -38,7 +38,7 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error handling trigger for {StationId}", message.StationId);
+                _logger.LogError(ex, "处理 {StationId} 触发时出错", message.StationId);
             }
         });
     }
@@ -71,7 +71,7 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
                 }
                 else
                 {
-                    _logger.LogWarning("Invalid payload for weighing: {Payload}", message.Payload);
+                    _logger.LogWarning("称重无效负载：{Payload}", message.Payload);
                 }
                 break;
             case "ST05_Printing": // 喷码
@@ -86,7 +86,7 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
                 await ProcessPalletOutRequestAsync(bagCode, machineId, serviceProvider); // 这里 bagCode 可能是 PalletCode
                 break;
             default:
-                _logger.LogWarning("Unknown station: {StationId}", message.StationId);
+                _logger.LogWarning("未知站点：{StationId}", message.StationId);
                 break;
         }
     }
@@ -116,7 +116,7 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
             bag.AddRecord(ProcessStep.Loading, machineId, true);
             await bagRepo.UpdateAsync(bag);
             await unitOfWork.SaveChangesAsync();
-            _logger.LogInformation("Bag {BagCode} loaded at {MachineId}", bagCode, machineId);
+            _logger.LogInformation("袋 {BagCode} 在 {MachineId} 加载", bagCode, machineId);
             return true;
         }
 
@@ -134,7 +134,7 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
             bag.AddRecord(ProcessStep.Bagging, machineId, true);
             await bagRepo.UpdateAsync(bag);
             await unitOfWork.SaveChangesAsync();
-            _logger.LogInformation("Bag {BagCode} bagged at {MachineId}", bagCode, machineId);
+            _logger.LogInformation("袋 {BagCode} 在 {MachineId} 套袋", bagCode, machineId);
             return true;
         }
         return false;
@@ -151,7 +151,7 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
             bag.AddRecord(ProcessStep.Filling, machineId, true);
             await bagRepo.UpdateAsync(bag);
             await unitOfWork.SaveChangesAsync();
-            _logger.LogInformation("Bag {BagCode} filled at {MachineId}", bagCode, machineId);
+            _logger.LogInformation("袋 {BagCode} 在 {MachineId} 灌装", bagCode, machineId);
             return true;
         }
         return false;
@@ -172,7 +172,7 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
 
             await bagRepo.UpdateAsync(bag);
             await unitOfWork.SaveChangesAsync();
-            _logger.LogInformation("Bag {BagCode} weighed at {MachineId}: {Weight}", bagCode, machineId, weight);
+            _logger.LogInformation("袋 {BagCode} 在 {MachineId} 称重：{Weight}", bagCode, machineId, weight);
             return isQualified;
         }
         return false;
@@ -191,7 +191,7 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
             bag.AddRecord(ProcessStep.Printing, machineId, true, printContent);
             await bagRepo.UpdateAsync(bag);
             await unitOfWork.SaveChangesAsync();
-            _logger.LogInformation("Bag {BagCode} printed at {MachineId}", bagCode, machineId);
+            _logger.LogInformation("袋 {BagCode} 在 {MachineId} 喷码", bagCode, machineId);
             return printContent;
         }
         return null;
@@ -225,7 +225,7 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
             await bagRepo.UpdateAsync(bag);
             await palletRepo.UpdateAsync(pallet);
             await unitOfWork.SaveChangesAsync();
-            _logger.LogInformation("Bag {BagCode} palletized to {PalletCode}", bagCode, palletCode);
+            _logger.LogInformation("袋 {BagCode} 码垛到 {PalletCode}", bagCode, palletCode);
             return true;
         }
         return false;
@@ -244,7 +244,7 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
 
             await palletRepo.UpdateAsync(pallet);
             await unitOfWork.SaveChangesAsync();
-            _logger.LogInformation("Pallet {PalletCode} out at {MachineId}", palletCode, machineId);
+            _logger.LogInformation("托盘 {PalletCode} 在 {MachineId} 出垛", palletCode, machineId);
             return true;
         }
         return false;
