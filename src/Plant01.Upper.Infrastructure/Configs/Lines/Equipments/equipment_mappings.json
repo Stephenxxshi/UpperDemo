@@ -1,13 +1,13 @@
 [
   {
-    "EquipmentCode": "L1_BP01",
+    "EquipmentCode": "BagPicker",
     "TagMappings": [
       {
-        "TagName": "L1_BP01.Heartbeat",
-        "Purpose": "Heartbeat",
+        "TagName": "BZJ.PickBag.Request",
+        "Purpose": "ProcessTrigger",
         "IsCritical": true,
         "Direction": "Input",
-        "IsTrigger": false
+        "IsTrigger": true
       },
       {
         "TagName": "L1_BP01.AlarmCode",

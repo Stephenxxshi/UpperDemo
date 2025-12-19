@@ -72,7 +72,7 @@ public class WorkstationProcessService : IHostedService
     /// </summary>
     private void BuildTriggerMappings()
     {
-        // 从 equipment_mappings.json 加载所有设备的标签映射
+        // 从 equipment_mappings.csv 加载所有设备的标签映射
         var mappingsConfig = _equipmentConfig.GetAllMappings();
         
         foreach (var mappingDto in mappingsConfig)

@@ -80,6 +80,7 @@ public static class TagPurpose
     public const string Speed = "Speed";              // 速度
     public const string Temperature = "Temperature";  // 温度
     public const string Pressure = "Pressure";        // 压力
+    public const string QrCode = "QrCode";                // 二维码
     
     // === 流程控制相关（新增） ===
     public const string ProcessTrigger = "ProcessTrigger";     // 流程触发信号

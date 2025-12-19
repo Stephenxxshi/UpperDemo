@@ -5,8 +5,6 @@ using Plant01.Domain.Shared.Models.Equipment;
 using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Infrastructure.Configs.Models;
 
-using System.Text.Json;
-
 namespace Plant01.Upper.Infrastructure.Services;
 
 /// <summary>
@@ -42,14 +40,32 @@ public class EquipmentConfigService
             try
             {
                 // 加载设备模板
-                var equipmentFile = Path.Combine(_configPath, "Lines", "Equipments", "equipment_templates.json");
+                var equipmentFile = Path.Combine(_configPath, "Lines", "Equipments", "equipment_templates.csv");
                 if (File.Exists(equipmentFile))
                 {
-                    var json = File.ReadAllText(equipmentFile);
-                    var equipments = JsonSerializer.Deserialize<List<EquipmentTemplateDto>>(json,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    _equipmentCache = equipments?.ToDictionary(e => e.Code, StringComparer.OrdinalIgnoreCase)
-                        ?? new();
+                    var lines = File.ReadAllLines(equipmentFile);
+                    var equipments = new List<EquipmentTemplateDto>();
+                    
+                    // Skip header
+                    foreach (var line in lines.Skip(1))
+                    {
+                        if (string.IsNullOrWhiteSpace(line)) continue;
+                        
+                        var parts = ParseCsvLine(line);
+                        if (parts.Count < 6) continue;
+
+                        equipments.Add(new EquipmentTemplateDto
+                        {
+                            Code = parts[0].Trim(),
+                            Name = parts[1].Trim(),
+                            Type = parts[2].Trim(),
+                            Capabilities = parts[3].Trim().Trim('"'), // Remove quotes if present
+                            Sequence = int.TryParse(parts[4], out var seq) ? seq : 0,
+                            Enabled = bool.TryParse(parts[5], out var enabled) ? enabled : true
+                        });
+                    }
+
+                    _equipmentCache = equipments.ToDictionary(e => e.Code, StringComparer.OrdinalIgnoreCase);
                     _logger.LogInformation("已加载 {Count} 个设备模板", _equipmentCache.Count);
                 }
                 else
@@ -58,16 +74,55 @@ public class EquipmentConfigService
                 }
 
                 // 加载设备映射
-                var mappingFile = Path.Combine(_configPath, "Lines", "Equipments", "equipment_mappings.json");
+                var mappingFile = Path.Combine(_configPath, "Lines", "Equipments", "equipment_mappings.csv");
                 if (File.Exists(mappingFile))
                 {
-                    var json = File.ReadAllText(mappingFile);
-                    var mappings = JsonSerializer.Deserialize<List<EquipmentMappingDto>>(json,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    _mappingCache = mappings?.ToDictionary(
-                        m => m.EquipmentCode,
-                        m => m.TagMappings,
-                        StringComparer.OrdinalIgnoreCase) ?? new();
+                    var lines = File.ReadAllLines(mappingFile);
+                    var allMappings = new List<(string EquipmentCode, TagMappingDto Mapping)>();
+
+                    // Skip header
+                    for (int i = 1; i < lines.Length; i++)
+                    {
+                        var line = lines[i];
+                        if (string.IsNullOrWhiteSpace(line)) continue;
+
+                        var parts = ParseCsvLine(line);
+                        if (parts.Count < 7) continue;
+
+                        var equipmentCode = parts[6].Trim();
+                        if (string.IsNullOrEmpty(equipmentCode))
+                        {
+                            _logger.LogWarning("CSV行 {LineNumber} 缺少 EquipmentCode: {Line}", i + 1, line);
+                            continue;
+                        }
+
+                        var mapping = new TagMappingDto
+                        {
+                            TagName = parts[0].Trim(),
+                            Purpose = parts[1].Trim(),
+                            IsCritical = bool.TryParse(parts[2], out var isCritical) && isCritical,
+                            Direction = ParseTagDirection(parts[3].Trim()),
+                            TriggerCondition = parts[4].Trim(),
+                            Remarks = parts[5].Trim(),
+                            IsTrigger = !string.IsNullOrWhiteSpace(parts[4])
+                        };
+                        
+                        // Fix for IsTrigger logic based on JSON observation
+                        if (!string.IsNullOrEmpty(mapping.TriggerCondition))
+                        {
+                            mapping.IsTrigger = true;
+                        }
+
+                        allMappings.Add((equipmentCode, mapping));
+                    }
+
+                    _mappingCache = allMappings
+                        .GroupBy(x => x.EquipmentCode)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.Select(x => x.Mapping).ToList(),
+                            StringComparer.OrdinalIgnoreCase);
+
                     _logger.LogInformation("已加载 {Count} 个设备映射配置", _mappingCache.Count);
                 }
                 else
@@ -80,6 +135,44 @@ public class EquipmentConfigService
                 _logger.LogError(ex, "加载设备配置文件失败");
             }
         }
+    }
+
+    private List<string> ParseCsvLine(string line)
+    {
+        var result = new List<string>();
+        var current = "";
+        var inQuotes = false;
+
+        for (int i = 0; i < line.Length; i++)
+        {
+            var c = line[i];
+            if (c == '"')
+            {
+                inQuotes = !inQuotes;
+            }
+            else if (c == ',' && !inQuotes)
+            {
+                result.Add(current);
+                current = "";
+            }
+            else
+            {
+                current += c;
+            }
+        }
+        result.Add(current);
+        return result;
+    }
+
+    private TagDirection ParseTagDirection(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return TagDirection.Input;
+        if (input.Equals("Output", StringComparison.OrdinalIgnoreCase) || 
+            input.Equals("OutPut", StringComparison.OrdinalIgnoreCase)) // Handle typo in CSV
+        {
+            return TagDirection.Output;
+        }
+        return TagDirection.Input;
     }
 
     /// <summary>

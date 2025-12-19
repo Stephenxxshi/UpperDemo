@@ -17,6 +17,15 @@
     <Content Include="Configs\DeviceCommunications\Tags\tags.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Configs\Lines\Equipments\equipment_mappings.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Lines\Equipments\equipment_templates.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Lines\production_lines.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <!-- Production Lines -->
     <Compile Remove="Configs\Stations\**" />
     <EmbeddedResource Remove="Configs\Stations\**" />
@@ -25,6 +34,9 @@
 
   <ItemGroup>
     <None Remove="Configs\DeviceCommunications\Tags\tags.csv" />
+    <None Remove="Configs\Lines\Equipments\equipment_mappings.csv" />
+    <None Remove="Configs\Lines\Equipments\equipment_templates.csv" />
+    <None Remove="Configs\Lines\production_lines.json" />
   </ItemGroup>
 
   <ItemGroup>

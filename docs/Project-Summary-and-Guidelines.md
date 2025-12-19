@@ -45,7 +45,7 @@
 ```
 
 ### 核心特点
-1. **配置驱动**: 通过 `production_lines.json` 定义产线拓扑，通过 `equipment_templates.json` + `equipment_mappings.json` 定义设备
+1. **配置驱动**: 通过 `production_lines.json` 定义产线拓扑，通过 `equipment_templates.csv` + `equipment_mappings.csv` 定义设备
 2. **配置分离**: 设备定义与产线拓扑分离，`production_lines.json` 使用 `EquipmentRefs` 引用设备
 3. **内存管理**: 使用 `ProductionConfigManager` 和 `EquipmentConfigService` 在内存中高效维护所有配置，零数据库开销
 4. **程序启动时初始化**: `ProductionLineConfigService` 作为 `BackgroundService` 在启动时加载配置
@@ -75,42 +75,22 @@
   }
   ```
 
-#### 2. 设备模板配置 (`equipment_templates.json`)
-- **位置**: `src/Plant01.Upper.Infrastructure/Configs/Equipments/equipment_templates.json`
+#### 2. 设备模板配置 (`equipment_templates.csv`)
+- **位置**: `src/Plant01.Upper.Infrastructure/Configs/Equipments/equipment_templates.csv`
 - **内容**: 定义所有设备的基础信息（Code, Name, Type, Capabilities, Sequence）
 - **示例**:
-  ```json
-  [
-    {
-      "Code": "L1_BP01",
-      "Name": "1#线-1号上袋机",
-      "Type": "BagPicker",
-      "Capabilities": "Heartbeat, AlarmReport",
-      "Sequence": 1,
-      "Enabled": true
-    }
-  ]
+  ```csv
+  Code,Name,Type,Capabilities,Sequence,Enabled
+  L1_BP01,1#线-1号上袋机,BagPicker,"Heartbeat, AlarmReport",1,TRUE
   ```
 
-#### 3. 设备标签映射配置 (`equipment_mappings.json`)
-- **位置**: `src/Plant01.Upper.Infrastructure/Configs/Equipments/equipment_mappings.json`
+#### 3. 设备标签映射配置 (`equipment_mappings.csv`)
+- **位置**: `src/Plant01.Upper.Infrastructure/Configs/Equipments/equipment_mappings.csv`
 - **内容**: 定义设备到通信标签的映射关系，包含 `Purpose`（业务用途）和 `IsCritical`（关键标签标识）
 - **示例**:
-  ```json
-  [
-    {
-      "EquipmentCode": "L1_BP01",
-      "TagMappings": [
-        {
-          "TagName": "SDJ01.HeartBreak",
-          "Purpose": "Heartbeat",
-          "IsCritical": true,
-          "ChannelName": "PLC01",
-          "Remarks": "设备心跳信号"
-        }
-      ]
-    }
-  ]
+  ```csv
+  TagName,Purpose,IsCritical,Direction,TriggerCondition,Remarks,EquipmentCode
+  SDJ01.HeartBreak,Heartbeat,TRUE,Input,,,L1_BP01
   ```
 
 ### 设备-标签映射的业务语义
@@ -169,10 +149,10 @@ if (mapping.IsCritical)
 ```
 
 #### 为什么不直接写入 tags.csv？
-**推荐**: 将 `Purpose` 和 `IsCritical` 保留在 `equipment_mappings.json` 中
+**推荐**: 将 `Purpose` 和 `IsCritical` 保留在 `equipment_mappings.csv` 中
 
 **原因**:
-- ✅ **分层清晰**: `tags.csv` 属于通信层配置（地址、数据类型），`equipment_mappings.json` 属于业务层配置（用途、优先级）
+- ✅ **分层清晰**: `tags.csv` 属于通信层配置（地址、数据类型），`equipment_mappings.csv` 属于业务层配置（用途、优先级）
 - ✅ **复用灵活**: 同一个 PLC 标签可能被多个设备引用，业务用途可能不同（如 DB200.0 既是上袋机心跳，也是包装机心跳）
 - ✅ **维护解耦**: 修改业务逻辑（调整用途/优先级）不需要重新生成通信配置
 

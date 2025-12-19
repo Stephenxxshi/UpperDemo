@@ -1,17 +1,17 @@
-ï»¿TagName,Station,EquipmentCode,Unit,Signal,CnName,Description,DataType,Address,S7AreaType,S7DbNumber,S7Offset,S7BitOffset,S7BatchReadingId,RW,Length,ChannelCode,DeviceCode
-SDJ.HeartBeat,,SDJ,,HeartBeat,å¿ƒè·³,,BOOL,DB200.0,DB,200,0,,1,READONLY,,SiemensS7Tcp,PLC01
-BZJ.PickBag.Request,,BZJ,PickBag,Request,ä¸Šè¢‹å…è®¸è¯»ç ,,BOOL,DB200.2,DB,200,2,,1,READONLY,,SiemensS7Tcp,PLC01
-BZJ.PickBag.Code,,BZJ,PickBag,Code,ä¸Šè¢‹å½“å‰è¢‹ç ,,STRING,DB200.4,DB,200,4,,1,READONLY,64,SiemensS7Tcp,PLC01
-BZJ.Bagging.Request,,BZJ,Bagging,Request,å¥—è¢‹å…è®¸è¯»ç ,,BOOL,DB200.90,DB,200,90,,1,READONLY,,SiemensS7Tcp,PLC01
-BZJ.Bagging.Code,,BZJ,Bagging,Code,å¥—è¢‹å½“å‰è¢‹ç ,,STRING,DB200.92,DB,200,92,,1,READONLY,64,SiemensS7Tcp,PLC01
-BZJ.Bagging.Sn,,BZJ,Bagging,Sn,å¥—è¢‹åŒ…è£…æœºç¼–å·,,INT,DB200.158,DB,200,158,,1,READONLY,,SiemensS7Tcp,PLC01
-BZJ.Bagging.BaggingStatus,,BZJ,Bagging,BaggingStatus,å¥—è¢‹çŠ¶æ€,,INT,DB200.160,DB,200,160,,1,READONLY,,SiemensS7Tcp,PLC01
-BZJ.TakeBag.Request,,BZJ,TakeBag,Request,å–è¢‹å…è®¸è¯»ç ,,BOOL,DB200.182,DB,200,182,,1,READONLY,,SiemensS7Tcp,PLC01
-BZJ.TakeBag.Code,,BZJ,TakeBag,Code,å–è¢‹å½“å‰è¢‹ç ,,STRING,DB200.184,DB,200,184,,1,READONLY,64,SiemensS7Tcp,PLC01
-BZJ.TakeBag.Sn,,BZJ,TakeBag,Sn,å–è¢‹åŒ…è£…æœºç¼–å·,,INT,DB200.250,DB,200,250,,1,READONLY,,SiemensS7Tcp,PLC01
-BZJ.BaggingStatus,,BZJ,,BaggingStatus,åŒ…è£…æœºæ—¶é—´,,INT,DB200.252,DB,200,252,,1,READONLY,,SiemensS7Tcp,PLC01
-BZJ.BaggingWeight,,BZJ,,BaggingWeight,åŒ…è£…æœºé‡é‡,,FLOAT,DB200.254,DB,200,254,,1,READONLY,,SiemensS7Tcp,PLC01
-BZJ.HeartBeat,,BZJ,,HeartBeat,å¿ƒè·³,,BOOL,DB201.0,DB,201,0,,2,WRITEONLY,,SiemensS7Tcp,PLC01
-BZJ.PickBag.Done,,BZJ,PickBag,Done,å–è¢‹è¯»ç å®Œæˆ,,INT,DB201.2,DB,201,2,,2,WRITEONLY,,SiemensS7Tcp,PLC01
-BZJ.Bagging.Done,,BZJ,Bagging,Done,å¥—è¢‹è¯»ç å®Œæˆ,,INT,DB201.24,DB,201,24,,2,WRITEONLY,,SiemensS7Tcp,PLC01
-BZJ.TakeBag.Done,,BZJ,TakeBag,Done,å–åŒ…è¯»ç å®Œæˆ,,INT,DB201.46,DB,201,46,,2,WRITEONLY,,SiemensS7Tcp,PLC01
+TagName,Station,EquipmentCode,Unit,Signal,CnName,Description,DataType,Address,S7AreaType,S7DbNumber,S7Offset,S7BitOffset,S7BatchReadingId,RW,Length,ChannelCode,DeviceCode
+SDJ.HeartBeat,,SDJ,,HeartBeat,ĞÄÌø,,BOOL,DB200.0,DB,200,0,,1,READONLY,,SiemensS7Tcp,PLC01
+BZJ.PickBag.Request,,BZJ,PickBag,Request,ÉÏ´üÔÊĞí¶ÁÂë,,BOOL,DB200.2,DB,200,2,,1,READONLY,,SiemensS7Tcp,PLC01
+BZJ.PickBag.Code,,BZJ,PickBag,Code,ÉÏ´üµ±Ç°´üÂë,,STRING,DB200.4,DB,200,4,,1,READONLY,64,SiemensS7Tcp,PLC01
+BZJ.Bagging.Request,,BZJ,Bagging,Request,Ì×´üÔÊĞí¶ÁÂë,,BOOL,DB200.90,DB,200,90,,1,READONLY,,SiemensS7Tcp,PLC01
+BZJ.Bagging.Code,,BZJ,Bagging,Code,Ì×´üµ±Ç°´üÂë,,STRING,DB200.92,DB,200,92,,1,READONLY,64,SiemensS7Tcp,PLC01
+BZJ.Bagging.Sn,,BZJ,Bagging,Sn,Ì×´ü°ü×°»ú±àºÅ,,INT,DB200.158,DB,200,158,,1,READONLY,,SiemensS7Tcp,PLC01
+BZJ.Bagging.BaggingStatus,,BZJ,Bagging,BaggingStatus,Ì×´ü×´Ì¬,,INT,DB200.160,DB,200,160,,1,READONLY,,SiemensS7Tcp,PLC01
+BZJ.TakeBag.Request,,BZJ,TakeBag,Request,È¡´üÔÊĞí¶ÁÂë,,BOOL,DB200.182,DB,200,182,,1,READONLY,,SiemensS7Tcp,PLC01
+BZJ.TakeBag.Code,,BZJ,TakeBag,Code,È¡´üµ±Ç°´üÂë,,STRING,DB200.184,DB,200,184,,1,READONLY,64,SiemensS7Tcp,PLC01
+BZJ.TakeBag.Sn,,BZJ,TakeBag,Sn,È¡´ü°ü×°»ú±àºÅ,,INT,DB200.250,DB,200,250,,1,READONLY,,SiemensS7Tcp,PLC01
+BZJ.BaggingStatus,,BZJ,,BaggingStatus,°ü×°»úÊ±¼ä,,INT,DB200.252,DB,200,252,,1,READONLY,,SiemensS7Tcp,PLC01
+BZJ.BaggingWeight,,BZJ,,BaggingWeight,°ü×°»úÖØÁ¿,,FLOAT,DB200.254,DB,200,254,,1,READONLY,,SiemensS7Tcp,PLC01
+BZJ.HeartBeat,,BZJ,,HeartBeat,ĞÄÌø,,BOOL,DB201.0,DB,201,0,,2,WRITEONLY,,SiemensS7Tcp,PLC01
+BZJ.PickBag.Done,,BZJ,PickBag,Done,È¡´ü¶ÁÂëÍê³É,,INT,DB201.2,DB,201,2,,2,WRITEONLY,,SiemensS7Tcp,PLC01
+BZJ.Bagging.Done,,BZJ,Bagging,Done,Ì×´ü¶ÁÂëÍê³É,,INT,DB201.24,DB,201,24,,2,WRITEONLY,,SiemensS7Tcp,PLC01
+BZJ.TakeBag.Done,,BZJ,TakeBag,Done,È¡°ü¶ÁÂëÍê³É,,INT,DB201.46,DB,201,46,,2,WRITEONLY,,SiemensS7Tcp,PLC01
