@@ -2,8 +2,6 @@ using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
-using Plant01.Upper.Application.Services;
-using Plant01.Upper.Domain.Entities;
 
 namespace Plant01.Upper.Infrastructure.Workstations.Processors;
 
@@ -13,7 +11,7 @@ namespace Plant01.Upper.Infrastructure.Workstations.Processors;
 public class PackagingWorkstationProcessor : IWorkstationProcessor
 {
     public string WorkstationCode => "L1_WS_PKG01";
-    
+
     private readonly IDeviceCommunicationService _deviceComm;
     private readonly IMesService _mesService;
     private readonly ILogger<PackagingWorkstationProcessor> _logger;
@@ -38,13 +36,13 @@ public class PackagingWorkstationProcessor : IWorkstationProcessor
             // 1. 读取订单号（假设有这个标签）
             var orderCodeTag = $"{context.EquipmentCode}.OrderCode";
             var orderCode = _deviceComm.GetTagValue<string>(orderCodeTag, string.Empty);
-            
+
             if (string.IsNullOrEmpty(orderCode))
             {
                 _logger.LogWarning("未读取到订单号，使用默认订单");
                 orderCode = "DEFAULT_ORDER";
             }
-            
+
             _logger.LogInformation("读取到订单号: {OrderCode}", orderCode);
 
             // 2. 查询MES订单信息（如果MES服务可用）
@@ -59,7 +57,7 @@ public class PackagingWorkstationProcessor : IWorkstationProcessor
                 //     _logger.LogInformation("配方已下发: 重量={Weight}, 速度={Speed}",
                 //         orderInfo.TargetWeight, orderInfo.PackagingSpeed);
                 // }
-                
+
                 _logger.LogInformation("订单信息查询完成（MES服务未实现，跳过）");
             }
             catch (Exception ex)
@@ -77,7 +75,7 @@ public class PackagingWorkstationProcessor : IWorkstationProcessor
 
             // 6. 写回成功结果
             await WriteResult(context.EquipmentCode, ProcessResult.Success, "流程执行成功");
-            
+
             _logger.LogInformation("包装工位流程执行完成");
         }
         catch (Exception ex)
@@ -98,7 +96,7 @@ public class PackagingWorkstationProcessor : IWorkstationProcessor
             // 写回结果码
             var resultTag = $"{equipmentCode}.ProcessResult";
             await _deviceComm.WriteTagAsync(resultTag, (int)result);
-            
+
             _logger.LogInformation("写回流程结果: {Tag} = {Result} ({Message})",
                 resultTag, result, message);
         }
