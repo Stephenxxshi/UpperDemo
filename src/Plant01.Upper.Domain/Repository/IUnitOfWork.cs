@@ -2,6 +2,7 @@ namespace Plant01.Upper.Domain.Repository;
 
 public interface IUnitOfWork : IDisposable
 {
+    IBagRepository BagRepository { get; }
     IRepository<TEntity> Repository<TEntity>() where TEntity : class;
     Task<int> SaveChangesAsync();
 }

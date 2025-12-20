@@ -11,9 +11,9 @@ public class EfRepository<TEntity, TContext> : IRepository<TEntity>
     where TEntity : class 
     where TContext : DbContext
 {
-    private readonly IDbContextFactory<TContext>? _contextFactory;
-    private readonly TContext? _sharedContext;
-    private readonly bool _isSharedContext;
+    protected readonly IDbContextFactory<TContext>? _contextFactory;
+    protected readonly TContext? _sharedContext;
+    protected readonly bool _isSharedContext;
 
     public EfRepository(IDbContextFactory<TContext> contextFactory)
     {

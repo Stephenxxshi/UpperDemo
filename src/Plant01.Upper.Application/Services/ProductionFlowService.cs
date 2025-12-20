@@ -1,8 +1,11 @@
 using CommunityToolkit.Mvvm.Messaging;
 
+using Plant01.Domain.Shared.Models.Equipment;
 using Plant01.Upper.Application.Interfaces;
+using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Application.Messages;
 using Plant01.Upper.Domain.Aggregation;
+using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Domain.Repository;
 using Plant01.Upper.Domain.ValueObjects;
 
@@ -12,11 +15,19 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<ProductionFlowService> _logger;
+    private readonly IEquipmentConfigService _equipmentConfigService;
+    private readonly IDeviceCommunicationService _deviceService;
 
-    public ProductionFlowService(IServiceScopeFactory scopeFactory, ILogger<ProductionFlowService> logger)
+    public ProductionFlowService(
+        IServiceScopeFactory scopeFactory, 
+        ILogger<ProductionFlowService> logger,
+        IEquipmentConfigService equipmentConfigService,
+        IDeviceCommunicationService deviceService)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
+        _equipmentConfigService = equipmentConfigService;
+        _deviceService = deviceService;
 
         // 注册消息监听
         WeakReferenceMessenger.Default.Register(this);
@@ -45,50 +56,78 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
 
     private async Task HandleTriggerAsync(StationTriggerMessage message, IServiceProvider serviceProvider)
     {
-        // 假设 Payload 就是 BagCode，或者包含更多信息
-        // 实际项目中可能需要解析 JSON Payload
-        string bagCode = message.Payload;
-        string machineId = message.StationId; // 简化处理，直接用 StationId 作为 MachineId
+        var equipmentCode = message.StationId;
+        var equipment = _equipmentConfigService.GetEquipment(equipmentCode);
 
-        switch (message.StationId)
+        if (equipment == null)
         {
-            case "ST01_Loading": // 上袋
-                await ProcessLoadingRequestAsync(bagCode, machineId, serviceProvider);
+            _logger.LogWarning("未找到设备配置：{EquipmentCode}", equipmentCode);
+            return;
+        }
+
+        _logger.LogInformation("处理设备触发: {Code} ({Type})", equipment.Code, equipment.Type);
+
+        switch (equipment.Type)
+        {
+            case EquipmentType.BagPicker:
+                await HandleBagPickerTrigger(equipment, message, serviceProvider);
                 break;
-            case "ST02_Bagging": // 套袋
-                await ProcessBaggingRequestAsync(bagCode, machineId, serviceProvider);
+            case EquipmentType.Palletizer:
+                await HandlePalletizerTrigger(equipment, message, serviceProvider);
                 break;
-            case "ST03_Filling": // 灌装
-                await ProcessFillingRequestAsync(bagCode, machineId, serviceProvider);
-                break;
-            case "ST04_Weighing": // 复检称重
-                // 假设 Payload 格式为 "BagCode:Weight" 或者只是 BagCode 然后去读 PLC
-                // 这里简化假设 Payload 包含重量信息，例如 "BAG123:50.5"
-                var parts = bagCode.Split(':');
-                if (parts.Length == 2 && double.TryParse(parts[1], out double weight))
-                {
-                    await ProcessWeighingRequestAsync(parts[0], machineId, weight, serviceProvider);
-                }
-                else
-                {
-                    _logger.LogWarning("称重无效负载：{Payload}", message.Payload);
-                }
-                break;
-            case "ST05_Printing": // 喷码
-                await ProcessPrintingRequestAsync(bagCode, machineId, serviceProvider);
-                break;
-            case "ST06_Palletizing": // 码垛
-                // 假设 Payload 为 "BagCode:PalletCode:Position"
-                // 简化：只传 BagCode，PalletCode 和 Position 需要另外获取或管理
-                await ProcessPalletizingRequestAsync(bagCode, "UNKNOWN_PALLET", machineId, 0, serviceProvider);
-                break;
-            case "ST07_PalletOut": // 出垛
-                await ProcessPalletOutRequestAsync(bagCode, machineId, serviceProvider); // 这里 bagCode 可能是 PalletCode
-                break;
+            // 可以继续扩展其他类型
             default:
-                _logger.LogWarning("未知站点：{StationId}", message.StationId);
+                _logger.LogWarning("未处理的设备类型：{Type}", equipment.Type);
                 break;
         }
+    }
+
+    private async Task HandleBagPickerTrigger(Equipment equipment, StationTriggerMessage message, IServiceProvider serviceProvider)
+    {
+        // 尝试获取二维码
+        var qrCodeTag = equipment.TagMappings.FirstOrDefault(m => m.Purpose == "QrCode" || m.TagName.EndsWith(".Code"));
+        string bagCode = string.Empty;
+
+        if (qrCodeTag != null)
+        {
+            bagCode = _deviceService.GetTagValue<string>(qrCodeTag.TagName);
+        }
+
+        if (string.IsNullOrEmpty(bagCode))
+        {
+            // 如果没读到，尝试从 Payload 解析 (如果 Payload 包含)
+            // 或者生成一个临时 Code
+            bagCode = $"AUTO_{DateTime.Now:yyyyMMddHHmmss}_{equipment.Code}";
+            _logger.LogWarning("未读取到二维码，使用生成码: {Code}", bagCode);
+        }
+
+        await ProcessLoadingRequestAsync(bagCode, equipment.Code, serviceProvider);
+    }
+
+    private async Task HandlePalletizerTrigger(Equipment equipment, StationTriggerMessage message, IServiceProvider serviceProvider)
+    {
+        // 尝试获取二维码 (可能是袋码)
+        var qrCodeTag = equipment.TagMappings.FirstOrDefault(m => m.Purpose == "QrCode" || m.TagName.EndsWith(".Code"));
+        string bagCode = string.Empty;
+
+        if (qrCodeTag != null)
+        {
+            bagCode = _deviceService.GetTagValue<string>(qrCodeTag.TagName);
+        }
+
+        if (string.IsNullOrEmpty(bagCode))
+        {
+             _logger.LogWarning("码垛机触发但未读取到袋码: {Code}", equipment.Code);
+             return;
+        }
+
+        // 还需要 PalletCode 和 Position
+        // 这里简化处理，假设 PalletCode 是当前正在使用的托盘
+        // 实际逻辑可能需要查询当前托盘状态
+        string palletCode = $"PAL_{DateTime.Now:yyyyMMdd}"; // 临时
+        int position = 1; // 临时
+
+        await ProcessPalletizingRequestAsync(bagCode, palletCode, equipment.Code, position, serviceProvider);
     }
 
     // --- 原有业务逻辑 (保留并适配) ---
@@ -96,8 +135,8 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
     public async Task<bool> ProcessLoadingRequestAsync(string bagCode, string machineId, IServiceProvider? serviceProvider = null)
     {
         var unitOfWork = serviceProvider?.GetRequiredService<IUnitOfWork>() ?? _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var bagRepo = unitOfWork.Repository<Bag>();
-        var bag = await bagRepo.GetByIdAsync(bagCode);
+        var bagRepo = unitOfWork.BagRepository;
+        var bag = await bagRepo.GetByCodeAsync(bagCode);
 
         if (bag == null)
         {
@@ -126,8 +165,8 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
     public async Task<bool> ProcessBaggingRequestAsync(string bagCode, string machineId, IServiceProvider? serviceProvider = null)
     {
         var unitOfWork = serviceProvider?.GetRequiredService<IUnitOfWork>() ?? _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var bagRepo = unitOfWork.Repository<Bag>();
-        var bag = await bagRepo.GetByIdAsync(bagCode);
+        var bagRepo = unitOfWork.BagRepository;
+        var bag = await bagRepo.GetByCodeAsync(bagCode);
 
         if (bag != null && bag.CanBag())
         {
@@ -143,8 +182,8 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
     public async Task<bool> ProcessFillingRequestAsync(string bagCode, string machineId, IServiceProvider? serviceProvider = null)
     {
         var unitOfWork = serviceProvider?.GetRequiredService<IUnitOfWork>() ?? _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var bagRepo = unitOfWork.Repository<Bag>();
-        var bag = await bagRepo.GetByIdAsync(bagCode);
+        var bagRepo = unitOfWork.BagRepository;
+        var bag = await bagRepo.GetByCodeAsync(bagCode);
 
         if (bag != null && bag.CanFill())
         {
@@ -160,8 +199,8 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
     public async Task<bool> ProcessWeighingRequestAsync(string bagCode, string machineId, double weight, IServiceProvider? serviceProvider = null)
     {
         var unitOfWork = serviceProvider?.GetRequiredService<IUnitOfWork>() ?? _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var bagRepo = unitOfWork.Repository<Bag>();
-        var bag = await bagRepo.GetByIdAsync(bagCode);
+        var bagRepo = unitOfWork.BagRepository;
+        var bag = await bagRepo.GetByCodeAsync(bagCode);
 
         if (bag != null && bag.CanWeigh())
         {
@@ -181,8 +220,8 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
     public async Task<string?> ProcessPrintingRequestAsync(string bagCode, string machineId, IServiceProvider? serviceProvider = null)
     {
         var unitOfWork = serviceProvider?.GetRequiredService<IUnitOfWork>() ?? _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var bagRepo = unitOfWork.Repository<Bag>();
-        var bag = await bagRepo.GetByIdAsync(bagCode);
+        var bagRepo = unitOfWork.BagRepository;
+        var bag = await bagRepo.GetByCodeAsync(bagCode);
 
         if (bag != null && bag.CanPrint())
         {
@@ -200,10 +239,10 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
     public async Task<bool> ProcessPalletizingRequestAsync(string bagCode, string palletCode, string machineId, int positionIndex, IServiceProvider? serviceProvider = null)
     {
         var unitOfWork = serviceProvider?.GetRequiredService<IUnitOfWork>() ?? _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var bagRepo = unitOfWork.Repository<Bag>();
+        var bagRepo = unitOfWork.BagRepository;
         var palletRepo = unitOfWork.Repository<Pallet>();
 
-        var bag = await bagRepo.GetByIdAsync(bagCode);
+        var bag = await bagRepo.GetByCodeAsync(bagCode);
         var pallet = await palletRepo.GetByIdAsync(palletCode);
 
         if (bag != null && bag.CanPalletize())

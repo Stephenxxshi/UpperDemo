@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 
 using Plant01.Domain.Shared.Models.Equipment;
 using Plant01.Upper.Domain.Entities;
+using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Infrastructure.Configs.Models;
 
 namespace Plant01.Upper.Infrastructure.Services;
@@ -10,7 +11,7 @@ namespace Plant01.Upper.Infrastructure.Services;
 /// <summary>
 /// 设备配置服务 - 从配置文件加载设备模板和标签映射
 /// </summary>
-public class EquipmentConfigService
+public class EquipmentConfigService : IEquipmentConfigService
 {
     private readonly string _configPath;
     private readonly ILogger<EquipmentConfigService> _logger;

@@ -133,6 +133,7 @@ public static class Bootstrapper
         
         // 注册设备配置服务(从独立配置文件加载)
         services.AddSingleton<EquipmentConfigService>();
+        services.AddSingleton<IEquipmentConfigService>(sp => sp.GetRequiredService<EquipmentConfigService>());
         
         // 注册产线配置初始化服务(依赖 EquipmentConfigService)
         services.AddHostedService<ProductionLineConfigService>();

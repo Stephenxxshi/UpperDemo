@@ -4,6 +4,6 @@ namespace Plant01.Upper.Domain.Repository
 {
     public interface IBagRepository : IRepository<Bag>
     {
-
+        Task<Bag?> GetByCodeAsync(string code);
     }
 }

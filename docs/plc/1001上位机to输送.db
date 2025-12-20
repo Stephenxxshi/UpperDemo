@@ -1,0 +1,48 @@
+﻿TYPE "上位机to生产线"
+VERSION : 0.1
+   STRUCT
+      状态 : Struct
+         "1s心跳" : Bool;   // 每秒1次的脉冲信号，用于判断通信情况
+         "1" : Bool;
+         "2" : Bool;
+         "3" : Bool;
+         "4" : Bool;
+         "5" : Bool;
+         "6" : Bool;
+         "7" : Bool;
+         "8" : Bool;
+         "9" : Bool;
+         "10" : Bool;
+         "11" : Bool;
+         "12" : Bool;
+         "13" : Bool;
+         "14" : Bool;
+         "15" : Bool;
+      END_STRUCT;
+      包装机 : Struct
+         读码完成 : Int;   // 1=读码完成,
+      END_STRUCT;
+      码垛机 : Struct
+         读码完成 : Int;   // 1=读码完成
+         垛位号 : Int;   // 码垛的编号
+      END_STRUCT;
+      组托 : Struct
+         读码完成 : Int;   // 1=读码完成
+      END_STRUCT;
+   END_STRUCT;
+
+END_TYPE
+
+DATA_BLOCK "1001上位机to输送"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+NON_RETAIN
+   STRUCT 
+      to生产线 { S7_SetPoint := 'False'} : "上位机to生产线";
+   END_STRUCT;
+
+
+BEGIN
+
+END_DATA_BLOCK
+
