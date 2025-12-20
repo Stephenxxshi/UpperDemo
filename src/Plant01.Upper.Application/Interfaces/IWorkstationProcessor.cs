@@ -6,9 +6,9 @@ namespace Plant01.Upper.Application.Interfaces;
 public interface IWorkstationProcessor
 {
     /// <summary>
-    /// 工位代码（如 L1_WS_PKG01）
+    /// 工位类型（如 Packaging, Palletizing）
     /// </summary>
-    string WorkstationCode { get; }
+    string WorkstationType { get; }
     
     /// <summary>
     /// 执行工位流程

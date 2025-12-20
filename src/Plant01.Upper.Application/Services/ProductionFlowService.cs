@@ -19,7 +19,7 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
     private readonly IDeviceCommunicationService _deviceService;
 
     public ProductionFlowService(
-        IServiceScopeFactory scopeFactory, 
+        IServiceScopeFactory scopeFactory,
         ILogger<ProductionFlowService> logger,
         IEquipmentConfigService equipmentConfigService,
         IDeviceCommunicationService deviceService)
@@ -117,8 +117,8 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
 
         if (string.IsNullOrEmpty(bagCode))
         {
-             _logger.LogWarning("码垛机触发但未读取到袋码: {Code}", equipment.Code);
-             return;
+            _logger.LogWarning("码垛机触发但未读取到袋码: {Code}", equipment.Code);
+            return;
         }
 
         // 还需要 PalletCode 和 Position

@@ -18,6 +18,11 @@ public class Workstation
     public required string Name { get; set; }
 
     /// <summary>
+    /// 工站类型 (e.g. Packaging, Palletizing)
+    /// </summary>
+    public string? Type { get; set; }
+
+    /// <summary>
     /// 所属产线ID
     /// </summary>
     public int ProductionLineId { get; set; }

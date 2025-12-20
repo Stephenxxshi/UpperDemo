@@ -70,6 +70,7 @@ public class ProductionLineConfigService : BackgroundService
                         {
                             Code = workstationDto.Code,
                             Name = workstationDto.Name,
+                            Type = workstationDto.Type,
                             Sequence = workstationDto.Sequence,
                             ProductionLine = line,
                             Equipments = equipments

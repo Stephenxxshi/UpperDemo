@@ -8,18 +8,21 @@
       {
         "Code": "MDJ1_WS_PICK01",
         "Name": "1#包装工位",
+        "Type": "Packaging",
         "Sequence": 1,
         "EquipmentRefs": [ "MDJ1_SDJ01" ]
       },
       {
         "Code": "MDJ1_WS_MDJ01",
         "Name": "1#码垛工位",
+        "Type": "Palletizer",
         "Sequence": 2,
         "EquipmentRefs": [ "MDJ1_MDJ01" ]
       },
       {
         "Code": "MDJ1_WS_CDJ01",
         "Name": "1#码垛工位",
+        "Type": "StackRemoval",
         "Sequence": 3,
         "EquipmentRefs": [ "MDJ1_CDJ01" ]
       }

@@ -19,6 +19,7 @@ public class WorkstationDto
 {
     public required string Code { get; set; }
     public required string Name { get; set; }
+    public string? Type { get; set; }
     public int Sequence { get; set; }
     public List<string> EquipmentRefs { get; set; } = new();
 }

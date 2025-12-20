@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
+using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Domain.Models;
 using Plant01.Upper.Infrastructure.Configs.Models;
@@ -17,6 +18,7 @@ public class WorkstationProcessService : IHostedService
 {
     private readonly IDeviceCommunicationService _deviceComm;
     private readonly EquipmentConfigService _equipmentConfig;
+    private readonly ProductionConfigManager _productionConfig;
     private readonly ILogger<WorkstationProcessService> _logger;
     
     // 工位流程处理器注册表
@@ -28,18 +30,20 @@ public class WorkstationProcessService : IHostedService
     public WorkstationProcessService(
         IDeviceCommunicationService deviceComm,
         EquipmentConfigService equipmentConfig,
+        ProductionConfigManager productionConfig,
         IEnumerable<IWorkstationProcessor> processors,
         ILogger<WorkstationProcessService> logger)
     {
         _deviceComm = deviceComm;
         _equipmentConfig = equipmentConfig;
+        _productionConfig = productionConfig;
         _logger = logger;
         
         // 注册所有工位处理器
         foreach (var processor in processors)
         {
-            _processors[processor.WorkstationCode] = processor;
-            _logger.LogDebug("注册工位处理器: {WorkstationCode}", processor.WorkstationCode);
+            _processors[processor.WorkstationType] = processor;
+            _logger.LogDebug("注册工位处理器: {WorkstationType}", processor.WorkstationType);
         }
     }
 
@@ -127,26 +131,31 @@ public class WorkstationProcessService : IHostedService
 
         try
         {
-            // 获取设备信息
-            var equipment = _equipmentConfig.GetEquipment(triggerInfo.EquipmentCode);
-            if (equipment == null)
-            {
-                _logger.LogWarning("设备 {EquipmentCode} 未找到", triggerInfo.EquipmentCode);
-                return;
-            }
-            
             // 获取工位代码
-            var workstationCode = equipment.Workstation?.Code;
+            var workstation = _productionConfig.GetWorkstationByEquipment(triggerInfo.EquipmentCode);
+            var workstationCode = workstation?.Code;
+            var workstationType = workstation?.Type; // 假设 Workstation 实体有 Type 属性，或者通过命名规则推断
+
             if (string.IsNullOrEmpty(workstationCode))
             {
                 _logger.LogWarning("设备 {EquipmentCode} 未关联工位", triggerInfo.EquipmentCode);
                 return;
             }
+
+            // 如果 Workstation 实体没有 Type 属性，这里暂时用硬编码或命名规则演示
+            // 实际项目中建议在 Workstation 实体中增加 Type 字段
+            if (string.IsNullOrEmpty(workstationType))
+            {
+                // 简单推断：如果工位代码包含 PKG 则为 Packaging
+                if (workstationCode.Contains("PKG")) workstationType = "Packaging";
+                else if (workstationCode.Contains("PAL")) workstationType = "Palletizing";
+                else workstationType = "Unknown";
+            }
             
             // 查找对应的工位处理器
-            if (!_processors.TryGetValue(workstationCode, out var processor))
+            if (!_processors.TryGetValue(workstationType, out var processor))
             {
-                _logger.LogWarning("未找到工位 {WorkstationCode} 的流程处理器", workstationCode);
+                _logger.LogWarning("未找到工位类型 {WorkstationType} 的流程处理器 (工位: {WorkstationCode})", workstationType, workstationCode);
                 await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Error, "未找到工位处理器");
                 return;
             }

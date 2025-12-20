@@ -10,7 +10,7 @@ namespace Plant01.Upper.Infrastructure.Workstations.Processors;
 /// </summary>
 public class PackagingWorkstationProcessor : IWorkstationProcessor
 {
-    public string WorkstationCode => "L1_WS_PKG01";
+    public string WorkstationType => "Packaging";
 
     private readonly IDeviceCommunicationService _deviceComm;
     private readonly IMesService _mesService;
