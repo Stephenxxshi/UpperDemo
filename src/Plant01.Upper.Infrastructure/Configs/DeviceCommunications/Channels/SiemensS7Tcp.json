@@ -11,7 +11,7 @@
       "Name": "PLC01",
       "Description": "上袋机1 PLC",
       "Enable": true,
-      "IpAddress": "10.168.1.21",
+      "IpAddress": "10.168.10.1",
       "Port": 102,
       "Rack": 0,
       "Slot": 1,

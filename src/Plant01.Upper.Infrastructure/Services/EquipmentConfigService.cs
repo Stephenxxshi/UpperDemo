@@ -1,5 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using CsvHelper;
+using CsvHelper.Configuration;
+using System.Globalization;
 
 using Plant01.Domain.Shared.Models.Equipment;
 using Plant01.Upper.Domain.Entities;
@@ -36,6 +39,12 @@ public class EquipmentConfigService : IEquipmentConfigService
     /// </summary>
     private void LoadConfigs()
     {
+        var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HeaderValidated = null,
+            MissingFieldFound = null
+        };
+
         lock (_lock)
         {
             try
@@ -44,30 +53,13 @@ public class EquipmentConfigService : IEquipmentConfigService
                 var equipmentFile = Path.Combine(_configPath, "Lines", "Equipments", "equipment_templates.csv");
                 if (File.Exists(equipmentFile))
                 {
-                    var lines = File.ReadAllLines(equipmentFile);
-                    var equipments = new List<EquipmentTemplateDto>();
-                    
-                    // Skip header
-                    foreach (var line in lines.Skip(1))
+                    using (var reader = new StreamReader(equipmentFile))
+                    using (var csv = new CsvReader(reader, csvConfig))
                     {
-                        if (string.IsNullOrWhiteSpace(line)) continue;
-                        
-                        var parts = ParseCsvLine(line);
-                        if (parts.Count < 6) continue;
-
-                        equipments.Add(new EquipmentTemplateDto
-                        {
-                            Code = parts[0].Trim(),
-                            Name = parts[1].Trim(),
-                            Type = parts[2].Trim(),
-                            Capabilities = parts[3].Trim().Trim('"'), // Remove quotes if present
-                            Sequence = int.TryParse(parts[4], out var seq) ? seq : 0,
-                            Enabled = bool.TryParse(parts[5], out var enabled) ? enabled : true
-                        });
+                        var equipments = csv.GetRecords<EquipmentTemplateDto>().ToList();
+                        _equipmentCache = equipments.ToDictionary(e => e.Code, StringComparer.OrdinalIgnoreCase);
+                        _logger.LogInformation("已加载 {Count} 个设备模板", _equipmentCache.Count);
                     }
-
-                    _equipmentCache = equipments.ToDictionary(e => e.Code, StringComparer.OrdinalIgnoreCase);
-                    _logger.LogInformation("已加载 {Count} 个设备模板", _equipmentCache.Count);
                 }
                 else
                 {
@@ -78,53 +70,43 @@ public class EquipmentConfigService : IEquipmentConfigService
                 var mappingFile = Path.Combine(_configPath, "Lines", "Equipments", "equipment_mappings.csv");
                 if (File.Exists(mappingFile))
                 {
-                    var lines = File.ReadAllLines(mappingFile);
-                    var allMappings = new List<(string EquipmentCode, TagMappingDto Mapping)>();
-
-                    // Skip header
-                    for (int i = 1; i < lines.Length; i++)
+                    using (var reader = new StreamReader(mappingFile))
+                    using (var csv = new CsvReader(reader, csvConfig))
                     {
-                        var line = lines[i];
-                        if (string.IsNullOrWhiteSpace(line)) continue;
+                        var rows = csv.GetRecords<EquipmentMappingCsvRow>().ToList();
+                        var allMappings = new List<(string EquipmentCode, TagMappingDto Mapping)>();
 
-                        var parts = ParseCsvLine(line);
-                        if (parts.Count < 7) continue;
-
-                        var equipmentCode = parts[6].Trim();
-                        if (string.IsNullOrEmpty(equipmentCode))
+                        foreach (var row in rows)
                         {
-                            _logger.LogWarning("CSV行 {LineNumber} 缺少 EquipmentCode: {Line}", i + 1, line);
-                            continue;
+                            if (string.IsNullOrWhiteSpace(row.EquipmentCode))
+                            {
+                                _logger.LogWarning("CSV行缺少 EquipmentCode: {TagName}", row.TagName);
+                                continue;
+                            }
+
+                            var mapping = new TagMappingDto
+                            {
+                                TagName = row.TagName?.Trim() ?? "",
+                                Purpose = row.Purpose?.Trim() ?? "",
+                                IsCritical = row.IsCritical,
+                                Direction = ParseTagDirection(row.Direction),
+                                TriggerCondition = row.TriggerCondition?.Trim(),
+                                Remarks = row.Remarks?.Trim(),
+                                IsTrigger = !string.IsNullOrWhiteSpace(row.TriggerCondition)
+                            };
+                            
+                            allMappings.Add((row.EquipmentCode.Trim(), mapping));
                         }
 
-                        var mapping = new TagMappingDto
-                        {
-                            TagName = parts[0].Trim(),
-                            Purpose = parts[1].Trim(),
-                            IsCritical = bool.TryParse(parts[2], out var isCritical) && isCritical,
-                            Direction = ParseTagDirection(parts[3].Trim()),
-                            TriggerCondition = parts[4].Trim(),
-                            Remarks = parts[5].Trim(),
-                            IsTrigger = !string.IsNullOrWhiteSpace(parts[4])
-                        };
-                        
-                        // Fix for IsTrigger logic based on JSON observation
-                        if (!string.IsNullOrEmpty(mapping.TriggerCondition))
-                        {
-                            mapping.IsTrigger = true;
-                        }
+                        _mappingCache = allMappings
+                            .GroupBy(x => x.EquipmentCode)
+                            .ToDictionary(
+                                g => g.Key,
+                                g => g.Select(x => x.Mapping).ToList(),
+                                StringComparer.OrdinalIgnoreCase);
 
-                        allMappings.Add((equipmentCode, mapping));
+                        _logger.LogInformation("已加载 {Count} 个设备映射配置", _mappingCache.Count);
                     }
-
-                    _mappingCache = allMappings
-                        .GroupBy(x => x.EquipmentCode)
-                        .ToDictionary(
-                            g => g.Key,
-                            g => g.Select(x => x.Mapping).ToList(),
-                            StringComparer.OrdinalIgnoreCase);
-
-                    _logger.LogInformation("已加载 {Count} 个设备映射配置", _mappingCache.Count);
                 }
                 else
                 {
@@ -138,31 +120,17 @@ public class EquipmentConfigService : IEquipmentConfigService
         }
     }
 
-    private List<string> ParseCsvLine(string line)
+    private class EquipmentMappingCsvRow
     {
-        var result = new List<string>();
-        var current = "";
-        var inQuotes = false;
-
-        for (int i = 0; i < line.Length; i++)
-        {
-            var c = line[i];
-            if (c == '"')
-            {
-                inQuotes = !inQuotes;
-            }
-            else if (c == ',' && !inQuotes)
-            {
-                result.Add(current);
-                current = "";
-            }
-            else
-            {
-                current += c;
-            }
-        }
-        result.Add(current);
-        return result;
+        public string TagName { get; set; } = string.Empty;
+        public string Purpose { get; set; } = string.Empty;
+        [CsvHelper.Configuration.Attributes.Optional]
+        [CsvHelper.Configuration.Attributes.Default(false)]
+        public bool IsCritical { get; set; }
+        public string Direction { get; set; } = string.Empty;
+        public string TriggerCondition { get; set; } = string.Empty;
+        public string Remarks { get; set; } = string.Empty;
+        public string EquipmentCode { get; set; } = string.Empty;
     }
 
     private TagDirection ParseTagDirection(string input)

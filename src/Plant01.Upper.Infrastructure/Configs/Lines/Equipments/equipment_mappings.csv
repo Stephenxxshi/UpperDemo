@@ -1,4 +1,4 @@
-﻿TagName,Purpose,IsCritical,Direction,TriggerCondition,Remarks,EquipmentCode
+TagName,Purpose,IsCritical,Direction,TriggerCondition,Remarks,EquipmentCode
 Packing.Bagging.Status,,,Input,,,Packing
 Packing.Bagging.Request,ProcessTrigger,,Input,=1,,Packing
 Packing.Bagging.Code,,,Input,,,Packing

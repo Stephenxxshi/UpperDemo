@@ -109,7 +109,7 @@ public class WorkstationProcessService : IHostedService
             return;
 
         // 检查触发条件
-        if (!EvaluateTriggerCondition(e.NewValue, triggerInfo.TagMapping.TriggerCondition))
+        if (!TriggerEvaluator.Evaluate(e.NewValue.Value, triggerInfo.TagMapping.TriggerCondition))
             return;
 
         // 防抖：避免重复触发（500ms内的重复触发会被忽略）
@@ -172,52 +172,6 @@ public class WorkstationProcessService : IHostedService
             
             // 写回错误结果到PLC
             await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Error, ex.Message);
-        }
-    }
-
-    /// <summary>
-    /// 评估触发条件
-    /// </summary>
-    private bool EvaluateTriggerCondition(TagValue data, string? condition)
-    {
-        if (!data.IsValid)
-            return false;
-        
-        if (string.IsNullOrEmpty(condition))
-            return true;  // 默认：值有效即触发
-
-        try
-        {
-            // 简单条件解析
-            condition = condition.Trim();
-            
-            if (condition == "== true" || condition == "= true")
-                return data.GetValue<bool>();
-            
-            if (condition == "== false" || condition == "= false")
-                return !data.GetValue<bool>();
-            
-            if (condition == "> 0")
-            {
-                var value = data.Value;
-                if (value is int intVal) return intVal > 0;
-                if (value is double doubleVal) return doubleVal > 0;
-                if (value is float floatVal) return floatVal > 0;
-            }
-            
-            if (condition.StartsWith("==") || condition.StartsWith("="))
-            {
-                var expectedValue = condition.TrimStart('=').Trim();
-                return data.Value?.ToString() == expectedValue;
-            }
-            
-            // 默认返回true
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "触发条件评估失败: {Condition}", condition);
-            return false;
         }
     }
 

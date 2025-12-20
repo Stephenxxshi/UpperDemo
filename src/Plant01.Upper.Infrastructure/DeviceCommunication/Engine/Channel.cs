@@ -208,7 +208,7 @@ public class Channel : IDisposable
                                     // 注意：首次从 Bad->Good 的变化通常用于 UI 初始化。
                                     // 如果您的业务逻辑（如报警）不希望在启动时触发，可以取消下行的注释并使用 if (!isFirstLoad)
                                     // if (!isFirstLoad) 
-                                    _onTagChanged?.Invoke(tag);
+                                    Task.Run(() => _onTagChanged?.Invoke(tag));
                                 }
                             }
                         }

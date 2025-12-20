@@ -6,16 +6,22 @@
     "StrategyConfigJson": "{\"AllocationMode\": \"Dynamic\", \"Palletizers\": [{\"Code\": \"L1_PAL01\", \"SourcePackers\": [\"L1_PM01\", \"L1_PM02\", \"L1_PM03\"]}, {\"Code\": \"L1_PAL02\", \"SourcePackers\": [\"L1_PM04\", \"L1_PM05\", \"L1_PM06\"]}, {\"Code\": \"L1_PAL03\", \"SourcePackers\": [\"L1_PM07\", \"L1_PM08\"]}]}",
     "Workstations": [
       {
-        "Code": "MDJ1_WS_PACK01",
+        "Code": "MDJ1_WS_PICK01",
         "Name": "1#包装工位",
         "Sequence": 1,
         "EquipmentRefs": [ "MDJ1_SDJ01" ]
       },
       {
         "Code": "MDJ1_WS_MDJ01",
-        "Name": "1#线-码垛工位",
+        "Name": "1#码垛工位",
         "Sequence": 2,
-        "EquipmentRefs": [ "MDJ1_MDJ01"]
+        "EquipmentRefs": [ "MDJ1_MDJ01" ]
+      },
+      {
+        "Code": "MDJ1_WS_CDJ01",
+        "Name": "1#码垛工位",
+        "Sequence": 3,
+        "EquipmentRefs": [ "MDJ1_CDJ01" ]
       }
     ]
   }

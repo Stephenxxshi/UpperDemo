@@ -91,7 +91,7 @@ public class PlcMonitorService : BackgroundService
             }
 
             // 3. 检查触发条件
-            if (CheckTriggerCondition(e.NewValue.Value, mapping.TriggerCondition))
+            if (TriggerEvaluator.Evaluate(e.NewValue.Value, mapping.TriggerCondition))
             {
                 _logger.LogInformation("触发器激活: {Equipment} - {Tag} (Value: {Value})", 
                     equipmentCode, e.TagName, e.NewValue.Value);
@@ -110,65 +110,6 @@ public class PlcMonitorService : BackgroundService
         catch (Exception ex)
         {
             _logger.LogError(ex, "处理标签变化时出错 {Tag}", e.TagName);
-        }
-    }
-
-    /// <summary>
-    /// 检查值是否满足触发条件
-    /// </summary>
-    private bool CheckTriggerCondition(object? value, string? condition)
-    {
-        // 如果没有条件，默认 bool true 触发，或者非 null 触发
-        if (string.IsNullOrWhiteSpace(condition))
-        {
-            if (value is bool bVal) return bVal;
-            // 对于数字，非0触发？暂时保守一点，只处理bool
-            return value != null;
-        }
-
-        condition = condition.Trim();
-
-        // 处理 "=value" 格式
-        if (condition.StartsWith("=") || condition.StartsWith("=="))
-        {
-            var targetStr = condition.TrimStart('=').Trim();
-            
-            // Bool 比较
-            if (bool.TryParse(targetStr, out var bTarget))
-            {
-                // 尝试将 value 转为 bool
-                if (value is bool bValue) return bValue == bTarget;
-                if (value != null && bool.TryParse(value.ToString(), out var bValueConv)) return bValueConv == bTarget;
-            }
-
-            // 数字比较
-            if (double.TryParse(targetStr, out var dTarget) && ConvertToDouble(value, out var dValue))
-            {
-                return Math.Abs(dValue - dTarget) < 0.0001;
-            }
-
-            // 字符串比较
-            return string.Equals(value?.ToString(), targetStr, StringComparison.OrdinalIgnoreCase);
-        }
-
-        // 可以在此扩展 >, <, != 等逻辑
-        
-        return false;
-    }
-
-    private bool ConvertToDouble(object? value, out double result)
-    {
-        result = 0;
-        if (value == null) return false;
-        
-        try
-        {
-            result = Convert.ToDouble(value);
-            return true;
-        }
-        catch
-        {
-            return false;
         }
     }
 
