@@ -1,3 +1,5 @@
+using Plant01.Upper.Domain.Entities;
+
 namespace Plant01.Upper.Application.Interfaces;
 
 /// <summary>
@@ -30,7 +32,9 @@ public class WorkstationProcessContext
     /// 触发的设备代码
     /// </summary>
     public string EquipmentCode { get; set; } = string.Empty;
-    
+
+    public Equipment Equipment { get; set; } = default!;
+
     /// <summary>
     /// 触发标签名称
     /// </summary>

@@ -6,9 +6,10 @@ Palletizer.Palletizing.Status,Palletizer,,Palletizing,Status,码垛机状态,,Sh
 Palletizer.Palletizing.Request,Palletizer,,Palletizing,Request,申请读码,,Short,DB1002.42,DB,1002,42,,1,READONLY,,SiemensS7Tcp,PLC01
 Palletizer.Palletizing.Code,Palletizer,,Palletizing,Code,码垛袋码,,STRING,DB1002.44,DB,1002,44,,1,READONLY,32,SiemensS7Tcp,PLC01
 Palletizer.Palletizing.Sn,Palletizer,,Palletizing,Sn,码垛包数,,Short,DB1002.78,DB,1002,78,,1,READONLY,,SiemensS7Tcp,PLC01
-StackRemoval.Grouping.Request,StackRemoval,,Grouping,Request,组托申请读码,,Short,DB1002.80,DB,1002,80,,1,READONLY,,SiemensS7Tcp,PLC01
-StackRemoval.Grouping.Code,StackRemoval,,Grouping,Code,组托袋码数据,,STRING,DB1002.82,DB,1002,82,,1,READONLY,32,SiemensS7Tcp,PLC01
-Packing.Bagging.Done,Packing,,Bagging,Done,包装机读码完成,,Short,DB1001.2,DB,1001,2,,2,WRITEONLY,,SiemensS7Tcp,PLC01
-Palletizer.Palletizing.Done,Palletizer,,Palletizing,Done,码垛机读码完成,,Short,DB1001.4,DB,1001,4,,2,WRITEONLY,,SiemensS7Tcp,PLC01
+PalletOut.Grouping.Request,PalletOut,,Grouping,Request,组托申请读码,,Short,DB1002.80,DB,1002,80,,1,READONLY,,SiemensS7Tcp,PLC01
+PalletOut.Grouping.Code,PalletOut,,Grouping,Code,组托袋码数据,,STRING,DB1002.82,DB,1002,82,,1,READONLY,32,SiemensS7Tcp,PLC01
+PalletOut.Grouping.PalletCode,PalletOut,,Grouping,PalletCode,垛盘码数据,,STRING,DB1002.116,DB,1002,116,,1,READONLY,32,SiemensS7Tcp,PLC01
+Packing.Bagging.ProcessResult,Packing,,Bagging,ProcessResult,包装机读码完成,,Short,DB1001.2,DB,1001,2,,2,WRITEONLY,,SiemensS7Tcp,PLC01
+Palletizer.Palletizing.ProcessResult,Palletizer,,Palletizing,ProcessResult,码垛机读码完成,,Short,DB1001.4,DB,1001,4,,2,WRITEONLY,,SiemensS7Tcp,PLC01
 Palletizer.Palletizing.Position,Palletizer,,Palletizing,Position,垛位号,,Short,DB1001.6,DB,1001,6,,2,WRITEONLY,,SiemensS7Tcp,PLC01
-StackRemoval.Grouping.Done,StackRemoval,,Grouping,Done,组托读码完成,,Short,DB1001.8,DB,1001,8,,2,WRITEONLY,,SiemensS7Tcp,PLC01
+PalletOut.Grouping.ProcessResult,PalletOut,,Grouping,ProcessResult,组托读码完成,,Short,DB1001.8,DB,1001,8,,2,WRITEONLY,,SiemensS7Tcp,PLC01

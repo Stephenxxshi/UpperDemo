@@ -65,7 +65,7 @@ public class PalletOutWorkstationProcessor : IWorkstationProcessor
 
             // 获取袋码和托盘号标签
             var qrCodeTag = equipment.TagMappings.FirstOrDefault(m => m.Purpose == "QrCode" || m.TagName.EndsWith(".Code"));
-            var palletTag = equipment.TagMappings.FirstOrDefault(m => m.Purpose == "PalletNo");
+            var palletTag = equipment.TagMappings.FirstOrDefault(m => m.Purpose == "PalletCode");
             
             // 获取袋码和托号号值
             string bagCode = string.Empty;
@@ -93,14 +93,14 @@ public class PalletOutWorkstationProcessor : IWorkstationProcessor
 
             FinishPalletizingRequest request = new FinishPalletizingRequest()
             {
-                AgvDeviceCode = bagCode,
+                AgvDeviceCode = "AGV1",
                 DeviceCode = "MDJ1",
                 JobNo = currentWorkOrder.Code,
                 List = new List<PackageDetail>()
                   {
                       new PackageDetail(){ BagNums = bagsStr, Quan = bags.Count}
                   },
-                PalletId = ""
+                PalletId = pallet
             };
             var response = await _mesService.FinishPalletizingAsync(request);
             if (response != null)

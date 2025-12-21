@@ -108,7 +108,8 @@ public partial class MesDebugViewModel : ObservableObject
     private string _password = "123456";
 
     [ObservableProperty]
-    private string _baseUrl = "http://localhost:5000";
+    //private string _baseUrl = "http://localhost:5000";
+    private string _baseUrl = "http://2bm09ua35806.vicp.fun:41916";
 
     // 日志
     [ObservableProperty]
@@ -402,12 +403,12 @@ public partial class MesDebugViewModel : ObservableObject
     [RelayCommand]
     private async Task SimulatePushAsync()
     {
-        if (!IsServerRunning)
-        {
-            StatusMessage = "❌ 请先启动 Web API 服务！";
-            AddLog("❌ 错误：Web API 服务未启动，请先点击 启动服务器 按钮");
-            return;
-        }
+        //if (!IsServerRunning)
+        //{
+        //    StatusMessage = "❌ 请先启动 Web API 服务！";
+        //    AddLog("❌ 错误：Web API 服务未启动，请先点击 启动服务器 按钮");
+        //    return;
+        //}
 
         try
         {

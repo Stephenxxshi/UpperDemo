@@ -33,6 +33,7 @@ VERSION : 0.1
       组托 : Struct
          申请读码 : Int;   // 1=申请读码
          袋码数据 : String[32];
+         垛盘码数据 : String[32];
       END_STRUCT;
    END_STRUCT;
 

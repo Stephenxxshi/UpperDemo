@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Domain.Aggregation;
+using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Domain.Repository;
 using Plant01.Upper.Domain.ValueObjects;
 
@@ -12,9 +13,9 @@ namespace Plant01.Upper.Infrastructure.Workstations.Processors;
 /// <summary>
 /// 工位流程处理器基类
 /// </summary>
-public class WorkstationProcessorBase : IWorkstationProcessor
+public abstract class WorkstationProcessorBase : IWorkstationProcessor
 {
-    public string WorkstationType => "Packaging";
+    public string WorkstationType { get; protected set; } = string.Empty;
 
     protected readonly IDeviceCommunicationService _deviceComm;
     protected readonly IMesService _mesService;
@@ -44,8 +45,9 @@ public class WorkstationProcessorBase : IWorkstationProcessor
 
     public async Task ExecuteAsync(WorkstationProcessContext context)
     {
-        _logger.LogInformation("[ {Workstation} ] 出垛工位触发流程: , 触发标签: [ {Tag} ]",
-           context.WorkstationCode, context.TriggerTagName);
+        _logger.LogInformation("[ {Tag} ] : 工位 [ {Workstation} ] -> 触发流程", context.TriggerTagName, context.WorkstationCode);
+
+        await InternalExecuteAsync();
 
         try
         {
@@ -53,13 +55,13 @@ public class WorkstationProcessorBase : IWorkstationProcessor
             var workOrders = await _workOrderRepository.GetAllAsync(workOrder => workOrder.Status == Domain.ValueObjects.WorkOrderStatus.开工);
             if (workOrders.Count == 0)
             {
-                _logger.LogWarning($"{context.EquipmentCode} : 没有找到开工中的工单");
+                _logger.LogWarning($"[ {context.TriggerTagName} ] ->  未找到开工中的工单");
                 return;
             }
 
             if (workOrders.Count > 1)
             {
-                _logger.LogError($"{context.EquipmentCode} : 开工的工单数量为 [ {workOrders.Count} ] > 1");
+                _logger.LogError($"[ {context.TriggerTagName} ] -> 开工的工单数量为 [ {workOrders.Count} ] > 1");
                 return;
             }
 
@@ -130,6 +132,8 @@ public class WorkstationProcessorBase : IWorkstationProcessor
                 _logger.LogInformation("袋 {BagCode} 在 {MachineId} 加载", bagCode, context.EquipmentCode);
             }
 
+            await WriteProcessResult(context.EquipmentCode, ProcessResult.Success);
+
             _logger.LogInformation("包装工位流程执行完成");
         }
         catch (Exception ex)
@@ -137,5 +141,49 @@ public class WorkstationProcessorBase : IWorkstationProcessor
             _logger.LogError(ex, "包装工位流程执行失败");
             throw;
         }
+    }
+
+    /// <summary>
+    /// 写回流程结果到PLC
+    /// </summary>
+    protected async Task WriteProcessResult(string equipmentCode, ProcessResult result, string? message = null)
+    {
+        try
+        {
+            var equipment = _equipmentConfigService.GetEquipment(equipmentCode);
+            if (equipment == null)
+                return;
+
+            // 查找 ProcessResult 用途的标签
+            var resultMapping = equipment.TagMappings
+                .FirstOrDefault(m => m.Purpose == TagPurpose.ProcessResult);
+
+            if (resultMapping != null)
+            {
+                await _deviceComm.WriteTagAsync(resultMapping.TagName, (int)result);
+                _logger.LogInformation($"[ {resultMapping.TagName} ] ： 写入 -> {result}");
+            }
+
+            // 如果有消息标签，也写回消息
+            if (!string.IsNullOrEmpty(message))
+            {
+                var messageMapping = equipment.TagMappings
+                    .FirstOrDefault(m => m.TagName.Contains("Message") || m.TagName.Contains("Msg"));
+
+                if (messageMapping != null)
+                {
+                    await _deviceComm.WriteTagAsync(messageMapping.TagName, message);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "写回流程结果失败: {Equipment}", equipmentCode);
+        }
+    }
+
+    protected virtual async Task InternalExecuteAsync()
+    {
+        return;
     }
 }

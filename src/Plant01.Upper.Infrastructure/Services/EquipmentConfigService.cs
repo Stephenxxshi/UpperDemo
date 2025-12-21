@@ -58,12 +58,12 @@ public class EquipmentConfigService : IEquipmentConfigService
                     {
                         var equipments = csv.GetRecords<EquipmentTemplateDto>().ToList();
                         _equipmentCache = equipments.ToDictionary(e => e.Code, StringComparer.OrdinalIgnoreCase);
-                        _logger.LogInformation("已加载 {Count} 个设备模板", _equipmentCache.Count);
+                        _logger.LogInformation("[ 设备配置服务 ] 已加载 {Count} 个设备模板", _equipmentCache.Count);
                     }
                 }
                 else
                 {
-                    _logger.LogWarning("设备模板文件不存在: {Path}", equipmentFile);
+                    _logger.LogWarning("[ 设备配置服务 ] 设备模板文件不存在: {Path}", equipmentFile);
                 }
 
                 // 加载设备映射
@@ -80,7 +80,7 @@ public class EquipmentConfigService : IEquipmentConfigService
                         {
                             if (string.IsNullOrWhiteSpace(row.EquipmentCode))
                             {
-                                _logger.LogWarning("CSV行缺少 EquipmentCode: {TagName}", row.TagName);
+                                _logger.LogWarning("[ 设备配置服务 ] CSV行缺少 EquipmentCode: {TagName}", row.TagName);
                                 continue;
                             }
 
@@ -105,17 +105,17 @@ public class EquipmentConfigService : IEquipmentConfigService
                                 g => g.Select(x => x.Mapping).ToList(),
                                 StringComparer.OrdinalIgnoreCase);
 
-                        _logger.LogInformation("已加载 {Count} 个设备映射配置", _mappingCache.Count);
+                        _logger.LogInformation("[ 设备配置服务 ] 已加载 {Count} 个设备映射配置", _mappingCache.Count);
                     }
                 }
                 else
                 {
-                    _logger.LogWarning("设备映射文件不存在: {Path}", mappingFile);
+                    _logger.LogWarning("[ 设备配置服务 ] 设备映射文件不存在: {Path}", mappingFile);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "加载设备配置文件失败");
+                _logger.LogError(ex, "[ 设备配置服务 ] 加载设备配置文件失败");
             }
         }
     }
@@ -173,7 +173,6 @@ public class EquipmentConfigService : IEquipmentConfigService
             {
                 TagName = m.TagName,
                 Purpose = m.Purpose,
-                ChannelName = m.ChannelName,
                 IsCritical = m.IsCritical,
                 Direction = m.Direction,
                 IsTrigger = m.IsTrigger,

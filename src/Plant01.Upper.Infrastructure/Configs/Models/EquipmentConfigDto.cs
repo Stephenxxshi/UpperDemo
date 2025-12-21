@@ -32,7 +32,6 @@ public class TagMappingDto
 {
     public string TagName { get; set; } = string.Empty;
     public string Purpose { get; set; } = string.Empty;
-    public string? ChannelName { get; set; }
     public bool IsCritical { get; set; }
     public TagDirection Direction { get; set; } = TagDirection.Input;
     public bool IsTrigger { get; set; }
