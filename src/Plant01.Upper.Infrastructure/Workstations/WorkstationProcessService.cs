@@ -128,7 +128,7 @@ public class WorkstationProcessService : IHostedService
 
         triggerInfo.LastTriggerTime = now;
 
-        _logger.LogInformation($"[ {e.TagName} ] = e.NewValue.Value -> 检测到流程触发");
+        _logger.LogInformation($"[ {e.TagName} ] = {e.NewValue.Value} -> 检测到流程触发");
 
         try
         {
@@ -165,7 +165,6 @@ public class WorkstationProcessService : IHostedService
             {
                 WorkstationCode = workstationCode,
                 EquipmentCode = triggerInfo.EquipmentCode,
-                Equipment = _equipmentConfig.GetEquipment(triggerInfo.EquipmentCode)!,
                 TriggerTagName = e.TagName,
                 TriggerValue = e.NewValue.Value,
                 TriggerTime = now
@@ -182,9 +181,6 @@ public class WorkstationProcessService : IHostedService
         catch (Exception ex)
         {
             _logger.LogError(ex, $"[ {e.TagName} ] 执行工位流程失败");
-
-            // 注意：Processor 内部已负责写回错误结果
-            await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Error, ex.Message);
         }
     }
 

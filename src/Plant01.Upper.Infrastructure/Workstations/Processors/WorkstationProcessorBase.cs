@@ -47,128 +47,63 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
     {
         _logger.LogInformation("[ {Tag} ] : 工位 [ {Workstation} ] -> 触发流程", context.TriggerTagName, context.WorkstationCode);
 
-        await InternalExecuteAsync();
-
-        try
+        // 获取设备配置以查找标签
+        var equipment = _equipmentConfigService.GetEquipment(context.EquipmentCode);
+        if (equipment == null)
         {
-            // 读取工单号
-            var workOrders = await _workOrderRepository.GetAllAsync(workOrder => workOrder.Status == Domain.ValueObjects.WorkOrderStatus.开工);
-            if (workOrders.Count == 0)
-            {
-                _logger.LogWarning($"[ {context.TriggerTagName} ] ->  未找到开工中的工单");
-                return;
-            }
-
-            if (workOrders.Count > 1)
-            {
-                _logger.LogError($"[ {context.TriggerTagName} ] -> 开工的工单数量为 [ {workOrders.Count} ] > 1");
-                return;
-            }
-
-            var currentWorkOrder = workOrders.First();
-
-            // 获取设备配置以查找标签
-            var equipment = _equipmentConfigService.GetEquipment(context.EquipmentCode);
-            if (equipment == null)
-            {
-                _logger.LogError("未找到设备配置: {Code}", context.EquipmentCode);
-                return;
-            }
-
-            // 获取袋码标签
-            var qrCodeTag = equipment.TagMappings.FirstOrDefault(m => m.Purpose == "QrCode" || m.TagName.EndsWith(".Code"));
-            string bagCode = string.Empty;
-
-            if (qrCodeTag != null)
-            {
-                bagCode = _deviceComm.GetTagValue<string>(qrCodeTag.TagName);
-            }
-
-            if (string.IsNullOrEmpty(bagCode))
-            {
-                _logger.LogWarning("包装机触发但未读取到袋码: {Code}", context.EquipmentCode);
-                return;
-            }
-
-            // 保存袋码
-            using var scope = _serviceScopeFactory.CreateScope();
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-            var bagRepo = unitOfWork.BagRepository;
-
-            var bags = await bagRepo.GetAllAsync(o => o.BagCode == bagCode);
-            var bag = bags.FirstOrDefault();
-            bool isNew = false;
-
-            if (bag == null)
-            {
-                // 上袋是第一步，如果不存在则创建
-                bag = new Bag
-                {
-                    BagCode = bagCode,
-                    CreatedAt = DateTime.Now,
-                    OrderCode = currentWorkOrder.Code,
-                    ProductCode = currentWorkOrder.ProductCode,
-                    ProductAlias = currentWorkOrder.ProductName,
-                    LineNo = currentWorkOrder.LineNo,
-                    StationNo = context.WorkstationCode,
-                    ProductWeightUnit = "kg", // 默认单位
-                    ProductHeightUnit = "mm",  // 默认单位
-                    BatchCode = currentWorkOrder.BatchNumber
-                };
-                await bagRepo.AddAsync(bag);
-                isNew = true;
-            }
-
-            if (bag.CanLoad())
-            {
-                bag.AddRecord(ProcessStep.Loading, context.EquipmentCode, true);
-
-                if (!isNew)
-                {
-                    await bagRepo.UpdateAsync(bag);
-                }
-
-                await unitOfWork.SaveChangesAsync();
-                _logger.LogInformation("袋 {BagCode} 在 {MachineId} 加载", bagCode, context.EquipmentCode);
-            }
-
-            await WriteProcessResult(context.EquipmentCode, ProcessResult.Success);
-
-            _logger.LogInformation("包装工位流程执行完成");
+            _logger.LogError("[ {Code} ] : 未找到设备配置 ", context.EquipmentCode);
+            await WriteProcessResult(context, ProcessResult.Error, "未找到设备配置");
+            return;
         }
-        catch (Exception ex)
+
+        context.Equipment = equipment;
+
+        // 获取袋码标签
+        var qrCodeTag = context.Equipment.TagMappings.FirstOrDefault(m => m.Purpose == "QrCode" || m.TagName.EndsWith(".Code"));
+        string bagCode = string.Empty;
+
+        if (qrCodeTag != null)
         {
-            _logger.LogError(ex, "包装工位流程执行失败");
-            throw;
+            bagCode = _deviceComm.GetTagValue<string>(qrCodeTag.TagName);
         }
+
+        if (string.IsNullOrEmpty(bagCode))
+        {
+            _logger.LogWarning("包装机触发但未读取到袋码: {Code}", context.EquipmentCode);
+            await WriteProcessResult(context, ProcessResult.Error, "未读取到袋码");
+            return;
+        }
+
+        context.BagCode = bagCode;
+
+        await InternalExecuteAsync(context, bagCode);
+
+        
     }
 
     /// <summary>
     /// 写回流程结果到PLC
     /// </summary>
-    protected async Task WriteProcessResult(string equipmentCode, ProcessResult result, string? message = null)
+    protected async Task WriteProcessResult(WorkstationProcessContext context, ProcessResult result, string? message = null)
     {
         try
         {
-            var equipment = _equipmentConfigService.GetEquipment(equipmentCode);
-            if (equipment == null)
-                return;
-
             // 查找 ProcessResult 用途的标签
-            var resultMapping = equipment.TagMappings
+            var resultMapping = context.Equipment.TagMappings
                 .FirstOrDefault(m => m.Purpose == TagPurpose.ProcessResult);
 
             if (resultMapping != null)
             {
                 await _deviceComm.WriteTagAsync(resultMapping.TagName, (int)result);
-                _logger.LogInformation($"[ {resultMapping.TagName} ] ： 写入 -> {result}");
+                _logger.LogInformation($"[ {context.BagCode ?? string.Empty} ] -> 写入 [ {resultMapping.TagName} ] ：{result}");
             }
 
             // 如果有消息标签，也写回消息
             if (!string.IsNullOrEmpty(message))
             {
-                var messageMapping = equipment.TagMappings
+                var messageMapping = context.Equipment.TagMappings
                     .FirstOrDefault(m => m.TagName.Contains("Message") || m.TagName.Contains("Msg"));
+                _logger.LogInformation($"{context.BagCode ?? string.Empty} ] -> 写入 [ {messageMapping?.TagName} ] ：{result}");
 
                 if (messageMapping != null)
                 {
@@ -178,11 +113,11 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "写回流程结果失败: {Equipment}", equipmentCode);
+            _logger.LogError(ex, "写回流程结果失败: {Equipment}", context.Equipment.Code);
         }
     }
 
-    protected virtual async Task InternalExecuteAsync()
+    protected virtual async Task InternalExecuteAsync(WorkstationProcessContext context, string bagCode)
     {
         return;
     }
