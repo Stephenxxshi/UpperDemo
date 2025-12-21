@@ -50,7 +50,7 @@ public class EquipmentConfigService : IEquipmentConfigService
             try
             {
                 // 加载设备模板
-                var equipmentFile = Path.Combine(_configPath, "Lines", "Equipments", "equipment_templates.csv");
+                var equipmentFile = Path.Combine(_configPath, "Lines", "Equipments.csv");
                 if (File.Exists(equipmentFile))
                 {
                     using (var reader = new StreamReader(equipmentFile))
@@ -67,7 +67,7 @@ public class EquipmentConfigService : IEquipmentConfigService
                 }
 
                 // 加载设备映射
-                var mappingFile = Path.Combine(_configPath, "Lines", "Equipments", "equipment_mappings.csv");
+                var mappingFile = Path.Combine(_configPath, "Lines", "DomainTags.csv");
                 if (File.Exists(mappingFile))
                 {
                     using (var reader = new StreamReader(mappingFile))

@@ -59,7 +59,11 @@ public class WorkOrderPushCommandHandle : IWorkOrderPushCommandHandle
             var workOrderRepo = unitOfWork.Repository<WorkOrder>();
 
             var existing = (await workOrderRepo.GetAllAsync(w => w.Code == dto.Code)).FirstOrDefault();
-
+            if (existing is null)
+            {
+                var workOrders = await workOrderRepo.GetAllAsync(w => w.Status == WorkOrderStatus.开工);
+                workOrders.ForEach(w => w.Status = WorkOrderStatus.完工);
+            }
             var workOrder = existing ?? new WorkOrder();
 
             // 保存数据库

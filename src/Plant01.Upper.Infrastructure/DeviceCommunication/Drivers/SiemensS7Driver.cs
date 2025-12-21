@@ -321,46 +321,53 @@ public class SiemensS7Driver : IDriver
         if (tag == null) throw new ArgumentException("Invalid tag type");
         
         if (_client == null || !_isConnected) throw new InvalidOperationException("S7 未连接");
-        if (!S7AddressParser.TryParse(tag.Address, out var addr)) return Task.CompletedTask;
+        
+        // 优化：移除地址解析，直接使用 HslCommunication 支持的地址字符串
+        // 这样可以支持 M, I, Q, DB 等所有区域，而不仅仅是 DB
+        // if (!S7AddressParser.TryParse(tag.Address, out var addr)) return Task.CompletedTask;
 
-        // String: ArrayLength作为长度
+        // String: HslCommunication 会自动处理
         if (tag.DataType == TagDataType.String)
         {
             var s = Convert.ToString(value) ?? string.Empty;
-            var len = Math.Max(1, (int)tag.ArrayLength);
-            _client.Write($"DB{addr.Db}.{addr.Offset}", s.PadRight(len).Substring(0, len));
+            _client.Write(tag.Address, s);
             return Task.CompletedTask;
         }
 
         switch (tag.DataType)
         {
             case TagDataType.Boolean:
-                _client.Write($"DB{addr.Db}.{addr.Offset}.{addr.Bit}", Convert.ToBoolean(value));
+                _client.Write(tag.Address, Convert.ToBoolean(value));
+                break;
+            case TagDataType.Byte:
+                _client.Write(tag.Address, Convert.ToByte(value));
                 break;
             case TagDataType.Int16:
-                _client.Write($"DB{addr.Db}.{addr.Offset}", Convert.ToInt16(value));
+                _client.Write(tag.Address, Convert.ToInt16(value));
                 break;
             case TagDataType.UInt16:
-                _client.Write($"DB{addr.Db}.{addr.Offset}", Convert.ToUInt16(value));
+                _client.Write(tag.Address, Convert.ToUInt16(value));
                 break;
             case TagDataType.Int32:
-                _client.Write($"DB{addr.Db}.{addr.Offset}", Convert.ToInt32(value));
+                _client.Write(tag.Address, Convert.ToInt32(value));
                 break;
             case TagDataType.UInt32:
-                _client.Write($"DB{addr.Db}.{addr.Offset}", Convert.ToUInt32(value));
+                _client.Write(tag.Address, Convert.ToUInt32(value));
                 break;
             case TagDataType.Int64:
-                _client.Write($"DB{addr.Db}.{addr.Offset}", Convert.ToInt64(value));
+                _client.Write(tag.Address, Convert.ToInt64(value));
                 break;
             case TagDataType.UInt64:
-                _client.Write($"DB{addr.Db}.{addr.Offset}", Convert.ToUInt64(value));
+                _client.Write(tag.Address, Convert.ToUInt64(value));
                 break;
             case TagDataType.Float:
-                _client.Write($"DB{addr.Db}.{addr.Offset}", Convert.ToSingle(value));
+                _client.Write(tag.Address, Convert.ToSingle(value));
                 break;
             case TagDataType.Double:
-                _client.Write($"DB{addr.Db}.{addr.Offset}", Convert.ToDouble(value));
+                _client.Write(tag.Address, Convert.ToDouble(value));
                 break;
+            default:
+                throw new NotSupportedException($"不支持的写入类型: {tag.DataType}");
         }
 
         return Task.CompletedTask;

@@ -114,7 +114,10 @@ public class WorkstationProcessService : IHostedService
 
         // 检查触发条件
         if (!TriggerEvaluator.Evaluate(e.NewValue.Value, triggerInfo.TagMapping.TriggerCondition))
+        {
+            await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Idle);
             return;
+        }
 
         // 防抖：避免重复触发（500ms内的重复触发会被忽略）
         var now = DateTime.Now;
@@ -142,8 +145,7 @@ public class WorkstationProcessService : IHostedService
                 return;
             }
 
-            // 如果 Workstation 实体没有 Type 属性，这里暂时用硬编码或命名规则演示
-            // 实际项目中建议在 Workstation 实体中增加 Type 字段
+            // 如果 Workstation 实体没有 Type 属性，这里暂时用硬编码
             if (string.IsNullOrEmpty(workstationType))
             {
                 // 简单推断：如果工位代码包含 PKG 则为 Packaging
@@ -172,14 +174,17 @@ public class WorkstationProcessService : IHostedService
             
             // 执行工位流程
             await processor.ExecuteAsync(context);
-            
+
+            // 注意：Processor 内部已负责写回结果，此处不再重复写回，避免双重写入和潜在的配置错误
+            await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Success);
+
             _logger.LogInformation("工位流程执行完成: {WorkstationCode}", workstationCode);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "执行工位流程失败: {Equipment}", triggerInfo.EquipmentCode);
-            
-            // 写回错误结果到PLC
+
+            // 注意：Processor 内部已负责写回错误结果
             await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Error, ex.Message);
         }
     }

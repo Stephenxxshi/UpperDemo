@@ -16,27 +16,27 @@ public class Bag : CommonFields
     /// <summary>
     /// 产线
     /// </summary>
-    public string LineNo { get; set; }
+    public string LineNo { get; set; } = string.Empty;
     /// <summary>
     /// 工位
     /// </summary>
-    public string StationNo { get; set; }
+    public string StationNo { get; set; } = string.Empty;
     /// <summary>
     /// 袋码
     /// </summary>
-    public string BagCode { get; set; }
+    public string BagCode { get; set; } = string.Empty;
     /// <summary>
     /// 工单号
     /// </summary>
-    public string OrderCode { get; set; }
+    public string OrderCode { get; set; } = string.Empty;
     /// <summary>
     /// 配方
     /// </summary>
-    public string ProductCode { get; set; }
+    public string ProductCode { get; set; } = string.Empty;
     /// <summary>
     /// 牌号
     /// </summary>
-    public string ProductAlias { get; set; }
+    public string ProductAlias { get; set; } = string.Empty;
     /// <summary>
     /// 标称重量
     /// </summary>

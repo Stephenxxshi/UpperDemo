@@ -121,10 +121,6 @@ public static class Bootstrapper
         services.AddScoped<MesEventHandler>();
         services.AddHostedService<EventRegistrationService>(); // 注册事件绑定服务
 
-        // 注册生产流程服务 (作为 Singleton 监听消息)
-        services.AddSingleton<ProductionFlowService>();
-        services.AddSingleton<IPlcFlowService>(sp => sp.GetRequiredService<ProductionFlowService>());
-
         services.AddScoped<IProductionQueryService, ProductionQueryService>();
         services.AddScoped<IWorkOrderRepository, WorkOrderRepository>();
 
@@ -203,9 +199,9 @@ public static class Bootstrapper
         // ⭐ 注册工位流程管理（新增）
         // 1. 注册工位处理器
         services.AddSingleton<IWorkstationProcessor, PackagingWorkstationProcessor>();
-        // services.AddSingleton<IWorkstationProcessor, WeighingWorkstationProcessor>();  // 未来添加
-        // services.AddSingleton<IWorkstationProcessor, PalletizingWorkstationProcessor>(); // 未来添加
-        
+        services.AddSingleton<IWorkstationProcessor, PalletizerWorkstationProcessor>();
+        services.AddSingleton<IWorkstationProcessor, PalletOutWorkstationProcessor>();
+
         // 2. 注册工位流程服务（监听触发标签）
         services.AddHostedService<WorkstationProcessService>();
 

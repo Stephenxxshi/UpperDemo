@@ -22,7 +22,7 @@
       {
         "Code": "MDJ1_WS_CDJ01",
         "Name": "1#码垛工位",
-        "Type": "StackRemoval",
+        "Type": "PalletOut",
         "Sequence": 3,
         "EquipmentRefs": [ "MDJ1_CDJ01" ]
       }

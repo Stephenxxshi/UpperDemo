@@ -1,4 +1,0 @@
-﻿Code,Line,Device,Name,Type,Capabilities,Sequence,Enabled
-MDJ1_SDJ01,MDJ1,SDJ01,1#线-1号上袋机,BagPicker,"Heartbeat, AlarmReport, OutputCount",2,TRUE
-MDJ1_MDJ01,MDJ1,MDJ01,1#线-1号码垛机,Palletizer,"Heartbeat, AlarmReport, OutputCount",2,TRUE
-MDJ1_CDJ01,MDJ1,CDJ01,1#线-1号出垛机,StackRemoval,"Heartbeat, AlarmReport",10,TRUE

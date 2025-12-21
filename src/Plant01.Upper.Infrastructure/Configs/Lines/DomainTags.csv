@@ -1,0 +1,14 @@
+﻿TagName,Purpose,IsCritical,Direction,TriggerCondition,Remarks,EquipmentCode
+Packing.Bagging.Status,,,Input,,,MDJ1_SDJ01
+Packing.Bagging.Request,ProcessTrigger,,Input,=1,,MDJ1_SDJ01
+Packing.Bagging.Code,QrCode,,Input,,,MDJ1_SDJ01
+Palletizer.Palletizing.Status,,,Input,,,MDJ1_MDJ01
+Palletizer.Palletizing.Request,ProcessTrigger,,Input,=1,,MDJ1_MDJ01
+Palletizer.Palletizing.Code,QrCode,,Input,,,MDJ1_MDJ01
+Palletizer.Palletizing.Sn,,,Input,,,MDJ1_MDJ01
+StackRemoval.Grouping.Request,ProcessTrigger,,Input,=1,,MDJ1_CDJ01
+StackRemoval.Grouping.Code,QrCode,,Input,,,MDJ1_CDJ01
+Packing.Bagging.Done,ProcessResult,,OutPut,,,MDJ1_SDJ01
+Palletizer.Palletizing.Done,ProcessResult,,OutPut,,,MDJ1_MDJ01
+Palletizer.Palletizing.Position,,,OutPut,,,MDJ1_MDJ01
+StackRemoval.Grouping.Done,ProcessResult,,OutPut,,,MDJ1_CDJ01

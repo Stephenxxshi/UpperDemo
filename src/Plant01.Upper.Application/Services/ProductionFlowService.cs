@@ -11,7 +11,7 @@ using Plant01.Upper.Domain.ValueObjects;
 
 namespace Plant01.Upper.Application.Services;
 
-public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerMessage>
+public class ProductionFlowService
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<ProductionFlowService> _logger;
@@ -29,8 +29,6 @@ public class ProductionFlowService : IPlcFlowService, IRecipient<StationTriggerM
         _equipmentConfigService = equipmentConfigService;
         _deviceService = deviceService;
 
-        // 注册消息监听
-        WeakReferenceMessenger.Default.Register(this);
     }
 
     public void Receive(StationTriggerMessage message)

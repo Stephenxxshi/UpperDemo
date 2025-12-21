@@ -22,7 +22,7 @@ public class Channel : IDisposable
     /// <summary>
     /// 获取通道名称
     /// </summary>
-    public string Name => _channelConfig.Name;
+    public string Name => _channelConfig.Code;
 
     /// <summary>
     /// 初始化通道

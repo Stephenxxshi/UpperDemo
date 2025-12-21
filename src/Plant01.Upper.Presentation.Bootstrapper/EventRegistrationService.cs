@@ -11,16 +11,13 @@ public class EventRegistrationService : IHostedService
 {
     private readonly IDomainEventBus _eventBus;
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly IPlcFlowService _plcFlowService; // 保持引用以确保服务实例化
 
     public EventRegistrationService(
         IDomainEventBus eventBus, 
-        IServiceScopeFactory scopeFactory,
-        IPlcFlowService plcFlowService)
+        IServiceScopeFactory scopeFactory)
     {
         _eventBus = eventBus;
         _scopeFactory = scopeFactory;
-        _plcFlowService = plcFlowService;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
