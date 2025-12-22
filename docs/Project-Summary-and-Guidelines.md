@@ -237,7 +237,6 @@ var summary = configManager.GetConfigSummary(); // "产线数: 2, 工段数: 10,
 
 ### 产线-工段-工位架构（内存式配置管理 + 配置分离）
 - **产线实体**: `src/Plant01.Upper.Domain/Entities/ProductionLine.cs`
-- **工段实体**: `src/Plant01.Upper.Domain/Entities/ProductionSection.cs`
 - **工位实体**: `src/Plant01.Upper.Domain/Entities/Workstation.cs`
 - **设备实体**: `src/Plant01.Upper.Domain/Entities/Equipment.cs` (TagMappings标记为[NotMapped]，运行时加载)
 - **标签映射**: `src/Plant01.Upper.Domain/Entities/EquipmentTagMapping.cs` (纯内存对象，包含Purpose和IsCritical)

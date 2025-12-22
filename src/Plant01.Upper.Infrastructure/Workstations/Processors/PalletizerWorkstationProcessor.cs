@@ -24,7 +24,7 @@ public class PalletizerWorkstationProcessor : WorkstationProcessorBase
 
         // 发送给PLC码垛位置
 
-        // 保存袋码
+        // 查询代码
         using var scope = _serviceScopeFactory.CreateScope();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         var bagRepo = unitOfWork.BagRepository;
@@ -34,11 +34,11 @@ public class PalletizerWorkstationProcessor : WorkstationProcessorBase
 
         if (bag == null)
         {
-            _logger.LogError($"未检测到袋码");
+            _logger.LogError($"袋码 [ {bagCode} ] 在 {context.EquipmentCode}未检测到袋码");
             return;
         }
 
-        // 上站防错
+        // 上站防错并保存袋码
         if (true)
         {
             bag.PalletizedAt = DateTime.UtcNow;
@@ -46,10 +46,11 @@ public class PalletizerWorkstationProcessor : WorkstationProcessorBase
             await bagRepo.UpdateAsync(bag);
 
             await unitOfWork.SaveChangesAsync();
-            _logger.LogInformation("袋码 [ {BagCode} ] 在 {MachineId} 码垛完成", bagCode, context.EquipmentCode);
+            _logger.LogInformation($"袋码 [ {bagCode} ] 在 {context.EquipmentCode} 码垛完成");
         }
 
-        _logger.LogInformation("码垛工位流程执行完成");
+        await WriteProcessResult(context,ProcessResult.Success);
+        _logger.LogInformation($"袋码 [ {bagCode} ] 在 {context.EquipmentCode} 码垛工位流程执行完成");
     }
 
 }

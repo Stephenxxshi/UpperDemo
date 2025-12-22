@@ -13,5 +13,6 @@ public enum EquipmentType
     RobotArm = 8,
     VisionSystem = 9,
     MesGateway = 10,
-    StretchWrapper = 11
+    StretchWrapper = 11,
+    PalletOut 
 }

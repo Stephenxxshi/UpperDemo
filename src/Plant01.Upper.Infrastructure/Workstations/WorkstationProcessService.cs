@@ -147,9 +147,10 @@ public class WorkstationProcessService : IHostedService
             if (string.IsNullOrEmpty(workstationType))
             {
                 // 简单推断：如果工位代码包含 PKG 则为 Packaging
-                if (workstationCode.Contains("PKG")) workstationType = "Packaging";
-                else if (workstationCode.Contains("PAL")) workstationType = "Palletizing";
-                else workstationType = "Unknown";
+                //if (workstationCode.Contains("PKG")) workstationType = "Packaging";
+                //else if (workstationCode.Contains("PAL")) workstationType = "Palletizing";
+                //else 
+                    workstationType = "Unknown";
             }
 
             // 查找对应的工位处理器
@@ -174,7 +175,7 @@ public class WorkstationProcessService : IHostedService
             await processor.ExecuteAsync(context);
 
             // 注意：Processor 内部已负责写回结果，此处不再重复写回，避免双重写入和潜在的配置错误
-            await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Success);
+            //await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Success);
 
             _logger.LogInformation($"[ {e.TagName} ] 工位流程执行完成: {workstationCode}");
         }

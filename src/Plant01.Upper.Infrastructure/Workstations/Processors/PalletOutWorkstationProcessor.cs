@@ -1,12 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 
 using Plant01.Upper.Application.Contracts.Api.Requests;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
-using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Domain.Repository;
-using Plant01.Upper.Domain.ValueObjects;
 
 namespace Plant01.Upper.Infrastructure.Workstations.Processors;
 
@@ -31,7 +30,8 @@ public class PalletOutWorkstationProcessor : WorkstationProcessorBase
         var equipment = _equipmentConfigService.GetEquipment(context.EquipmentCode);
         if (equipment == null)
         {
-            _logger.LogError("[ {Code} ] : 未找到设备配置 ", context.EquipmentCode);
+            _logger.LogError($"袋码[ {bagCode} ] : 未找到设备配置 ", context.EquipmentCode);
+            await WriteProcessResult(context, ProcessResult.Error, "没有找到设备配置");
             return;
         }
 
@@ -43,11 +43,13 @@ public class PalletOutWorkstationProcessor : WorkstationProcessorBase
         if (palletTag is not null)
         {
             pallet = _deviceComm.GetTagValue<string>(palletTag.TagName);
+            _logger.LogInformation($"袋码[ {bagCode} ] -> 在 {context.EquipmentCode}  读取到托盘号: {pallet}");
         }
 
-        if (string.IsNullOrEmpty(bagCode) && string.IsNullOrEmpty(pallet))
+        if (string.IsNullOrEmpty(pallet))
         {
-            _logger.LogWarning("包装机触发但未读取到袋码: {Code}", context.EquipmentCode);
+            _logger.LogWarning($"袋码[ {bagCode} ] -> 未读取到托盘号");
+            await WriteProcessResult(context, ProcessResult.Error, "未读取到托盘号");
             return;
         }
 
@@ -74,14 +76,17 @@ public class PalletOutWorkstationProcessor : WorkstationProcessorBase
         var response = await _mesService.FinishPalletizingAsync(request);
         if (response != null)
         {
+            _logger.LogError($"袋码[ {bagCode} ] : {response.ErrorMsg}");
+            await WriteProcessResult(context, ProcessResult.Error,response.ErrorMsg);
+            return;
         }
 
 
 
         // 保存袋码
-
+        await WriteProcessResult(context, ProcessResult.Success, "出垛成功");
         _logger.LogInformation("出垛工位流程执行完成");
     }
 
-  
+
 }

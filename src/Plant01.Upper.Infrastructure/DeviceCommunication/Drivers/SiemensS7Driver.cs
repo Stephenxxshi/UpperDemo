@@ -9,6 +9,7 @@ using Plant01.Upper.Infrastructure.DeviceCommunication.DriverConfigs;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Extensions;
 using System.ComponentModel.DataAnnotations;
 using Plant01.Upper.Application.Models.DeviceCommunication;
+using Microsoft.Extensions.Logging;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
 
@@ -19,6 +20,7 @@ public class SiemensS7Driver : IDriver
     private SiemensS7Net? _client;
 
     public bool IsConnected => _isConnected;
+
 
     public void Initialize(DeviceConfig config)
     {
@@ -203,6 +205,7 @@ public class SiemensS7Driver : IDriver
         }
         else
         {
+            
             // 优化：降级策略 (Fallback)
             // 如果批量读取失败，尝试逐个读取，避免全军覆没
             foreach (var tag in tags)
@@ -321,10 +324,7 @@ public class SiemensS7Driver : IDriver
         if (tag == null) throw new ArgumentException("Invalid tag type");
         
         if (_client == null || !_isConnected) throw new InvalidOperationException("S7 未连接");
-        
-        // 优化：移除地址解析，直接使用 HslCommunication 支持的地址字符串
-        // 这样可以支持 M, I, Q, DB 等所有区域，而不仅仅是 DB
-        // if (!S7AddressParser.TryParse(tag.Address, out var addr)) return Task.CompletedTask;
+      
 
         // String: HslCommunication 会自动处理
         if (tag.DataType == TagDataType.String)

@@ -205,10 +205,14 @@ public class Channel : IDisposable
                                 // 如果标签值发生变化，触发回调
                                 if (tag.Update(kvp.Value, Models.TagQuality.Good))
                                 {
-                                    // 注意：首次从 Bad->Good 的变化通常用于 UI 初始化。
-                                    // 如果您的业务逻辑（如报警）不希望在启动时触发，可以取消下行的注释并使用 if (!isFirstLoad)
+                                    // 注意：首次从 Bad->Good 的变化用于 UI 初始化。
+                                    // 如果业务逻辑（如报警）不希望在启动时触发，可以取消下行的注释并使用 if (!isFirstLoad)
                                     // if (!isFirstLoad) 
-                                    Task.Run(() => _onTagChanged?.Invoke(tag));
+                                    Task.Run(() =>
+                                    {
+                                        _logger.LogTrace("设备 {Device} 标签 {Tag} 值已更新为 {Value}", Name, tag.Name, kvp.Value);
+                                        _onTagChanged?.Invoke(tag);
+                                    });
                                 }
                             }
                         }

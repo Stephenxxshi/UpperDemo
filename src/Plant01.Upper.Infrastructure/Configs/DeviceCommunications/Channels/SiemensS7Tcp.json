@@ -15,7 +15,7 @@
       "Port": 102,
       "Rack": 0,
       "Slot": 1,
-      "ScanRate": 100,
+      "ScanRate": 300,
       "ConnectTimeout": 5000,
       "PlcModel": "S7_1200"
     },

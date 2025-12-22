@@ -3,10 +3,8 @@ using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
-using Plant01.Upper.Domain.Aggregation;
 using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Domain.Repository;
-using Plant01.Upper.Domain.ValueObjects;
 
 namespace Plant01.Upper.Infrastructure.Workstations.Processors;
 
@@ -45,13 +43,14 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
 
     public async Task ExecuteAsync(WorkstationProcessContext context)
     {
-        _logger.LogInformation("[ {Tag} ] : 工位 [ {Workstation} ] -> 触发流程", context.TriggerTagName, context.WorkstationCode);
+        _logger.LogInformation("[ 标签: {Tag} ] -> 在工位 [ {Workstation} ] -> 触发流程", context.TriggerTagName, context.WorkstationCode);
 
         // 获取设备配置以查找标签
         var equipment = _equipmentConfigService.GetEquipment(context.EquipmentCode);
         if (equipment == null)
         {
-            _logger.LogError("[ {Code} ] : 未找到设备配置 ", context.EquipmentCode);
+            _logger.LogError($"[ {context.TriggerTagName} ] -> 在工位  [ {context.WorkstationCode} ] : 未找到设备配置 ");
+
             await WriteProcessResult(context, ProcessResult.Error, "未找到设备配置");
             return;
         }
@@ -69,7 +68,7 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
 
         if (string.IsNullOrEmpty(bagCode))
         {
-            _logger.LogWarning("包装机触发但未读取到袋码: {Code}", context.EquipmentCode);
+            _logger.LogWarning($"[ {context.TriggerTagName} ] -> 在工位  [ {context.WorkstationCode} ] 触发但未读取到袋码: {bagCode}");
             await WriteProcessResult(context, ProcessResult.Error, "未读取到袋码");
             return;
         }
@@ -78,7 +77,7 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
 
         await InternalExecuteAsync(context, bagCode);
 
-        
+
     }
 
     /// <summary>
@@ -88,6 +87,18 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
     {
         try
         {
+            // 如果有消息标签，写回消息
+            if (!string.IsNullOrEmpty(message))
+            {
+                var messageMapping = context.Equipment.TagMappings
+                    .FirstOrDefault(m => m.TagName.Contains("Message") || m.TagName.Contains("Msg"));
+
+                if (messageMapping != null)
+                {
+                    await _deviceComm.WriteTagAsync(messageMapping.TagName, message);
+                    _logger.LogInformation($"{context.BagCode ?? string.Empty} ] -> 写入 {messageMapping?.TagName} = {(int)result}");
+                }
+            }
             // 查找 ProcessResult 用途的标签
             var resultMapping = context.Equipment.TagMappings
                 .FirstOrDefault(m => m.Purpose == TagPurpose.ProcessResult);
@@ -95,21 +106,10 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
             if (resultMapping != null)
             {
                 await _deviceComm.WriteTagAsync(resultMapping.TagName, (int)result);
-                _logger.LogInformation($"[ {context.BagCode ?? string.Empty} ] -> 写入 [ {resultMapping.TagName} ] ：{result}");
+                _logger.LogInformation($"[ {context.BagCode ?? string.Empty} ] -> 写入 [ {resultMapping.TagName} ] ：{(int)result}({result})");
             }
 
-            // 如果有消息标签，也写回消息
-            if (!string.IsNullOrEmpty(message))
-            {
-                var messageMapping = context.Equipment.TagMappings
-                    .FirstOrDefault(m => m.TagName.Contains("Message") || m.TagName.Contains("Msg"));
-                _logger.LogInformation($"{context.BagCode ?? string.Empty} ] -> 写入 [ {messageMapping?.TagName} ] ：{result}");
-
-                if (messageMapping != null)
-                {
-                    await _deviceComm.WriteTagAsync(messageMapping.TagName, message);
-                }
-            }
+            
         }
         catch (Exception ex)
         {
