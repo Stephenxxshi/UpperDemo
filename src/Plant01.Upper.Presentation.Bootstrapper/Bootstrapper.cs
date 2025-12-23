@@ -6,27 +6,27 @@ using Microsoft.Extensions.Logging;
 
 using NLog.Extensions.Hosting;
 
-using Plant01.Infrastructure.Shared.Extensions;
 using Plant01.Domain.Shared.Events;
+using Plant01.Infrastructure.Shared.Extensions;
 using Plant01.Upper.Application.EventHandlers;
 using Plant01.Upper.Application.Interfaces;
+using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Application.Mappings; // 确保引用了 Mapping Profile 所在的命名空间
+using Plant01.Upper.Application.Models.DeviceCommunication;
 using Plant01.Upper.Application.Models.Logging;
 using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Repository;
-using Plant01.Upper.Infrastructure.Repository;
-using Plant01.Upper.Infrastructure.Services;
-using Plant01.Upper.Presentation.Core.ViewModels;
 using Plant01.Upper.Infrastructure.DeviceCommunication;
-using Plant01.Upper.Application.Models.DeviceCommunication;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Engine;
-using Plant01.Upper.Application.Interfaces.DeviceCommunication;
-
-using Serilog;
+using Plant01.Upper.Infrastructure.Repository;
+using Plant01.Upper.Infrastructure.Services;
 using Plant01.Upper.Infrastructure.Workstations;
 using Plant01.Upper.Infrastructure.Workstations.Processors;
-using Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
+using Plant01.Upper.Presentation.Core.ViewModels;
+
+using Serilog;
 
 namespace Plant01.Upper.Presentation.Bootstrapper;
 
@@ -105,7 +105,7 @@ public static class Bootstrapper
         services.AddScoped<IMesService, MesService>();
         services.AddSingleton<WorkOrderPushCommandHandle>();
         services.AddSingleton<IWorkOrderPushCommandHandle>(sp => sp.GetRequiredService<WorkOrderPushCommandHandle>());
-        
+
         // 注册通用触发与监控服务
         services.AddSingleton<TriggerDispatcherService>();
         services.AddHostedService<TriggerDispatcherService>(sp => sp.GetRequiredService<TriggerDispatcherService>());
@@ -113,6 +113,12 @@ public static class Bootstrapper
 
         // 注册 PLC 监控服务
         services.AddHostedService<PlcMonitorService>();
+
+        // 注册驱动
+        services.AddTransient<DriverFactory>();
+        services.AddTransient<SiemensS7Driver>();
+        services.AddTransient<ModbusTcpDriver>();
+        services.AddTransient<Func<string, IDriver>>(sp => name => sp.GetRequiredService<DriverFactory>().CreateDriver(name));
 
         // 注册领域事件总线
         services.AddSingleton<IDomainEventBus, DomainEventBus>();
@@ -141,69 +147,69 @@ public static class Bootstrapper
         services.AddDbContext<AppDbContext>((serviceProvider, options) =>
         {
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            options.UseNpgsql(connectionString);
+var connectionString = configuration.GetConnectionString("DefaultConnection");
+options.UseNpgsql(connectionString);
         });
 
         // 添加 DbContextFactory 注册
-        services.AddDbContextFactory<AppDbContext>((serviceProvider,options) =>
+        services.AddDbContextFactory<AppDbContext>((serviceProvider, options) =>
         {
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            options.UseNpgsql(connectionString);
+var connectionString = configuration.GetConnectionString("DefaultConnection");
+options.UseNpgsql(connectionString);
         });
 
 
-        // 确保 UnitOfWork 已注册
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+// 确保 UnitOfWork 已注册
+services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
-        // 注册通用的 ViewModel
-        services.AddSingleton<ShellViewModel>();
-        services.AddSingleton<DashboardViewModel>();
-        services.AddSingleton<SettingsViewModel>();
-        services.AddSingleton<ProduceRecordViewModel>();
-        services.AddSingleton<ProductionMonitorViewModel>();
-        services.AddSingleton<WorkOrderListViewModel>();
+// 注册通用的 ViewModel
+services.AddSingleton<ShellViewModel>();
+services.AddSingleton<DashboardViewModel>();
+services.AddSingleton<SettingsViewModel>();
+services.AddSingleton<ProduceRecordViewModel>();
+services.AddSingleton<ProductionMonitorViewModel>();
+services.AddSingleton<WorkOrderListViewModel>();
 
-        // 注册 MES 调试 ViewModel
-        services.AddSingleton<MesDebugViewModel>();
+// 注册 MES 调试 ViewModel
+services.AddSingleton<MesDebugViewModel>();
 
-        // 注册设备通信层 (Device Communication Layer)
-        // 1. 注册配置加载器
-        services.AddSingleton<ConfigurationLoader>(sp => 
-        {
-            var logger = sp.GetRequiredService<ILogger<ConfigurationLoader>>();
-            // 假设 Configs 文件夹在运行目录下
-            var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs");
-            return new ConfigurationLoader(configPath, logger);
-        });
-        
-        // 2. 注册热重载服务
-        services.AddSingleton<ConfigHotReloader>(sp => 
-        {
-            var logger = sp.GetRequiredService<ILogger<ConfigHotReloader>>();
-            var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs");
-            return new ConfigHotReloader(configPath, logger);
-        });
+// 注册设备通信层 (Device Communication Layer)
+// 1. 注册配置加载器
+services.AddSingleton<ConfigurationLoader>(sp =>
+{
+    var logger = sp.GetRequiredService<ILogger<ConfigurationLoader>>();
+    // 假设 Configs 文件夹在运行目录下
+    var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs");
+    return new ConfigurationLoader(configPath, logger);
+});
 
-        // 3. 注册驱动工厂和引擎
-        services.AddSingleton<DriverFactory>();
-        services.AddSingleton<TagEngine>();
+// 2. 注册热重载服务
+services.AddSingleton<ConfigHotReloader>(sp =>
+{
+    var logger = sp.GetRequiredService<ILogger<ConfigHotReloader>>();
+    var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs");
+    return new ConfigHotReloader(configPath, logger);
+});
 
-        // 4. 注册主服务 (既是业务接口，又是后台服务)
-        services.AddSingleton<DeviceCommunicationService>();
-        services.AddSingleton<IDeviceCommunicationService>(sp => sp.GetRequiredService<DeviceCommunicationService>());
-        services.AddHostedService<DeviceCommunicationService>(sp => sp.GetRequiredService<DeviceCommunicationService>());
+// 3. 注册驱动工厂和引擎
+services.AddSingleton<DriverFactory>();
+services.AddSingleton<TagEngine>();
 
-        // ⭐ 注册工位流程管理（新增）
-        // 1. 注册工位处理器
-        services.AddSingleton<IWorkstationProcessor, PackagingWorkstationProcessor>();
-        services.AddSingleton<IWorkstationProcessor, PalletizerWorkstationProcessor>();
-        services.AddSingleton<IWorkstationProcessor, PalletOutWorkstationProcessor>();
+// 4. 注册主服务 (既是业务接口，又是后台服务)
+services.AddSingleton<DeviceCommunicationService>();
+services.AddSingleton<IDeviceCommunicationService>(sp => sp.GetRequiredService<DeviceCommunicationService>());
+services.AddHostedService<DeviceCommunicationService>(sp => sp.GetRequiredService<DeviceCommunicationService>());
 
-        // 2. 注册工位流程服务（监听触发标签）
-        services.AddHostedService<WorkstationProcessService>();
+// ⭐ 注册工位流程管理（新增）
+// 1. 注册工位处理器
+services.AddSingleton<IWorkstationProcessor, PackagingWorkstationProcessor>();
+services.AddSingleton<IWorkstationProcessor, PalletizerWorkstationProcessor>();
+services.AddSingleton<IWorkstationProcessor, PalletOutWorkstationProcessor>();
+
+// 2. 注册工位流程服务（监听触发标签）
+services.AddHostedService<WorkstationProcessService>();
 
         // 这里可以继续注册其他通用服务，例如 AutoMapper 等
     }

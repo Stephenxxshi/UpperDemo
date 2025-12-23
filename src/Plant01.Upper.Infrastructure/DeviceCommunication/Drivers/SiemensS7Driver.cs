@@ -1,26 +1,32 @@
-﻿using System.Text;
-using HslCommunication;
+﻿using HslCommunication;
 using HslCommunication.Profinet.Siemens;
 
+using Microsoft.Extensions.Logging;
+
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
-using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
+using Plant01.Upper.Application.Models.DeviceCommunication;
 using Plant01.Upper.Infrastructure.DeviceCommunication.DeviceAddressing;
 using Plant01.Upper.Infrastructure.DeviceCommunication.DriverConfigs;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Extensions;
-using System.ComponentModel.DataAnnotations;
-using Plant01.Upper.Application.Models.DeviceCommunication;
-using Microsoft.Extensions.Logging;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
+
+using System.Text;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
 
 public class SiemensS7Driver : IDriver
 {
+    private readonly ILogger<SiemensS7Driver> _logger;
     private DeviceConfig? _config;
     private bool _isConnected;
     private SiemensS7Net? _client;
 
     public bool IsConnected => _isConnected;
 
+    public SiemensS7Driver(ILogger<SiemensS7Driver> logger)
+    {
+        _logger = logger;
+    }
 
     public void Initialize(DeviceConfig config)
     {
@@ -31,7 +37,7 @@ public class SiemensS7Driver : IDriver
     {
         // 使用强类型配置和自动验证
         var driverConfig = config.GetAndValidateDriverConfig<SiemensS7Config>();
-        
+
         // 验证已通过 DataAnnotations 自动完成
         // 如需额外的业务验证,可在此添加
     }
@@ -55,7 +61,8 @@ public class SiemensS7Driver : IDriver
         _isConnected = res.IsSuccess;
         if (!_isConnected)
         {
-            throw new InvalidOperationException($"S7 连接失败: {res.Message}");
+            _logger.LogError("S7 连接失败: {Message}", res.Message);
+            //throw new InvalidOperationException($"S7 连接失败: {res.Message}");
         }
         return Task.CompletedTask;
     }
@@ -91,7 +98,7 @@ public class SiemensS7Driver : IDriver
         var dict = new Dictionary<string, object?>();
 
         var commTags = tags.OfType<CommunicationTag>().ToList();
-        
+
         // 1. 筛选出配置了 BatchId 的标签
         var batchTags = commTags.Where(t => t.GetS7BatchReadingId().HasValue).ToList();
         var singleTags = commTags.Where(t => !t.GetS7BatchReadingId().HasValue).ToList();
@@ -128,7 +135,7 @@ public class SiemensS7Driver : IDriver
         {
             // 按偏移量排序
             var sortedTags = areaGroup.OrderBy(t => t.GetS7Offset()).ToList();
-            
+
             // 智能拆分算法
             var currentBatch = new List<CommunicationTag>();
             int currentStart = -1;
@@ -153,7 +160,7 @@ public class SiemensS7Driver : IDriver
                     {
                         // 间隙过大，执行上一批次
                         ExecuteBatchRead(currentBatch, areaGroup.Key.Db, currentStart, currentEnd, dict);
-                        
+
                         // 开启新批次
                         currentBatch.Clear();
                         currentBatch.Add(tag);
@@ -180,7 +187,7 @@ public class SiemensS7Driver : IDriver
     private void ExecuteBatchRead(List<CommunicationTag> tags, int dbNumber, int startOffset, int endOffset, Dictionary<string, object?> dict)
     {
         ushort length = (ushort)(endOffset - startOffset);
-        
+
         // 尝试批量读取
         // 假设都是 DB 块读取，如果需要支持 M/I/Q 区，需要根据 AreaType 调整指令
         var result = _client!.Read($"DB{dbNumber}.{startOffset}", length);
@@ -191,7 +198,7 @@ public class SiemensS7Driver : IDriver
             var content = result.Content;
             foreach (var tag in tags)
             {
-                try 
+                try
                 {
                     int relativeOffset = tag.GetS7Offset() - startOffset;
                     object? val = ParseTagValueFromBytes(tag, content, relativeOffset);
@@ -205,7 +212,7 @@ public class SiemensS7Driver : IDriver
         }
         else
         {
-            
+            _logger.LogWarning("批量读取失败 (DB{Db}, Offset {Start}, Length {Length}): {Message}", dbNumber, startOffset, length, result.Message);
             // 优化：降级策略 (Fallback)
             // 如果批量读取失败，尝试逐个读取，避免全军覆没
             foreach (var tag in tags)
@@ -226,13 +233,13 @@ public class SiemensS7Driver : IDriver
                 // Bool needs bit offset
                 int bitIndex = tag.GetS7BitOffset();
                 return _client!.ByteTransform.TransByte(buffer, offset).GetBoolByIndex(bitIndex);
-            
+
             case TagDataType.Byte:
                 return _client!.ByteTransform.TransByte(buffer, offset);
 
             case TagDataType.Int16:
                 return _client!.ByteTransform.TransInt16(buffer, offset);
-                
+
             case TagDataType.UInt16:
                 return _client!.ByteTransform.TransUInt16(buffer, offset);
 
@@ -322,9 +329,9 @@ public class SiemensS7Driver : IDriver
     {
         var tag = tagObj as CommunicationTag;
         if (tag == null) throw new ArgumentException("Invalid tag type");
-        
+
         if (_client == null || !_isConnected) throw new InvalidOperationException("S7 未连接");
-      
+
 
         // String: HslCommunication 会自动处理
         if (tag.DataType == TagDataType.String)

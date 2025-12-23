@@ -14,20 +14,23 @@ public class DriverFactory
 
     public IDriver CreateDriver(string driverName)
     {
-        // In a real scenario, you might use a keyed service or a more sophisticated lookup
-        // For now, we just return SimulationDriver for everything or specific ones if implemented
+        // 在实际场景中，可能会使用带键的服务或更复杂的查找机制
+        // 目前为了简单起见，针对所有情况返回 SimulationDriver，或在实现时返回特定驱动
         
         if (string.Equals(driverName, "SiemensS7", StringComparison.OrdinalIgnoreCase))
         {
-            return new SiemensS7Driver(); 
+            return _serviceProvider.GetService<SiemensS7Driver>()!;
         }
         else if (string.Equals(driverName, "Modbus", StringComparison.OrdinalIgnoreCase))
         {
-            // Return Modbus driver when implemented
-            return new SimulationDriver();
+            // 当实现 Modbus 驱动时，这里应返回 Modbus 驱动
+            return _serviceProvider.GetService<ModbusTcpDriver>()!;
         }
-        
-        // Default fallback
-        return new SimulationDriver();
+        else if(string.Equals(driverName, "WsdomInkjetTcpDriver", StringComparison.OrdinalIgnoreCase))
+        {
+            return _serviceProvider.GetService<WsdomInkjetTcpDriver>()!;
+        }
+        // 默认回退
+        return _serviceProvider.GetService<SimulationDriver>()!;
     }
 }
