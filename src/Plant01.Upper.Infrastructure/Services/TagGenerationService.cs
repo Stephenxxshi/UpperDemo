@@ -104,6 +104,34 @@ public class TagGenerationService : ITagGenerationService
         return MergeToCsv(preview, backupSuffix);
     }
 
+    public List<object> PreviewFromTiaDbFile(string content)
+    {
+        _logger.LogInformation("正在解析 TIA Portal DB 文件内容...");
+        try
+        {
+            var parser = new TiaPortalDbParser();
+            var tags = parser.Parse(content);
+            _logger.LogInformation("成功解析出 {Count} 个标签", tags.Count);
+            return tags.Cast<object>().ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "解析 TIA Portal DB 文件失败");
+            throw;
+        }
+    }
+
+    public bool GenerateAndMergeFromTiaDbFile(string content, string? backupSuffix = null)
+    {
+        var preview = PreviewFromTiaDbFile(content);
+        if (preview.Count == 0)
+        {
+            _logger.LogWarning("DB 文件未解析出任何标签，跳过合并");
+            return false;
+        }
+        return MergeToCsv(preview, backupSuffix);
+    }
+
     public async Task<bool> TestS7ConnectionAsync(string ip, int port, int rack, int slot)
     {
         _logger.LogInformation("正在测试 S7 连接: {Ip}:{Port}, Rack={Rack}, Slot={Slot}", ip, port, rack, slot);

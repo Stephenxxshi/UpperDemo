@@ -173,6 +173,8 @@ services.AddSingleton<ProductionMonitorViewModel>();
 services.AddSingleton<WorkOrderListViewModel>();
 
 // 注册 MES 调试 ViewModel
+services.AddSingleton<PlcDebugViewModel>();
+services.AddSingleton<MesInterfaceDebugViewModel>();
 services.AddSingleton<MesDebugViewModel>();
 
 // 注册设备通信层 (Device Communication Layer)

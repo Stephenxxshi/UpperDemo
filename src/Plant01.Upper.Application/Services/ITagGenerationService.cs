@@ -11,6 +11,11 @@ public interface ITagGenerationService
     bool MergeToCsv(IEnumerable<object> scannedTags, string? backupSuffix = null);
     bool GenerateAndMergeFromDbSchema(int dbNumber, string? backupSuffix = null);
     bool GenerateAndMergeFromRules(object rules, string? backupSuffix = null);
+    
+    // 新增：从 TIA Portal DB 文件内容生成
+    List<object> PreviewFromTiaDbFile(string content);
+    bool GenerateAndMergeFromTiaDbFile(string content, string? backupSuffix = null);
+
     Task<bool> TestS7ConnectionAsync(string ip, int port, int rack, int slot);
 }
 
