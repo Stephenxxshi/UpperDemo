@@ -11,9 +11,9 @@ namespace Plant01.Upper.Infrastructure.Workstations.Processors;
 /// <summary>
 /// 码垛工位流程处理器示例
 /// </summary>
-public class PalletizerWorkstationProcessor : WorkstationProcessorBase
+public class PalletizerWorkStationProcessor : WorkstationProcessorBase
 {
-    public PalletizerWorkstationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
+    public PalletizerWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
     {
         WorkstationType = "Palletizer";
     }

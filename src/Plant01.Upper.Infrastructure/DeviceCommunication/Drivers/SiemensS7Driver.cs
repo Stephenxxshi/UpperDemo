@@ -1,16 +1,15 @@
-﻿using HslCommunication;
+﻿using System.Text;
+using HslCommunication;
 using HslCommunication.Profinet.Siemens;
 
-using Microsoft.Extensions.Logging;
-
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
-using Plant01.Upper.Application.Models.DeviceCommunication;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
 using Plant01.Upper.Infrastructure.DeviceCommunication.DeviceAddressing;
 using Plant01.Upper.Infrastructure.DeviceCommunication.DriverConfigs;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Extensions;
-using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
-
-using System.Text;
+using System.ComponentModel.DataAnnotations;
+using Plant01.Upper.Application.Models.DeviceCommunication;
+using Microsoft.Extensions.Logging;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
 
@@ -37,7 +36,7 @@ public class SiemensS7Driver : IDriver
     {
         // 使用强类型配置和自动验证
         var driverConfig = config.GetAndValidateDriverConfig<SiemensS7Config>();
-
+        
         // 验证已通过 DataAnnotations 自动完成
         // 如需额外的业务验证,可在此添加
     }
@@ -98,7 +97,7 @@ public class SiemensS7Driver : IDriver
         var dict = new Dictionary<string, object?>();
 
         var commTags = tags.OfType<CommunicationTag>().ToList();
-
+        
         // 1. 筛选出配置了 BatchId 的标签
         var batchTags = commTags.Where(t => t.GetS7BatchReadingId().HasValue).ToList();
         var singleTags = commTags.Where(t => !t.GetS7BatchReadingId().HasValue).ToList();
@@ -135,7 +134,7 @@ public class SiemensS7Driver : IDriver
         {
             // 按偏移量排序
             var sortedTags = areaGroup.OrderBy(t => t.GetS7Offset()).ToList();
-
+            
             // 智能拆分算法
             var currentBatch = new List<CommunicationTag>();
             int currentStart = -1;
@@ -160,7 +159,7 @@ public class SiemensS7Driver : IDriver
                     {
                         // 间隙过大，执行上一批次
                         ExecuteBatchRead(currentBatch, areaGroup.Key.Db, currentStart, currentEnd, dict);
-
+                        
                         // 开启新批次
                         currentBatch.Clear();
                         currentBatch.Add(tag);
@@ -187,7 +186,7 @@ public class SiemensS7Driver : IDriver
     private void ExecuteBatchRead(List<CommunicationTag> tags, int dbNumber, int startOffset, int endOffset, Dictionary<string, object?> dict)
     {
         ushort length = (ushort)(endOffset - startOffset);
-
+        
         // 尝试批量读取
         // 假设都是 DB 块读取，如果需要支持 M/I/Q 区，需要根据 AreaType 调整指令
         var result = _client!.Read($"DB{dbNumber}.{startOffset}", length);
@@ -198,7 +197,7 @@ public class SiemensS7Driver : IDriver
             var content = result.Content;
             foreach (var tag in tags)
             {
-                try
+                try 
                 {
                     int relativeOffset = tag.GetS7Offset() - startOffset;
                     object? val = ParseTagValueFromBytes(tag, content, relativeOffset);
@@ -233,13 +232,13 @@ public class SiemensS7Driver : IDriver
                 // Bool needs bit offset
                 int bitIndex = tag.GetS7BitOffset();
                 return _client!.ByteTransform.TransByte(buffer, offset).GetBoolByIndex(bitIndex);
-
+            
             case TagDataType.Byte:
                 return _client!.ByteTransform.TransByte(buffer, offset);
 
             case TagDataType.Int16:
                 return _client!.ByteTransform.TransInt16(buffer, offset);
-
+                
             case TagDataType.UInt16:
                 return _client!.ByteTransform.TransUInt16(buffer, offset);
 
@@ -292,32 +291,25 @@ public class SiemensS7Driver : IDriver
 
     private void ReadSingleTag(CommunicationTag tag, Dictionary<string, object?> dict)
     {
-        if (!S7AddressParser.TryParse(tag.Address, out var addr))
-        {
-            dict[tag.Name] = null;
-            return;
-        }
-
         try
         {
-            // 字符串：使用 ArrayLength 作为长度参数
+            // 字符串类型，使用 ArrayLength 作为长度参数
             if (tag.DataType == TagDataType.String)
             {
                 var len = Math.Max(1, (int)tag.ArrayLength);
-                var r = _client!.ReadString($"DB{addr.Db}.{addr.Offset}", (ushort)len);
+                var r = _client!.ReadString(tag.Address, (ushort)len);
                 dict[tag.Name] = r.IsSuccess ? r.Content : null;
                 return;
             }
 
-            // 数值类型数组：按类型大小顺序偏移
             int count = Math.Max(1, (int)tag.ArrayLength);
-            if (count > 1 && addr.Kind != S7AddressKind.DBX)
+            if (count > 1)
             {
-                dict[tag.Name] = ReadArray(_client!, tag.DataType, addr, count);
+                dict[tag.Name] = ReadArrayByAddress(_client!, tag.DataType, tag.Address, count);
                 return;
             }
 
-            dict[tag.Name] = ReadScalar(_client!, tag.DataType, addr);
+            dict[tag.Name] = ReadScalarByAddress(_client!, tag.DataType, tag.Address);
         }
         catch
         {
@@ -325,13 +317,164 @@ public class SiemensS7Driver : IDriver
         }
     }
 
+    // 新增：直接用地址字符串的数组读取
+    private static object? ReadScalarByAddress(SiemensS7Net client, Models.TagDataType type, string address)
+    {
+        switch (type)
+        {
+            case TagDataType.Boolean:
+                {
+                    var r = client.ReadBool(address);
+                    return r.IsSuccess ? r.Content : null;
+                }
+            case TagDataType.Byte:
+                {
+                    var r = client.ReadByte(address);
+                    return r.IsSuccess ? r.Content : null;
+                }
+            case TagDataType.Int16:
+                {
+                    var r = client.ReadInt16(address);
+                    return r.IsSuccess ? r.Content : null;
+                }
+            case TagDataType.UInt16:
+                {
+                    var r = client.ReadUInt16(address);
+                    return r.IsSuccess ? r.Content : null;
+                }
+            case TagDataType.Int32:
+                {
+                    var r = client.ReadInt32(address);
+                    return r.IsSuccess ? r.Content : null;
+                }
+            case TagDataType.UInt32:
+                {
+                    var r = client.ReadUInt32(address);
+                    return r.IsSuccess ? r.Content : null;
+                }
+            case TagDataType.Int64:
+                {
+                    var r = client.ReadInt64(address);
+                    return r.IsSuccess ? r.Content : null;
+                }
+            case TagDataType.UInt64:
+                {
+                    var r = client.ReadUInt64(address);
+                    return r.IsSuccess ? r.Content : null;
+                }
+            case TagDataType.Float:
+                {
+                    var r = client.ReadFloat(address);
+                    return r.IsSuccess ? r.Content : null;
+                }
+            case TagDataType.Double:
+                {
+                    var r = client.ReadDouble(address);
+                    return r.IsSuccess ? r.Content : null;
+                }
+            case TagDataType.String:
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    private static object ReadArrayByAddress(SiemensS7Net client, Models.TagDataType type, string address, int count)
+    {
+        switch (type)
+        {
+            case TagDataType.Int16:
+                {
+                    var arr = new short[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        var r = client.ReadInt16(address + $"[{i}]");
+                        arr[i] = r.IsSuccess ? r.Content : default;
+                    }
+                    return arr;
+                }
+            case TagDataType.UInt16:
+                {
+                    var arr = new ushort[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        var r = client.ReadUInt16(address + $"[{i}]");
+                        arr[i] = r.IsSuccess ? r.Content : default;
+                    }
+                    return arr;
+                }
+            case TagDataType.Int32:
+                {
+                    var arr = new int[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        var r = client.ReadInt32(address + $"[{i}]");
+                        arr[i] = r.IsSuccess ? r.Content : default;
+                    }
+                    return arr;
+                }
+            case TagDataType.UInt32:
+                {
+                    var arr = new uint[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        var r = client.ReadUInt32(address + $"[{i}]");
+                        arr[i] = r.IsSuccess ? r.Content : default;
+                    }
+                    return arr;
+                }
+            case TagDataType.Float:
+                {
+                    var arr = new float[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        var r = client.ReadFloat(address + $"[{i}]");
+                        arr[i] = r.IsSuccess ? r.Content : default;
+                    }
+                    return arr;
+                }
+            case TagDataType.Int64:
+                {
+                    var arr = new long[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        var r = client.ReadInt64(address + $"[{i}]");
+                        arr[i] = r.IsSuccess ? r.Content : default;
+                    }
+                    return arr;
+                }
+            case TagDataType.UInt64:
+                {
+                    var arr = new ulong[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        var r = client.ReadUInt64(address + $"[{i}]");
+                        arr[i] = r.IsSuccess ? r.Content : default;
+                    }
+                    return arr;
+                }
+            case TagDataType.Double:
+                {
+                    var arr = new double[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        var r = client.ReadDouble(address + $"[{i}]");
+                        arr[i] = r.IsSuccess ? r.Content : default;
+                    }
+                    return arr;
+                }
+            default:
+                return Array.Empty<object>();
+        }
+    }
+
     public Task WriteTagAsync(object tagObj, object value)
     {
         var tag = tagObj as CommunicationTag;
         if (tag == null) throw new ArgumentException("Invalid tag type");
-
+        
         if (_client == null || !_isConnected) throw new InvalidOperationException("S7 未连接");
-
+      
 
         // String: HslCommunication 会自动处理
         if (tag.DataType == TagDataType.String)
@@ -380,163 +523,5 @@ public class SiemensS7Driver : IDriver
         return Task.CompletedTask;
     }
 
-    private static object? ReadScalar(SiemensS7Net client, Models.TagDataType type, S7Address addr)
-    {
-        switch (type)
-        {
-            case TagDataType.Boolean:
-                {
-                    var r = client.ReadBool($"DB{addr.Db}.{addr.Offset}.{addr.Bit}");
-                    return r.IsSuccess ? r.Content : null;
-                }
-            case TagDataType.Byte:
-                {
-                    var r = client.ReadByte($"DB{addr.Db}.{addr.Offset}");
-                    return r.IsSuccess ? r.Content : null;
-                }
-            case TagDataType.Int16:
-                {
-                    var r = client.ReadInt16($"DB{addr.Db}.{addr.Offset}");
-                    return r.IsSuccess ? r.Content : null;
-                }
-            case TagDataType.UInt16:
-                {
-                    var r = client.ReadUInt16($"DB{addr.Db}.{addr.Offset}");
-                    return r.IsSuccess ? r.Content : null;
-                }
-            case TagDataType.Int32:
-                {
-                    var r = client.ReadInt32($"DB{addr.Db}.{addr.Offset}");
-                    return r.IsSuccess ? r.Content : null;
-                }
-            case TagDataType.UInt32:
-                {
-                    var r = client.ReadUInt32($"DB{addr.Db}.{addr.Offset}");
-                    return r.IsSuccess ? r.Content : null;
-                }
-            case TagDataType.Int64:
-                {
-                    var r = client.ReadInt64($"DB{addr.Db}.{addr.Offset}");
-                    return r.IsSuccess ? r.Content : null;
-                }
-            case TagDataType.UInt64:
-                {
-                    var r = client.ReadUInt64($"DB{addr.Db}.{addr.Offset}");
-                    return r.IsSuccess ? r.Content : null;
-                }
-            case TagDataType.Float:
-                {
-                    var r = client.ReadFloat($"DB{addr.Db}.{addr.Offset}");
-                    return r.IsSuccess ? r.Content : null;
-                }
-            case TagDataType.Double:
-                {
-                    var r = client.ReadDouble($"DB{addr.Db}.{addr.Offset}");
-                    return r.IsSuccess ? r.Content : null;
-                }
-            case TagDataType.String:
-                // 在外部处理长度
-                return null;
-            default:
-                return null;
-        }
-    }
-
-    private static object ReadArray(SiemensS7Net client, Models.TagDataType type, S7Address addr, int count)
-    {
-        int size = type switch
-        {
-            TagDataType.Byte => 1,
-            TagDataType.Int16 or TagDataType.UInt16 => 2,
-            TagDataType.Int32 or TagDataType.UInt32 or TagDataType.Float => 4,
-            TagDataType.Int64 or TagDataType.UInt64 or TagDataType.Double => 8,
-            _ => 2
-        };
-
-        switch (type)
-        {
-            case TagDataType.Int16:
-                {
-                    var arr = new short[count];
-                    for (int i = 0; i < count; i++)
-                    {
-                        var r = client.ReadInt16($"DB{addr.Db}.{addr.Offset + i * size}");
-                        arr[i] = r.IsSuccess ? r.Content : default;
-                    }
-                    return arr;
-                }
-            case TagDataType.UInt16:
-                {
-                    var arr = new ushort[count];
-                    for (int i = 0; i < count; i++)
-                    {
-                        var r = client.ReadUInt16($"DB{addr.Db}.{addr.Offset + i * size}");
-                        arr[i] = r.IsSuccess ? r.Content : default;
-                    }
-                    return arr;
-                }
-            case TagDataType.Int32:
-                {
-                    var arr = new int[count];
-                    for (int i = 0; i < count; i++)
-                    {
-                        var r = client.ReadInt32($"DB{addr.Db}.{addr.Offset + i * size}");
-                        arr[i] = r.IsSuccess ? r.Content : default;
-                    }
-                    return arr;
-                }
-            case TagDataType.UInt32:
-                {
-                    var arr = new uint[count];
-                    for (int i = 0; i < count; i++)
-                    {
-                        var r = client.ReadUInt32($"DB{addr.Db}.{addr.Offset + i * size}");
-                        arr[i] = r.IsSuccess ? r.Content : default;
-                    }
-                    return arr;
-                }
-            case TagDataType.Float:
-                {
-                    var arr = new float[count];
-                    for (int i = 0; i < count; i++)
-                    {
-                        var r = client.ReadFloat($"DB{addr.Db}.{addr.Offset + i * size}");
-                        arr[i] = r.IsSuccess ? r.Content : default;
-                    }
-                    return arr;
-                }
-            case TagDataType.Int64:
-                {
-                    var arr = new long[count];
-                    for (int i = 0; i < count; i++)
-                    {
-                        var r = client.ReadInt64($"DB{addr.Db}.{addr.Offset + i * size}");
-                        arr[i] = r.IsSuccess ? r.Content : default;
-                    }
-                    return arr;
-                }
-            case TagDataType.UInt64:
-                {
-                    var arr = new ulong[count];
-                    for (int i = 0; i < count; i++)
-                    {
-                        var r = client.ReadUInt64($"DB{addr.Db}.{addr.Offset + i * size}");
-                        arr[i] = r.IsSuccess ? r.Content : default;
-                    }
-                    return arr;
-                }
-            case TagDataType.Double:
-                {
-                    var arr = new double[count];
-                    for (int i = 0; i < count; i++)
-                    {
-                        var r = client.ReadDouble($"DB{addr.Db}.{addr.Offset + i * size}");
-                        arr[i] = r.IsSuccess ? r.Content : default;
-                    }
-                    return arr;
-                }
-            default:
-                return Array.Empty<object>();
-        }
-    }
+    // ...existing code...
 }

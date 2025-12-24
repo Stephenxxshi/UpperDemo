@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Threading.Tasks;
 using HslCommunication;
 using HslCommunication.Profinet.Siemens;
+
+using System.Globalization;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.DeviceAddressing;
 

@@ -7,6 +7,7 @@ public class ProductionLineDto
 {
     public required string Code { get; set; }
     public required string Name { get; set; }
+    public bool Enabled { get; set; }
     public string? Description { get; set; }
     public string? StrategyConfigJson { get; set; }
     public List<WorkstationDto> Workstations { get; set; } = new();

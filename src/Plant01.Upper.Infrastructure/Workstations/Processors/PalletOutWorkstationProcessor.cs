@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 
 using Plant01.Upper.Application.Contracts.Api.Requests;
 using Plant01.Upper.Application.Interfaces;
@@ -12,15 +11,19 @@ namespace Plant01.Upper.Infrastructure.Workstations.Processors;
 /// <summary>
 /// 出垛工位流程处理器示例
 /// </summary>
-public class PalletOutWorkstationProcessor : WorkstationProcessorBase
+public class PalletOutWorkStationProcessor : WorkstationProcessorBase
 {
-    public PalletOutWorkstationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
+    public PalletOutWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
     {
         WorkstationType = "PalletOut";
     }
 
     protected override async Task InternalExecuteAsync(WorkstationProcessContext context, string bagCode)
     {
+        // 通过袋码获取所在托盘
+
+        // 判断托盘是否满垛
+
         // 获取工单
         var workOrders = await _workOrderRepository.GetAllAsync(workOrder => workOrder.Status == Domain.ValueObjects.WorkOrderStatus.开工);
 
@@ -38,7 +41,7 @@ public class PalletOutWorkstationProcessor : WorkstationProcessorBase
         // 获取托盘号标签
         var palletTag = equipment.TagMappings.FirstOrDefault(m => m.Purpose == "PalletCode");
 
-        // 获取托号号值
+        // 获取托盘号
         string pallet = string.Empty;
         if (palletTag is not null)
         {
@@ -60,6 +63,8 @@ public class PalletOutWorkstationProcessor : WorkstationProcessorBase
         var bags = await bagRepo.GetAllAsync(o => o.OrderCode == currentWorkOrder.Code);
         string bagsStr = string.Join(",", bags.Select(o => o.BagCode));
 
+        // 
+
         // 发送给MES出垛信息
 
         FinishPalletizingRequest request = new FinishPalletizingRequest()
@@ -77,7 +82,7 @@ public class PalletOutWorkstationProcessor : WorkstationProcessorBase
         if (response != null)
         {
             _logger.LogError($"袋码[ {bagCode} ] : {response.ErrorMsg}");
-            await WriteProcessResult(context, ProcessResult.Error,response.ErrorMsg);
+            await WriteProcessResult(context, ProcessResult.Error, response.ErrorMsg);
             return;
         }
 

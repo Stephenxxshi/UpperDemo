@@ -58,7 +58,7 @@ public class TriggerDispatcherService : BackgroundService, ITriggerDispatcher
                 }
             }
             _debounceStore[debounceKey] = now;
-            // 注意：长期运行可能需要清理过期的 Key，这里暂略
+            // todo：长期运行可能需要清理过期的 Key，这里暂略
         }
 
         // 2. 构建消息 (生成 TraceId)

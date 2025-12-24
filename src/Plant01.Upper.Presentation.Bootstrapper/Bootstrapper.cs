@@ -197,16 +197,22 @@ services.AddSingleton<ConfigHotReloader>(sp =>
 services.AddSingleton<DriverFactory>();
 services.AddSingleton<TagEngine>();
 
+// 注册标签生成服务
+services.AddSingleton<ITagGenerationService, TagGenerationService>();
+
 // 4. 注册主服务 (既是业务接口，又是后台服务)
 services.AddSingleton<DeviceCommunicationService>();
 services.AddSingleton<IDeviceCommunicationService>(sp => sp.GetRequiredService<DeviceCommunicationService>());
 services.AddHostedService<DeviceCommunicationService>(sp => sp.GetRequiredService<DeviceCommunicationService>());
 
-// ⭐ 注册工位流程管理（新增）
 // 1. 注册工位处理器
 services.AddSingleton<IWorkstationProcessor, PackagingWorkstationProcessor>();
-services.AddSingleton<IWorkstationProcessor, PalletizerWorkstationProcessor>();
-services.AddSingleton<IWorkstationProcessor, PalletOutWorkstationProcessor>();
+services.AddSingleton<IWorkstationProcessor, CheckweigherWorkStationProcessor>();
+services.AddSingleton<IWorkstationProcessor, InkjetWorkStationProcessor>();
+services.AddSingleton<IWorkstationProcessor, PalletizerWorkStationProcessor>();
+services.AddSingleton<IWorkstationProcessor, PalletOutWorkStationProcessor>();
+services.AddSingleton<IWorkstationProcessor, StretchWrapperWorkStationProcessor>();
+services.AddSingleton<IWorkstationProcessor, LabelingWorkStationProcessor>();
 
 // 2. 注册工位流程服务（监听触发标签）
 services.AddHostedService<WorkstationProcessService>();

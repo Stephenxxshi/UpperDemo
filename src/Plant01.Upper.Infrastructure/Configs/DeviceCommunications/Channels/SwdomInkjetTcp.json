@@ -1,0 +1,27 @@
+{
+  "$schema": "../Schemas/channel-config.schema.json",
+  "Code": "SwdomInkjetTcp",
+  "Name": "威士德超喷码机TCP通道",
+  "Enable": true,
+  "Description": "用于连接杭州威士德超喷码机的 TCP 通道",
+  "Drive": "SwdomInkjetTcp",
+  "DriveModel": "WSD-UV-G50",
+  "Devices": [
+    {
+      "Name": "Inkjet01",
+      "Description": "喷码机01",
+      "Enable": true,
+      "IpAddress": "10.168.10.1",
+      "ScanRate": 300,
+      "ConnectTimeout": 5000
+    },
+    {
+      "Name": "Inkjet02",
+      "Description": "喷码机02",
+      "Enable": true,
+      "IpAddress": "10.168.10.2",
+      "ScanRate": 300,
+      "ConnectTimeout": 5000
+    }
+  ]
+}
