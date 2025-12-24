@@ -11,7 +11,8 @@
       "Name": "Inkjet01",
       "Description": "喷码机01",
       "Enable": true,
-      "IpAddress": "10.168.10.1",
+      "IpAddress": "10.168.10.10",
+      "Port": 5300,
       "ScanRate": 300,
       "ConnectTimeout": 5000
     },
@@ -19,7 +20,8 @@
       "Name": "Inkjet02",
       "Description": "喷码机02",
       "Enable": true,
-      "IpAddress": "10.168.10.2",
+      "IpAddress": "10.168.10.11",
+      "Port": 5300,
       "ScanRate": 300,
       "ConnectTimeout": 5000
     }

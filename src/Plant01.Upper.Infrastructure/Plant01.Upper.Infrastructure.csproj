@@ -14,13 +14,13 @@
     <Content Include="Configs\DeviceCommunications\**\*.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Configs\DeviceCommunications\Tags\tags.csv">
+    <Content Include="Configs\DeviceCommunications\Tags\SiemensPlcTags.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Configs\Lines\DomainTags.csv">
+    <Content Include="Configs\Lines\Tags\DomainTags.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Configs\Lines\Equipments.csv">
+    <Content Include="Configs\Lines\Equipments\Equipments.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Configs\Lines\production_lines.json">
@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Configs\DeviceCommunications\Tags\tags.csv" />
     <None Remove="Configs\Lines\production_lines.json" />
   </ItemGroup>
 
@@ -47,6 +46,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Plant01.Upper.Application\Plant01.Upper.Application.csproj" />
     <ProjectReference Include="..\Plant01.Upper.Domain\Plant01.Upper.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Configs\Lines\Stations\" />
   </ItemGroup>
 
 </Project>

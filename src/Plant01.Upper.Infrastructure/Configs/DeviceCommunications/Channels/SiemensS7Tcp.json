@@ -4,7 +4,6 @@
   "Name": "西门子S7通道",
   "Enable": true,
   "Description": "用于连接西门子 S7 PLC 的 TCP 通道",
-  "Drive": "SiemensS7",
   "DriveModel": "S7_1200",
   "Devices": [
     {
