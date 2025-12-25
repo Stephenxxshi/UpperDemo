@@ -49,5 +49,11 @@
       //  "EquipmentRefs": [ "MDJ1_CDJ01" ]
       //}
     ]
+  },
+  {
+    "Code": "MDJ2",
+    "Name": "2# 生产线",
+    "Enable": true,
+    "Description": "2号包装码垛线"    
   }
 ]

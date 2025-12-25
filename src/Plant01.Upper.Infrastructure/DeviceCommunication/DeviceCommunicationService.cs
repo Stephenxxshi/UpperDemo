@@ -50,7 +50,7 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
     {
         if (_isRunning) return;
 
-        _logger.LogInformation("正在启动设备通信服务...");
+        _logger.LogInformation("[ 设备通信服务 ] 正在启动设备通信服务...");
         await ReloadAsync();
         _isRunning = true;
     }
@@ -59,7 +59,7 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
     {
         if (!_isRunning) return;
 
-        _logger.LogInformation("正在停止设备通信服务...");
+        _logger.LogInformation("[ 设备通信服务 ] 正在停止设备通信服务...");
         await StopChannelsAsync();
         _isRunning = false;
     }
@@ -75,7 +75,7 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
         {
             try
             {
-                _logger.LogInformation("正在重新加载配置...");
+                _logger.LogInformation("[ 设备通信服务 ] 正在重新加载配置...");
 
                 // 1. 停止现有通道
                 await StopChannelsAsync();
@@ -122,7 +122,7 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
 
                             // 将设备添加到通道
                             channel.AddDevice(deviceConfig, deviceTags);
-                            _logger.LogInformation("已添加设备 {Device} 到通道 {Channel}，包含 {TagCount} 个标签",
+                            _logger.LogInformation("[ 设备通信服务 ] 已添加设备 {Device} 到通道 {Channel}，包含 {TagCount} 个标签",
                                 deviceConfig.Name, channelConfig.Name, deviceTags.Count);
                         }
 
@@ -130,7 +130,7 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "初始化通道 {Channel} 失败", channelConfig.Name);
+                        _logger.LogError(ex, "[ 设备通信服务 ] 初始化通道 {Channel} 失败", channelConfig.Name);
                     }
                 }
 
@@ -140,11 +140,11 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
                     channel.Start();
                 }
 
-                _logger.LogInformation("重新加载完成。启动了 {Count} 个通道。", _channels.Count);
+                _logger.LogInformation("[ 设备通信服务 ] 重新加载完成。启动了 {Count} 个通道。", _channels.Count);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "重新加载失败。");
+                _logger.LogError(ex, "[ 设备通信服务 ] 重新加载失败。");
             }
             finally
             {
@@ -192,13 +192,13 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
         var tag = _tagEngine.GetTag(tagName);
         if (tag == null)
         {
-            throw new KeyNotFoundException($"标签 '{tagName}' 未找到。");
+            throw new KeyNotFoundException($"[ 设备通信服务 ] 标签 '{tagName}' 未找到。");
         }
 
         var channel = _channels.FirstOrDefault(c => c.Name.Equals(tag.ChannelCode, StringComparison.OrdinalIgnoreCase));
         if (channel == null)
         {
-            throw new InvalidOperationException($"标签 '{tagName}' 的通道 '{tag.ChannelCode}' 未找到。");
+            throw new InvalidOperationException($"[ 设备通信服务 ] 标签 '{tagName}' 的通道 '{tag.ChannelCode}' 未找到。");
         }
 
         await channel.WriteTagAsync(tagName, value);

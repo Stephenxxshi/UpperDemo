@@ -45,7 +45,7 @@ public class ConfigurationLoader
 
         if (!Directory.Exists(channelsPath))
         {
-            _logger.LogWarning("未找到通道目录: {Path}", channelsPath);
+            _logger.LogWarning("[ 加载配置服务 ] 未找到通道目录: {Path}", channelsPath);
             return channels;
         }
 
@@ -110,12 +110,12 @@ public class ConfigurationLoader
                 }
 
                 channels.Add(config);
-                _logger.LogInformation("已加载通道 {Channel},包含 {DeviceCount} 个设备", 
+                _logger.LogInformation("[ 加载配置服务 ] 已加载通道 {Channel},包含 {DeviceCount} 个设备", 
                     config.Name, config.Devices.Count);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "加载通道配置失败: {File}", file);
+                _logger.LogError(ex, "[ 加载配置服务 ] 加载通道配置失败: {File}", file);
             }
         }
 
@@ -152,7 +152,7 @@ public class ConfigurationLoader
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "解析设备配置失败");
+            _logger.LogWarning(ex, "[ 加载配置服务 ] 解析设备配置失败");
             return null;
         }
     }
@@ -184,7 +184,7 @@ public class ConfigurationLoader
 
         if (!Directory.Exists(tagsDir))
         {
-            _logger.LogWarning("未找到标签目录: {Path}", tagsDir);
+            _logger.LogWarning("[ 加载配置服务 ] 未找到标签目录: {Path}", tagsDir);
             return tags;
         }
 
@@ -204,12 +204,12 @@ public class ConfigurationLoader
                     // Assuming JSON structure matches CommunicationTag properties
                     var jsonTags = _multiFormatLoader.LoadFromFile<CommunicationTag>(file);
                     tags.AddRange(jsonTags);
-                    _logger.LogInformation("从 JSON 加载了 {Count} 个标签: {File}", jsonTags.Count, file);
+                    _logger.LogInformation("[ 加载配置服务 ] 从 JSON 加载了 {Count} 个标签: {File}", jsonTags.Count, file);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "加载标签文件失败: {File}", file);
+                _logger.LogError(ex, "[ 加载配置服务 ] 加载标签文件失败: {File}", file);
             }
         }
 
@@ -251,11 +251,11 @@ public class ConfigurationLoader
                 
                 tags.Add(tag);
             }
-            _logger.LogInformation("从 CSV 加载了 {Count} 个标签: {File}", tags.Count, filePath);
+            _logger.LogInformation("[ 加载配置服务 ] 从 CSV 加载了 {Count} 个标签: {File}", tags.Count, filePath);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "解析 CSV 标签文件失败: {File}", filePath);
+            _logger.LogError(ex, "[ 加载配置服务 ] 解析 CSV 标签文件失败: {File}", filePath);
         }
         return tags;
     }
@@ -280,7 +280,7 @@ public class ConfigurationLoader
         {
             var backup = tagsFile + "." + (backupSuffix ?? DateTime.Now.ToString("yyyyMMddHHmmss")) + ".bak";
             File.Copy(tagsFile, backup, true);
-            _logger.LogInformation("已备份标签文件到: {Backup}", backup);
+            _logger.LogInformation("[ 加载配置服务 ] 已备份标签文件到: {Backup}", backup);
         }
 
         var existing = LoadTags();
@@ -332,12 +332,12 @@ public class ConfigurationLoader
             });
             csv.Context.RegisterClassMap<TagMap>();
             csv.WriteRecords(existing);
-            _logger.LogInformation("已合并并写入标签文件: {File}", tagsFile);
+            _logger.LogInformation("[ 加载配置服务 ] 已合并并写入标签文件: {File}", tagsFile);
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "写入标签文件失败: {File}", tagsFile);
+            _logger.LogError(ex, "[ 加载配置服务 ] 写入标签文件失败: {File}", tagsFile);
             return false;
         }
     }
@@ -348,7 +348,7 @@ public class ConfigurationLoader
         var schemaPath = Path.Combine(_configsPath, "DbSchemas", $"DB{dbNumber}.schema.json");
         if (!File.Exists(schemaPath))
         {
-            _logger.LogWarning("未找到 DB 结构定义: {Path}", schemaPath);
+            _logger.LogWarning("[ 加载配置服务 ] 未找到 DB 结构定义: {Path}", schemaPath);
             return new List<ScannedTag>();
         }
 
@@ -358,7 +358,7 @@ public class ConfigurationLoader
             var schema = JsonSerializer.Deserialize<S7DbSchema>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             if (schema == null)
             {
-                _logger.LogWarning("DB 结构定义解析为空: {Path}", schemaPath);
+                _logger.LogWarning("[ 加载配置服务 ] DB 结构定义解析为空: {Path}", schemaPath);
                 return new List<ScannedTag>();
             }
 
@@ -369,7 +369,7 @@ public class ConfigurationLoader
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "解析 DB 结构定义失败: {Path}", schemaPath);
+            _logger.LogError(ex, "[ 加载配置服务 ] 解析 DB 结构定义失败: {Path}", schemaPath);
             return new List<ScannedTag>();
         }
     }

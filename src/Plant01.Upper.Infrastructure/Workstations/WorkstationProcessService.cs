@@ -122,13 +122,13 @@ public class WorkstationProcessService : IHostedService
         var now = DateTime.Now;
         if ((now - triggerInfo.LastTriggerTime).TotalMilliseconds < 500)
         {
-            _logger.LogTrace($"[ {e.TagName} ] -> 触发信号防抖过滤");
+            _logger.LogTrace($"[ 工位流程服务 ] [ {e.TagName} ] -> 触发信号防抖过滤");
             return;
         }
 
         triggerInfo.LastTriggerTime = now;
 
-        _logger.LogInformation($"[ {e.TagName} ] = {e.NewValue.Value} -> 检测到流程触发");
+        _logger.LogInformation($"[ 工位流程服务 ] [ {e.TagName} ] = {e.NewValue.Value} -> 检测到流程触发");
 
         try
         {
@@ -139,7 +139,7 @@ public class WorkstationProcessService : IHostedService
 
             if (string.IsNullOrEmpty(workstationCode))
             {
-                _logger.LogWarning($"[ {e.TagName} ] 设备 {triggerInfo.EquipmentCode} 未关联工位");
+                _logger.LogWarning($"[ 工位流程服务 ] [ {e.TagName} ] 设备 {triggerInfo.EquipmentCode} 未关联工位");
                 return;
             }
 
@@ -156,7 +156,7 @@ public class WorkstationProcessService : IHostedService
             // 查找对应的工位处理器
             if (!_processors.TryGetValue(workstationType, out var processor))
             {
-                _logger.LogWarning($"[ {e.TagName} ] 未找到工位类型 {workstationType} 的流程处理器 (工位: {workstationCode})");
+                _logger.LogWarning($"[ 工位流程服务 ] [ {e.TagName} ] 未找到工位类型 {workstationType} 的流程处理器 (工位: {workstationCode})");
                 await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Error, "未找到工位处理器");
                 return;
             }
@@ -174,11 +174,11 @@ public class WorkstationProcessService : IHostedService
             // 执行工位流程
             await processor.ExecuteAsync(context);
 
-            _logger.LogInformation($"[ {e.TagName} ] 工位流程执行完成: {workstationCode}");
+            _logger.LogInformation($"[ 工位流程服务 ] [ {e.TagName} ] 工位流程执行完成: {workstationCode}");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"[ {e.TagName} ] 执行工位流程失败");
+            _logger.LogError(ex, $"[ 工位流程服务 ] [ {e.TagName} ] 执行工位流程失败");
         }
     }
 
@@ -200,7 +200,7 @@ public class WorkstationProcessService : IHostedService
             if (resultMapping != null)
             {
                 await _deviceComm.WriteTagAsync(resultMapping.TagName, (int)result);
-                _logger.LogInformation("设备 [{Equipment} ] 写入 -> [ {TagName} ] = {Result}",
+                _logger.LogInformation("[ 工位流程服务 ] 设备 [{Equipment} ] 写入 -> [ {TagName} ] = {Result}",
                     equipmentCode, resultMapping.TagName, result);
             }
 
@@ -218,7 +218,7 @@ public class WorkstationProcessService : IHostedService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "写回流程结果失败: {Equipment}", equipmentCode);
+            _logger.LogError(ex, "[ 工位流程服务 ] 写回流程结果失败: {Equipment}", equipmentCode);
         }
     }
 

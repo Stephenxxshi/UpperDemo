@@ -53,7 +53,7 @@ public class TriggerDispatcherService : BackgroundService, ITriggerDispatcher
             {
                 if (now - lastTime < _debounceMs)
                 {
-                    _logger.LogDebug("触发器去抖: {Key}", debounceKey);
+                    _logger.LogDebug("[ 触发调度服务 ] 触发器去抖: {Key}", debounceKey);
                     return; // 忽略此次触发
                 }
             }
@@ -78,7 +78,7 @@ public class TriggerDispatcherService : BackgroundService, ITriggerDispatcher
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("触发器调度服务已启动。");
+        _logger.LogInformation("[ 触发调度服务 ] 触发器调度服务已启动。");
 
         // 并行处理两个通道
         var highTask = ProcessChannelAsync(_highPriorityChannel.Reader, stoppingToken);
@@ -96,7 +96,7 @@ public class TriggerDispatcherService : BackgroundService, ITriggerDispatcher
             {
                 try
                 {
-                    _logger.LogInformation("调度触发器: 站点={StationId}, 负载={Payload}", msg.StationId, msg.Payload);
+                    _logger.LogInformation("[ 触发调度服务 ] 调度触发器: 站点={StationId}, 负载={Payload}", msg.StationId, msg.Payload);
                     
                     // 5. 广播消息 (同步调用所有订阅者)
                     WeakReferenceMessenger.Default.Send(msg);
@@ -104,7 +104,7 @@ public class TriggerDispatcherService : BackgroundService, ITriggerDispatcher
                 catch (Exception ex)
                 {
                     // 6. 异常隔离: 防止单个业务逻辑崩溃导致整个监控服务停止
-                    _logger.LogError(ex, "处理 {StationId} 的触发器时出错", msg.StationId);
+                    _logger.LogError(ex, "[ 触发调度服务 ] 处理 {StationId} 的触发器时出错", msg.StationId);
                 }
             }
         }

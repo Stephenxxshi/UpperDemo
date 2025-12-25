@@ -34,7 +34,7 @@ public class PlcMonitorService : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("PLC 监控服务已启动，正在监听事件模式...");
+        _logger.LogInformation("[ PLC监控服务 ] 已启动，正在监听事件模式...");
         
         // 构建配置缓存
         BuildTagConfigCache();
@@ -59,11 +59,11 @@ public class PlcMonitorService : BackgroundService
                     _tagConfigCache[mapping.TagName] = (equipment.EquipmentCode, mapping);
                 }
             }
-            _logger.LogInformation("已构建标签配置缓存，共 {Count} 个标签", _tagConfigCache.Count);
+            _logger.LogInformation("[ PLC监控服务 ] 已构建标签配置缓存，共 {Count} 个标签", _tagConfigCache.Count);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "构建标签配置缓存失败");
+            _logger.LogError(ex, "[ PLC监控服务 ] 构建标签配置缓存失败");
         }
     }
 
@@ -93,7 +93,7 @@ public class PlcMonitorService : BackgroundService
             // 3. 检查触发条件
             if (TriggerEvaluator.Evaluate(e.NewValue.Value, mapping.TriggerCondition))
             {
-                _logger.LogInformation("触发器激活: {Equipment} - {Tag} (Value: {Value})", 
+                _logger.LogInformation("[ PLC监控服务 ] 触发器激活: {Equipment} - {Tag} (Value: {Value})", 
                     equipmentCode, e.TagName, e.NewValue.Value);
 
                 // 4. 发送调度消息
@@ -109,7 +109,7 @@ public class PlcMonitorService : BackgroundService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "处理标签变化时出错 {Tag}", e.TagName);
+            _logger.LogError(ex, "[ PLC监控服务 ] 处理标签变化时出错 {Tag}", e.TagName);
         }
     }
 

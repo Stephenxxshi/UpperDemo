@@ -22,7 +22,7 @@ public class ProductionConfigManager
     public void LoadFromConfig(List<ProductionLine> lines)
     {
         _productionLines = lines;
-        _logger.LogInformation($"已加载 {lines.Count} 条产线到内存，共 {CountWorkstations()} 个工位，{CountEquipments()} 个设备");
+        _logger.LogInformation($"[ 产线配置服务 ] 已加载 {lines.Count} 条产线到内存，共 {CountWorkstations()} 个工位，{CountEquipments()} 个设备");
     }
 
     /// <summary>
@@ -128,6 +128,6 @@ public class ProductionConfigManager
     /// </summary>
     public string GetConfigSummary()
     {
-        return $"产线数: {_productionLines.Count}, 工位数: {CountWorkstations()}, 设备数: {CountEquipments()}";
+        return $"[ 产线配置服务 ] 产线数: {_productionLines.Count}, 工位数: {CountWorkstations()}, 设备数: {CountEquipments()}";
     }
 }

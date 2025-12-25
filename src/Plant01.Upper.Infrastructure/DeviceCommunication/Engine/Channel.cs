@@ -55,7 +55,7 @@ public class Channel : IDisposable
         var driver = _driverFactory(_driverType);
         if (driver == null)
         {
-            _logger.LogError("无法创建驱动类型: {DriverType}", _driverType);
+            _logger.LogError("[ 设备通信服务 ] 无法创建驱动类型: {DriverType}", _driverType);
             return;
         }
         var deviceLogger = _loggerFactory.CreateLogger<DeviceConnection>();
@@ -74,7 +74,7 @@ public class Channel : IDisposable
         {
             deviceConnection.Start();
         }
-        _logger.LogInformation("通道 {Channel} 已启动，共 {Count} 个设备", Name, _deviceConnections.Count);
+        _logger.LogInformation("[ 设备通信服务 ] 通道 {Channel} 已启动，共 {Count} 个设备", Name, _deviceConnections.Count);
     }
 
     /// <summary>
@@ -84,7 +84,7 @@ public class Channel : IDisposable
     {
         var stopTasks = _deviceConnections.Select(dc => dc.StopAsync());
         await Task.WhenAll(stopTasks);
-        _logger.LogInformation("通道 {Channel} 已停止", Name);
+        _logger.LogInformation("[ 设备通信服务 ] 通道 {Channel} 已停止", Name);
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ public class Channel : IDisposable
                 return;
             }
         }
-        throw new KeyNotFoundException($"标签 '{tagName}' 未在通道 '{Name}' 的任何设备中找到。");
+        throw new KeyNotFoundException($"[ 设备通信服务 ] 标签 '{tagName}' 未在通道 '{Name}' 的任何设备中找到。");
     }
 
     /// <summary>
@@ -154,7 +154,7 @@ public class Channel : IDisposable
             }
             else
             {
-                _logger.LogError("驱动实例为空，无法初始化设备 {Device}", config.Name);
+                _logger.LogError("[ 设备通信服务 ] 驱动实例为空，无法初始化设备 {Device}", config.Name);
             }
         }
 
@@ -164,7 +164,7 @@ public class Channel : IDisposable
 
             _cts = new CancellationTokenSource();
             _pollingTask = Task.Run(() => PollingLoop(_cts.Token));
-            _logger.LogInformation("设备 {Device} 已启动", Name);
+            _logger.LogInformation("[ 设备通信服务 ] 设备 {Device} 已启动", Name);
         }
 
         public async Task StopAsync()
@@ -185,7 +185,7 @@ public class Channel : IDisposable
             }
 
             await _driver.DisconnectAsync();
-            _logger.LogInformation("设备 {Device} 已停止", Name);
+            _logger.LogInformation("[ 设备通信服务 ] 设备 {Device} 已停止", Name);
         }
 
         private async Task PollingLoop(CancellationToken token)
@@ -232,7 +232,7 @@ public class Channel : IDisposable
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "设备 {Device} 轮询循环错误", Name);
+                    _logger.LogError(ex, "[ 设备通信服务 ] 设备 {Device} 轮询循环错误", Name);
                     await Task.Delay(5000, token); // 错误后等待5秒重试
                 }
 
