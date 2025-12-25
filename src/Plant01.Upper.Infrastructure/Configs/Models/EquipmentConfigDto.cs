@@ -14,6 +14,10 @@ public class EquipmentTemplateDto
     public int Sequence { get; set; }
     public bool Enabled { get; set; } = true;
     public string? ConfigJson { get; set; }
+    
+    // CSV Parent Linking
+    public string? StationCode { get; set; }
+    public string? LineCode { get; set; }
 }
 
 /// <summary>
@@ -46,6 +50,13 @@ public class WorkstationRefDto
 {
     public string Code { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty; // Added Type
     public int Sequence { get; set; }
     public List<string> EquipmentRefs { get; set; } = new();
+    
+    // CSV Parent Linking
+    public string? LineCode { get; set; }
+    
+    // CSV Child Linking (Pipe separated)
+    public string? EquipmentRefsStr { get; set; } 
 }

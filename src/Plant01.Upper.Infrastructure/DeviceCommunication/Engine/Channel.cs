@@ -53,6 +53,11 @@ public class Channel : IDisposable
     public void AddDevice(DeviceConfig deviceConfig, IEnumerable<CommunicationTag> tags)
     {
         var driver = _driverFactory(_driverType);
+        if (driver == null)
+        {
+            _logger.LogError("无法创建驱动类型: {DriverType}", _driverType);
+            return;
+        }
         var deviceLogger = _loggerFactory.CreateLogger<DeviceConnection>();
         var deviceConnection = new DeviceConnection(deviceConfig, driver, tags, deviceLogger, _onTagChanged);
         _deviceConnections.Add(deviceConnection);
@@ -142,8 +147,15 @@ public class Channel : IDisposable
             _onTagChanged = onTagChanged;
 
             // 初始化并验证驱动
-            _driver.Initialize(_config);
-            _driver.ValidateConfig(_config);
+            if (_driver != null)
+            {
+                _driver.Initialize(_config);
+                _driver.ValidateConfig(_config);
+            }
+            else
+            {
+                _logger.LogError("驱动实例为空，无法初始化设备 {Device}", config.Name);
+            }
         }
 
         public void Start()
@@ -210,7 +222,7 @@ public class Channel : IDisposable
                                     // if (!isFirstLoad) 
                                     Task.Run(() =>
                                     {
-                                        _logger.LogTrace("设备 {Device} 标签 {Tag} 值已更新为 {Value}", Name, tag.Name, kvp.Value);
+                                        _logger.LogDebug("设备 {Device} 标签 {Tag} 值已更新为 {Value}", Name, tag.Name, kvp.Value);
                                         _onTagChanged?.Invoke(tag);
                                     });
                                 }

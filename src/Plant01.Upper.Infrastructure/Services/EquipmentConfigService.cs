@@ -1,12 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using CsvHelper;
-using CsvHelper.Configuration;
-using System.Globalization;
 
 using Plant01.Domain.Shared.Models.Equipment;
-using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Application.Interfaces;
+using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Infrastructure.Configs.Models;
 
 namespace Plant01.Upper.Infrastructure.Services;
@@ -24,13 +21,17 @@ public class EquipmentConfigService : IEquipmentConfigService
     private Dictionary<string, List<TagMappingDto>> _mappingCache = new();
     private readonly object _lock = new();
 
+    private readonly MultiFormatConfigLoader _configLoader;
+
     public EquipmentConfigService(
         IConfiguration configuration,
-        ILogger<EquipmentConfigService> logger)
+        ILogger<EquipmentConfigService> logger,
+        MultiFormatConfigLoader configLoader)
     {
         _configPath = configuration["ConfigsPath"] ??
                       Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs");
         _logger = logger;
+        _configLoader = configLoader;
         LoadConfigs();
     }
 
@@ -39,79 +40,55 @@ public class EquipmentConfigService : IEquipmentConfigService
     /// </summary>
     private void LoadConfigs()
     {
-        var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            HeaderValidated = null,
-            MissingFieldFound = null
-        };
-
         lock (_lock)
         {
             try
             {
-                // 加载设备模板
-                var equipmentFile = Path.Combine(_configPath, "Lines", "Equipments.csv");
-                if (File.Exists(equipmentFile))
+                // 加载设备模板 (支持 CSV 和 JSON)
+                var equipmentDir = Path.Combine(_configPath, "Lines", "Equipments");
+                var equipments = _configLoader.LoadFromDirectory<EquipmentTemplateDto>(equipmentDir);
+
+                _equipmentCache = equipments.GroupBy(e => e.Code) // 防止重复
+                                            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+
+                _logger.LogInformation("[ 设备配置服务 ] 已加载 {Count} 个设备模板", _equipmentCache.Count);
+
+                // 加载设备映射 (支持 CSV 和 JSON)
+                var tagsDir = Path.Combine(_configPath, "Lines", "Tags");
+                var rows = _configLoader.LoadFromDirectory<EquipmentMappingCsvRow>(tagsDir);
+
+                var allMappings = new List<(string EquipmentCode, TagMappingDto Mapping)>();
+
+                foreach (var row in rows)
                 {
-                    using (var reader = new StreamReader(equipmentFile))
-                    using (var csv = new CsvReader(reader, csvConfig))
+                    if (string.IsNullOrWhiteSpace(row.EquipmentCode))
                     {
-                        var equipments = csv.GetRecords<EquipmentTemplateDto>().ToList();
-                        _equipmentCache = equipments.ToDictionary(e => e.Code, StringComparer.OrdinalIgnoreCase);
-                        _logger.LogInformation("[ 设备配置服务 ] 已加载 {Count} 个设备模板", _equipmentCache.Count);
+                        _logger.LogWarning("[ 设备配置服务 ] 映射配置行缺少 EquipmentCode: {TagName}", row.TagName);
+                        continue;
                     }
-                }
-                else
-                {
-                    _logger.LogWarning("[ 设备配置服务 ] 设备模板文件不存在: {Path}", equipmentFile);
-                }
 
-                // 加载设备映射
-                var mappingFile = Path.Combine(_configPath, "Lines", "DomainTags.csv");
-                if (File.Exists(mappingFile))
-                {
-                    using (var reader = new StreamReader(mappingFile))
-                    using (var csv = new CsvReader(reader, csvConfig))
+                    var mapping = new TagMappingDto
                     {
-                        var rows = csv.GetRecords<EquipmentMappingCsvRow>().ToList();
-                        var allMappings = new List<(string EquipmentCode, TagMappingDto Mapping)>();
+                        TagName = row.TagName?.Trim() ?? "",
+                        Purpose = row.Purpose?.Trim() ?? "",
+                        IsCritical = row.IsCritical,
+                        Direction = ParseTagDirection(row.Direction),
+                        TriggerCondition = row.TriggerCondition?.Trim(),
+                        Remarks = row.Remarks?.Trim(),
+                        IsTrigger = !string.IsNullOrWhiteSpace(row.TriggerCondition)
+                    };
 
-                        foreach (var row in rows)
-                        {
-                            if (string.IsNullOrWhiteSpace(row.EquipmentCode))
-                            {
-                                _logger.LogWarning("[ 设备配置服务 ] CSV行缺少 EquipmentCode: {TagName}", row.TagName);
-                                continue;
-                            }
-
-                            var mapping = new TagMappingDto
-                            {
-                                TagName = row.TagName?.Trim() ?? "",
-                                Purpose = row.Purpose?.Trim() ?? "",
-                                IsCritical = row.IsCritical,
-                                Direction = ParseTagDirection(row.Direction),
-                                TriggerCondition = row.TriggerCondition?.Trim(),
-                                Remarks = row.Remarks?.Trim(),
-                                IsTrigger = !string.IsNullOrWhiteSpace(row.TriggerCondition)
-                            };
-                            
-                            allMappings.Add((row.EquipmentCode.Trim(), mapping));
-                        }
-
-                        _mappingCache = allMappings
-                            .GroupBy(x => x.EquipmentCode)
-                            .ToDictionary(
-                                g => g.Key,
-                                g => g.Select(x => x.Mapping).ToList(),
-                                StringComparer.OrdinalIgnoreCase);
-
-                        _logger.LogInformation("[ 设备配置服务 ] 已加载 {Count} 个设备映射配置", _mappingCache.Count);
-                    }
+                    allMappings.Add((row.EquipmentCode.Trim(), mapping));
                 }
-                else
-                {
-                    _logger.LogWarning("[ 设备配置服务 ] 设备映射文件不存在: {Path}", mappingFile);
-                }
+
+                _mappingCache = allMappings
+                    .GroupBy(x => x.EquipmentCode)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(x => x.Mapping).ToList(),
+                        StringComparer.OrdinalIgnoreCase);
+
+                _logger.LogInformation("[ 设备配置服务 ] 已加载 {Count} 个设备映射配置", _mappingCache.Count);
             }
             catch (Exception ex)
             {
@@ -120,7 +97,7 @@ public class EquipmentConfigService : IEquipmentConfigService
         }
     }
 
-    private class EquipmentMappingCsvRow
+    public class EquipmentMappingCsvRow
     {
         public string TagName { get; set; } = string.Empty;
         public string Purpose { get; set; } = string.Empty;
@@ -136,7 +113,7 @@ public class EquipmentConfigService : IEquipmentConfigService
     private TagDirection ParseTagDirection(string input)
     {
         if (string.IsNullOrWhiteSpace(input)) return TagDirection.Input;
-        if (input.Equals("Output", StringComparison.OrdinalIgnoreCase) || 
+        if (input.Equals("Output", StringComparison.OrdinalIgnoreCase) ||
             input.Equals("OutPut", StringComparison.OrdinalIgnoreCase)) // Handle typo in CSV
         {
             return TagDirection.Output;
@@ -266,5 +243,15 @@ public class EquipmentConfigService : IEquipmentConfigService
             }
         }
         return result;
+    }
+
+    /// <summary>
+    /// 获取指定工位的所有设备配置 (通过 StationCode 反向查找)
+    /// </summary>
+    public List<EquipmentTemplateDto> GetEquipmentsByStationCode(string stationCode)
+    {
+        return _equipmentCache.Values
+            .Where(e => string.Equals(e.StationCode, stationCode, StringComparison.OrdinalIgnoreCase))
+            .ToList();
     }
 }

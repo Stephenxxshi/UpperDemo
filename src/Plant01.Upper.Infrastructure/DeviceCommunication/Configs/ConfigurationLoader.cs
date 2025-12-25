@@ -4,6 +4,7 @@ using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Parsers;
+using Plant01.Upper.Infrastructure.Services; // Add this
 
 using System.Globalization;
 using System.Text.Json;
@@ -18,11 +19,13 @@ public class ConfigurationLoader
     private readonly string _configsPath;
     private readonly ILogger<ConfigurationLoader> _logger;
     private readonly Dictionary<string, IDriverTagParser> _tagParsers;
+    private readonly MultiFormatConfigLoader _multiFormatLoader; // Add this
 
-    public ConfigurationLoader(string configsPath, ILogger<ConfigurationLoader> logger)
+    public ConfigurationLoader(string configsPath, ILogger<ConfigurationLoader> logger, MultiFormatConfigLoader multiFormatLoader) // Inject MultiFormatConfigLoader
     {
         _configsPath = configsPath;
         _logger = logger;
+        _multiFormatLoader = multiFormatLoader; // Initialize
         
         // 注册驱动标签解析器
         _tagParsers = new Dictionary<string, IDriverTagParser>(StringComparer.OrdinalIgnoreCase);
@@ -177,17 +180,48 @@ public class ConfigurationLoader
     public List<CommunicationTag> LoadTags()
     {
         var tags = new List<CommunicationTag>();
-        var tagsFile = Path.Combine(_configsPath, "DeviceCommunications", "Tags", "tags.csv");
+        var tagsDir = Path.Combine(_configsPath, "DeviceCommunications", "Tags");
 
-        if (!File.Exists(tagsFile))
+        if (!Directory.Exists(tagsDir))
         {
-            _logger.LogWarning("未找到标签文件: {Path}", tagsFile);
+            _logger.LogWarning("未找到标签目录: {Path}", tagsDir);
             return tags;
         }
 
+        var files = Directory.GetFiles(tagsDir, "*.*")
+            .Where(f => f.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
+
+        foreach (var file in files)
+        {
+            try
+            {
+                if (file.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+                {
+                    tags.AddRange(LoadTagsFromCsv(file));
+                }
+                else if (file.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Assuming JSON structure matches CommunicationTag properties
+                    var jsonTags = _multiFormatLoader.LoadFromFile<CommunicationTag>(file);
+                    tags.AddRange(jsonTags);
+                    _logger.LogInformation("从 JSON 加载了 {Count} 个标签: {File}", jsonTags.Count, file);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "加载标签文件失败: {File}", file);
+            }
+        }
+
+        return tags;
+    }
+
+    private List<CommunicationTag> LoadTagsFromCsv(string filePath)
+    {
+        var tags = new List<CommunicationTag>();
         try
         {
-            using var reader = new StreamReader(tagsFile);
+            using var reader = new StreamReader(filePath);
             using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 PrepareHeaderForMatch = args => args.Header.Trim(),
@@ -197,20 +231,11 @@ public class ConfigurationLoader
 
             csv.Context.RegisterClassMap<TagMap>();
             
-            // 手动读取以支持动态扩展属性解析
-            var records = new List<CommunicationTag>();
             while (csv.Read())
             {
                 var tag = csv.GetRecord<CommunicationTag>();
                 if (tag == null) continue;
 
-                // 尝试根据 ChannelCode 查找对应的驱动类型
-                // 注意：这里简化处理，假设 CSV 中有 DriverType 列，或者通过 ChannelCode -> ChannelConfig -> DriverType 查找
-                // 由于当前 CSV 结构中只有 ChannelCode，我们需要先加载 Channels 才能知道 DriverType
-                // 或者，我们可以尝试对所有解析器进行匹配（如果 CSV 列名唯一）
-                
-                // 更好的方式：遍历所有注册的解析器，尝试解析
-                // 因为不同驱动的扩展属性列名通常不同（如 S7DbNumber vs ModbusStationId）
                 foreach (var parser in _tagParsers.Values)
                 {
                     var props = parser.ParseExtendedProperties(csv);
@@ -224,16 +249,14 @@ public class ConfigurationLoader
                     }
                 }
                 
-                records.Add(tag);
+                tags.Add(tag);
             }
-            
-            tags = records;
+            _logger.LogInformation("从 CSV 加载了 {Count} 个标签: {File}", tags.Count, filePath);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "从 {File} 加载标签失败", tagsFile);
+            _logger.LogError(ex, "解析 CSV 标签文件失败: {File}", filePath);
         }
-
         return tags;
     }
 

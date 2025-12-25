@@ -430,26 +430,13 @@ public override async Task<bool> ConnectAsync()
     - 必须实现 `Initialize(DeviceConfig)` 和 `ValidateConfig(DeviceConfig)`。
     - ⭐ `ValidateConfig` 中使用 `config.GetAndValidateDriverConfig<TConfig>()` 自动验证驱动配置。
     - ⭐ `ConnectAsync` 等方法中使用 `config.GetDriverConfig<TConfig>()` 获取强类型配置。
-    - ⭐ `ReadTagsAsync` 中将 `IEnumerable<object>` 转换为 `CommunicationTag`：`var tag = tagObj as CommunicationTag;`
     - 驱动内部负责将标准 `TagDataType` 映射为协议特定的读取指令。
 4.  **通道-设备正交** (⭐ 关键架构):
     - **错误**: 每个 Device 创建一个 Channel 实例
     - **正确**: 每个 ChannelConfig 创建**1个** Channel 实例，内部管理多个 DeviceConnection
     - **示例**: 3个 PLC（同驱动）= 1个 SiemensS7 Channel + 3个 DeviceConnection
 5.  **数组处理**: 当 CSV 中 `Length > 1` (且非 String) 时，驱动返回的是数组对象。应用层应使用 `GetTagValue<int[]>` 等方式接收。
-6.  **⭐ 配置热重载**: 系统支持运行时监测配置文件变更,自动重新加载并重新连接设备。Boolean`, `String` 等)，严禁使用驱动特定名称（如 `Word`, `Real`）。
-- **RW (权限)**: 使用 `R` (只读), `W` (只写), `RW` (读写)。
-- **Length**: 对于数组，指定数组长度；对于字符串，指定字节长度。
-
-### 7.3 开发注意事项
-1.  **类型安全**: 应用层获取数据时，**必须**使用泛型方法 `GetTagValue<T>("TagName")`，避免手动拆箱。
-2.  **驱动开发**:
-    - 必须实现 `Initialize(DeviceConfig)` 和 `ValidateConfig(DeviceConfig)`。
-    - ⭐ **新规范**: `ValidateConfig` 中使用 `config.GetAndValidateDriverConfig<TConfig>()` 自动验证驱动配置。
-    - ⭐ **新规范**: `ConnectAsync` 等方法中使用 `config.GetDriverConfig<TConfig>()` 获取强类型配置。
-    - 驱动内部负责将标准 `TagDataType` 映射为协议特定的读取指令。
-3.  **数组处理**: 当 CSV 中 `Length > 1` (且非 String) 时，驱动返回的是数组对象。应用层应使用 `GetTagValue<int[]>` 等方式接收。
-4.  **⭐ 配置热重载**: 系统支持运行时监测配置文件变更,自动重新加载并重新连接设备。
+6.  **⭐ 配置热重载**: 系统支持运行时监测配置文件变更,自动重新加载并重新连接设备。
 
 ## 8. 工位-设备管理开发规范 (Workstation & Equipment Management)
 
@@ -660,7 +647,7 @@ services.AddSingleton<ITagGenerationService, TagGenerationServiceImpl>();
 ### 8.7 参考文档
 - **快速入门**: `docs/Workstation-Equipment-QuickStart.md` (5分钟上手)
 - **完整架构**: `docs/Workstation-Equipment-Architecture.md` (8章节详解)
-- **文档索引**: `docs/README-Architecture-Index.md` (导航目录)
+- **文档索引**: `docs/README-Architecture-Index.md`
 
 ## 9. 更新日志 (Changelog)
 
@@ -677,3 +664,43 @@ services.AddSingleton<ITagGenerationService, TagGenerationServiceImpl>();
     -   在 `Channel` 中增加了 `isFirstLoad` 逻辑，支持区分"首次加载"与"运行时变更"（目前默认保留首次触发，以确保 UI 初始化状态正确）。
 4.  **乱码修复**:
     -   修复了 `PlcMonitorService.cs` 的文件编码问题，确保中文注释和日志正常显示。
+
+## 10. 配置系统升级 (2025-12-24)
+
+### 10.1 混合配置加载架构
+系统已升级为支持 **JSON (层级)** 和 **CSV (关系)** 混合配置模式，以适应生产现场的灵活维护需求。
+
+#### 核心组件
+- **MultiFormatConfigLoader**: 通用配置加载器，支持 `.json` 和 `.csv` 格式自动识别。
+- **ConfigParserFactory**: 策略模式工厂，未来可扩展 `.toml` 或 `.yaml` 支持。
+- **ProductionLineConfigService**: 增强版配置服务，支持热重载和多源合并。
+
+#### 加载策略
+1.  **主干加载**: 读取 `production_lines.json` 构建产线基础拓扑。
+2.  **分支合并**: 扫描 `Configs/Lines/Stations/*.{csv,json}`，通过 `LineCode` 字段将工位挂载到对应产线。
+3.  **设备关联**: 
+    -   支持 JSON 中的 `EquipmentRefs` 数组引用。
+    -   支持 CSV 中的 `EquipmentRefsStr` (管道符 `|` 分隔) 引用。
+    -   支持 `Equipments.csv` 中的 `StationCode` 反向关联。
+
+#### 容错与监控
+- **孤立节点 (Orphaned)**: 当工位的 `LineCode` 指向不存在的产线时，不会直接丢弃，而是记录为 "Orphaned Workstation" 并输出警告日志，便于排查。
+- **热重载 (Hot Reload)**: 监控 `Configs/Lines` 目录，文件变更时自动触发全量重新加载。
+
+### 10.2 CSV 配置规范
+为了支持复杂关系，CSV 文件增加了以下约定：
+
+**工位配置 (Stations.csv)**:
+```csv
+Code,Name,Type,Sequence,LineCode,EquipmentRefsStr
+L1_WS_01,包装工位,Packaging,1,Line01,L1_BP01|L1_PM01
+```
+- `LineCode`: 父级产线代码。
+- `EquipmentRefsStr`: 子设备代码列表，使用 `|` 分隔。
+
+**设备配置 (Equipments.csv)**:
+```csv
+Code,Name,Type,StationCode,LineCode
+L1_BP01,上袋机,BagPicker,L1_WS_01,Line01
+```
+- `StationCode`: 父级工位代码 (可选，用于反向关联)。

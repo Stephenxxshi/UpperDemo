@@ -1,0 +1,26 @@
+[
+  {
+    "Name": "PLC01",
+    "Description": "上袋机1 PLC",
+    "Enable": true,
+    "IpAddress": "10.168.10.1",
+    "Port": 102,
+    "Rack": 0,
+    "Slot": 1,
+    "ScanRate": 300,
+    "ConnectTimeout": 5000,
+    "PlcModel": "S7_1200"
+  },
+  {
+    "Name": "PLC02",
+    "Description": "上袋机2 PLC",
+    "Enable": false,
+    "IpAddress": "10.168.1.22",
+    "Port": 102,
+    "Rack": 0,
+    "Slot": 1,
+    "ScanRate": 100,
+    "ConnectTimeout": 5000,
+    "PlcModel": "S7_1200"
+  }
+]

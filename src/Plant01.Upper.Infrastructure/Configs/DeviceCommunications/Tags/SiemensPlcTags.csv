@@ -13,10 +13,8 @@ MDJ01.Palletizing.Sn,,,MDJ01,Palletizing,Sn,码垛包数,,Short,DB1002.78,DB,100
 Grouping.Request,,,,Grouping,Request,组托申请读码,,Short,DB1002.80,DB,1002,80,,1,READONLY,,SiemensS7Tcp,PLC01
 Grouping.Code,,,,Grouping,Code,组托袋码数据,,STRING,DB1002.82,DB,1002,82,,1,READONLY,32,SiemensS7Tcp,PLC01
 Grouping.PalletCode,,,,Grouping,PalletCode,垛盘码数据,,STRING,DB1002.116,DB,1002,116,,1,READONLY,32,SiemensS7Tcp,PLC01
-PMJ1.HeartBeat,PMJ1,,,,HeartBeat,1秒心跳,,Bool,DB1001.0.0,DB,1001,0,,1,WRITEONLY,,SiemensS7Tcp,PLC01
+PMJ1.HeartBeat,PMJ1,,,,HeartBeat,1秒心跳,,Bool,DB1001.0.0,DB,1001,0,,2,WRITEONLY,,SiemensS7Tcp,PLC01
 Bagging.ProcessResult,,,,Bagging,ProcessResult,包装机读码完成,,Short,DB1001.2,DB,1001,2,,2,WRITEONLY,,SiemensS7Tcp,PLC01
 Palletizing.ProcessResult,,,,Palletizing,ProcessResult,码垛机读码完成,,Short,DB1001.4,DB,1001,4,,2,WRITEONLY,,SiemensS7Tcp,PLC01
 Palletizing.Position,,,,Palletizing,Position,垛位号,,Short,DB1001.6,DB,1001,6,,2,WRITEONLY,,SiemensS7Tcp,PLC01
 Grouping.ProcessResult,,,,Grouping,ProcessResult,组托读码完成,,Short,DB1001.8,DB,1001,8,,2,WRITEONLY,,SiemensS7Tcp,PLC01
-TBJ01.Printing.Content,,,TBJ01,Printing,Content,发送内容,,STRING,,,,,,,READWRITE,64,LabelingTcp,
-PMJ01.Inkjet.Content,,,PMJ01,Inkjet,Content,发送内容,,STRING,,,,,,,READWRITE,,SwdomInkjetTcp,
