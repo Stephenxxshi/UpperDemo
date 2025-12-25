@@ -16,6 +16,9 @@ public class HeartbeatService : BackgroundService
     private readonly ProductionConfigManager _configManager;
     private readonly ILogger<HeartbeatService> _logger;
     private readonly Dictionary<string, bool> _heartbeatStates = new();
+    
+    // 优化：缓存心跳标签列表，避免每秒重复筛选
+    private List<EquipmentTagMapping> _cachedHeartbeatTags = new();
 
     public HeartbeatService(
         IDeviceCommunicationService deviceCommunicationService,
@@ -30,6 +33,9 @@ public class HeartbeatService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("心跳服务已启动");
+
+        // 启动时初始化缓存
+        RefreshHeartbeatTags();
 
         // 1秒心跳周期
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
@@ -49,9 +55,14 @@ public class HeartbeatService : BackgroundService
         _logger.LogInformation("心跳服务已停止");
     }
 
-    private async Task ProcessHeartbeatsAsync()
+    /// <summary>
+    /// 刷新心跳标签缓存
+    /// (如果将来实现了配置热更新，可在配置变更事件中调用此方法)
+    /// </summary>
+    public void RefreshHeartbeatTags()
     {
-        // 获取所有设备
+        var tags = new List<EquipmentTagMapping>();
+        
         var equipments = _configManager.GetAllProductionLines()
             .SelectMany(l => l.Workstations)
             .SelectMany(w => w.Equipments);
@@ -60,34 +71,40 @@ public class HeartbeatService : BackgroundService
         {
             if (!equipment.Enabled) continue;
 
-            // 筛选 Output 且 Purpose 为 Heartbeat 的标签
             var heartbeatTags = equipment.TagMappings
                 .Where(m => m.Purpose == TagPurpose.Heartbeat && m.Direction == TagDirection.Output);
+            
+            tags.AddRange(heartbeatTags);
+        }
 
-            foreach (var mapping in heartbeatTags)
+        _cachedHeartbeatTags = tags;
+        _logger.LogInformation("心跳标签缓存已更新，共监控 {Count} 个输出心跳", _cachedHeartbeatTags.Count);
+    }
+
+    private async Task ProcessHeartbeatsAsync()
+    {
+        // 优化：直接遍历缓存列表，性能极高
+        foreach (var mapping in _cachedHeartbeatTags)
+        {
+            try
             {
-                try
+                // 初始化状态
+                if (!_heartbeatStates.ContainsKey(mapping.TagName))
                 {
-                    // 简单的布尔翻转逻辑
-                    if (!_heartbeatStates.ContainsKey(mapping.TagName))
-                    {
-                        _heartbeatStates[mapping.TagName] = false;
-                    }
-
-                    // 翻转状态
-                    _heartbeatStates[mapping.TagName] = !_heartbeatStates[mapping.TagName];
-                    var valueToWrite = _heartbeatStates[mapping.TagName];
-
-                    // 写入标签
-                    await _deviceCommunicationService.WriteTagAsync(mapping.TagName, valueToWrite);
-                    
-                    // _logger.LogTrace("已发送心跳至 {Tag}: {Value}", mapping.TagName, valueToWrite);
+                    _heartbeatStates[mapping.TagName] = false;
                 }
-                catch (Exception ex)
-                {
-                    // 仅记录警告，避免刷屏
-                    _logger.LogWarning("向标签 {Tag} 写入心跳失败: {Message}", mapping.TagName, ex.Message);
-                }
+
+                // 翻转状态 (0 -> 1 -> 0)
+                _heartbeatStates[mapping.TagName] = !_heartbeatStates[mapping.TagName];
+                var valueToWrite = _heartbeatStates[mapping.TagName];
+
+                // 写入标签
+                await _deviceCommunicationService.WriteTagAsync(mapping.TagName, valueToWrite);
+            }
+            catch (Exception ex)
+            {
+                // 仅记录警告，避免刷屏
+                _logger.LogWarning("向标签 {Tag} 写入心跳失败: {Message}", mapping.TagName, ex.Message);
             }
         }
     }
