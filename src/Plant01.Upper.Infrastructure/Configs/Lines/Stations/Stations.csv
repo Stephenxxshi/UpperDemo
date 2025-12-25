@@ -1,4 +1,5 @@
 ﻿Code,LineCode,Station,Name,Type,Sequence,Enabled,ConfigJson,EquipmentRefsStr
+MDJ1_PLC01,MDJ1,PLC01,虚拟工位01,System,0,TRUE,,MDJ1_PLC01
 MDJ1_BZ01,MDJ1,BZ01,包装工位01,Packaging,1,TRUE,,MDJ1_BZJ01
 MDJ1_BZ02,MDJ1,BZ02,包装工位02,Packaging,2,TRUE,,MDJ1_BZJ02
 MDJ1_BZ03,MDJ1,BZ03,包装工位03,Packaging,3,TRUE,,MDJ1_BZJ03

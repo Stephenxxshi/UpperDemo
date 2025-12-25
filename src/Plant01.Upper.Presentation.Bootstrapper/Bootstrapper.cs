@@ -222,6 +222,9 @@ public static class Bootstrapper
         // 2. 注册工位流程服务（监听触发标签）
         services.AddHostedService<WorkstationProcessService>();
 
+        // 3. 注册心跳服务（向PLC发送心跳）
+        services.AddHostedService<HeartbeatService>();
+
         // 这里可以继续注册其他通用服务，例如 AutoMapper 等
     }
 }

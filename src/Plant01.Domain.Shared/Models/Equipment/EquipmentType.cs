@@ -4,7 +4,7 @@ public enum EquipmentType
 {
     Unknown = 0,
     BagPicker = 1,
-    PackageMachine = 2,
+    Packaging = 2,
     Weigher = 3,
     InkjetPrinter = 4,
     LabelPrinter = 5,

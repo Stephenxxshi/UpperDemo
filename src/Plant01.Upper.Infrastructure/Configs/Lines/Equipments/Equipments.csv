@@ -1,4 +1,5 @@
 ﻿Code,Line,Station,Device,Name,Type,Capabilities,Sequence,Enabled,ConfigJson
+MDJ1_PLC01,MDJ1,PLC01,PLC01,虚拟设备,System,"Heartbeat, AlarmReport, OutputCount",0,TRUE,
 MDJ1_BZJ01,MDJ1,BZ01,BZJ01,包装机01,Packaging,"Heartbeat, AlarmReport, OutputCount",1,TRUE,
 MDJ1_BZJ02,MDJ1,BZ02,BZJ02,包装机02,Packaging,"Heartbeat, AlarmReport, OutputCount",2,TRUE,
 MDJ1_BZJ03,MDJ1,BZ03,BZJ03,包装机03,Packaging,"Heartbeat, AlarmReport, OutputCount",3,TRUE,

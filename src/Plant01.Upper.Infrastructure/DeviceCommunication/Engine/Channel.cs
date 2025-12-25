@@ -222,7 +222,7 @@ public class Channel : IDisposable
                                     // if (!isFirstLoad) 
                                     Task.Run(() =>
                                     {
-                                        _logger.LogDebug("设备 {Device} 标签 {Tag} 值已更新为 {Value}", Name, tag.Name, kvp.Value);
+                                        //_logger.LogDebug("设备 {Device} 标签 {Tag} 值已更新为 {Value}", Name, tag.Name, kvp.Value);
                                         _onTagChanged?.Invoke(tag);
                                     });
                                 }
