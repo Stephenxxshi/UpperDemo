@@ -1,40 +1,50 @@
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
+using Plant01.Upper.Application.Messages;
 using Plant01.Upper.Application.Models;
 using Plant01.Upper.Infrastructure.Configs.Models;
 
 namespace Plant01.Upper.Infrastructure.Services;
 
 /// <summary>
-/// PLC 监控服务
+/// 设备监控服务 (DeviceMonitorService)
+/// 职责：
+/// 1. 监听底层设备通信服务的标签变化事件 (支持 PLC, Modbus, OPC UA 等所有驱动)
+/// 2. 将标签变化映射到具体的设备 (Equipment)
+/// 3. 对于触发器标签：通过 TriggerDispatcher 发送业务触发消息
+/// 4. 对于普通标签：通过 Messenger 发送状态变化消息 (供 UI 或状态服务使用)
 /// </summary>
-public class PlcMonitorService : BackgroundService
+public class DeviceMonitorService : BackgroundService
 {
-    private readonly ILogger<PlcMonitorService> _logger;
+    private readonly ILogger<DeviceMonitorService> _logger;
     private readonly ITriggerDispatcher _dispatcher;
     private readonly IDeviceCommunicationService _deviceService;
     private readonly EquipmentConfigService _configService;
+    private readonly IMessenger _messenger;
 
     // 标签配置缓存: TagName -> (EquipmentCode, Mapping)
     private Dictionary<string, (string EquipmentCode, TagMappingDto Mapping)> _tagConfigCache = new();
 
-    public PlcMonitorService(
-        ILogger<PlcMonitorService> logger, 
+    public DeviceMonitorService(
+        ILogger<DeviceMonitorService> logger, 
         ITriggerDispatcher dispatcher,
         IDeviceCommunicationService deviceService,
-        EquipmentConfigService configService)
+        EquipmentConfigService configService,
+        IMessenger messenger)
     {
         _logger = logger;
         _dispatcher = dispatcher;
         _deviceService = deviceService;
         _configService = configService;
+        _messenger = messenger;
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("[ PLC监控服务 ] 已启动，正在监听事件模式...");
+        _logger.LogInformation("[ 设备监控服务 ] 已启动，正在监听事件模式...");
         
         // 构建配置缓存
         BuildTagConfigCache();
@@ -59,11 +69,11 @@ public class PlcMonitorService : BackgroundService
                     _tagConfigCache[mapping.TagName] = (equipment.EquipmentCode, mapping);
                 }
             }
-            _logger.LogInformation("[ PLC监控服务 ] 已构建标签配置缓存，共 {Count} 个标签", _tagConfigCache.Count);
+            _logger.LogInformation("[ 设备监控服务 ] 已构建标签配置缓存，共 {Count} 个标签", _tagConfigCache.Count);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "[ PLC监控服务 ] 构建标签配置缓存失败");
+            _logger.LogError(ex, "[ 设备监控服务 ] 构建标签配置缓存失败");
         }
     }
 
@@ -75,12 +85,24 @@ public class PlcMonitorService : BackgroundService
             if (!_tagConfigCache.TryGetValue(e.TagName, out var config))
             {
                 // 未配置的标签，忽略
+                // _logger.LogWarning($"[ 设备监控服务 ] 未配置的标签:{ e.TagName}");
                 return;
             }
 
             var (equipmentCode, mapping) = config;
 
-            // 2. 检查是否为触发器
+            // 2. 发送通用状态变化消息 (给 UI 或 状态服务)
+            // 无论是否为触发器，只要值变化了，都应该通知上层
+            _messenger.Send(new TagValueChangedMessage(
+                EquipmentCode: equipmentCode,
+                TagName: e.TagName,
+                NewValue: e.NewValue.Value,
+                OldValue: null, // 事件参数中暂无旧值
+                Purpose: mapping.Purpose,
+                Timestamp: DateTime.Now
+            ));
+
+            // 3. 检查是否为触发器
             // 兼容 Purpose == "ProcessTrigger" 或 IsTrigger == true
             bool isTrigger = mapping.IsTrigger || 
                              string.Equals(mapping.Purpose, "ProcessTrigger", StringComparison.OrdinalIgnoreCase);
@@ -90,13 +112,13 @@ public class PlcMonitorService : BackgroundService
                 return;
             }
 
-            // 3. 检查触发条件
+            // 4. 检查触发条件
             if (TriggerEvaluator.Evaluate(e.NewValue.Value, mapping.TriggerCondition))
             {
-                _logger.LogInformation("[ PLC监控服务 ] 触发器激活: {Equipment} - {Tag} (Value: {Value})", 
+                _logger.LogInformation("[ 设备监控服务 ] 触发器激活: {Equipment} - {Tag} (Value: {Value})", 
                     equipmentCode, e.TagName, e.NewValue.Value);
 
-                // 4. 发送调度消息
+                // 5. 发送调度消息
                 // 使用 EquipmentCode 作为 StationId
                 await _dispatcher.EnqueueAsync(
                     stationId: equipmentCode,
@@ -109,7 +131,7 @@ public class PlcMonitorService : BackgroundService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "[ PLC监控服务 ] 处理标签变化时出错 {Tag}", e.TagName);
+            _logger.LogError(ex, "[ 设备监控服务 ] 处理标签变化时出错 {Tag}", e.TagName);
         }
     }
 

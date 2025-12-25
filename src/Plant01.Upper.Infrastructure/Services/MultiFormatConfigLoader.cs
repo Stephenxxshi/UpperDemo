@@ -19,7 +19,7 @@ public class MultiFormatConfigLoader
         var results = new List<T>();
         if (!Directory.Exists(directoryPath))
         {
-            _logger.LogWarning($"[ ╪стьеДжц╥ЧнЯ ] н╢ур╣╫д©б╪: {directoryPath}");
+            _logger.LogWarning($"[ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ц╥О©╫О©╫О©╫ ] н╢О©╫р╣О©╫д©б╪: {directoryPath}");
             return results;
         }
 
@@ -34,11 +34,11 @@ public class MultiFormatConfigLoader
                 var parser = _parserFactory.GetParser(file);
                 var items = parser.Parse<T>(file);
                 results.AddRange(items);
-                _logger.LogInformation($"[ ╪стьеДжц╥ЧнЯ ] ря╢с {Path.GetFileName(file)} ╪сть {items.Count} лУйЩ╬щ");
+                _logger.LogInformation($"[ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ц╥О©╫О©╫О©╫ ] О©╫я╢О©╫ {Path.GetFileName(file)} О©╫О©╫О©╫О©╫ {items.Count} О©╫О©╫О©╫О©╫О©╫О©╫");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"[ ╪стьеДжц╥ЧнЯ ] ╫БнЖеДжцнд╪Чй╖╟э: {file}");
+                _logger.LogError(ex, $"[ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ц╥О©╫О©╫О©╫ ] О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д╪О©╫й╖О©╫О©╫: {file}");
             }
         }
 
@@ -49,7 +49,7 @@ public class MultiFormatConfigLoader
     {
          if (!File.Exists(filePath))
         {
-            _logger.LogWarning($"н╢ур╣╫нд╪Ч: {filePath}");
+            _logger.LogWarning($"н╢О©╫р╣О©╫О©╫д╪О©╫: {filePath}");
             return new List<T>();
         }
         
@@ -60,7 +60,7 @@ public class MultiFormatConfigLoader
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"╫БнЖеДжцнд╪Чй╖╟э: {filePath}");
+            _logger.LogError(ex, $"О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д╪О©╫й╖О©╫О©╫: {filePath}");
             return new List<T>();
         }
     }

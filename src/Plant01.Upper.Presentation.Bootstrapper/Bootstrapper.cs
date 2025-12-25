@@ -110,8 +110,8 @@ public static class Bootstrapper
         services.AddHostedService<TriggerDispatcherService>(sp => sp.GetRequiredService<TriggerDispatcherService>());
         services.AddSingleton<ITriggerDispatcher>(sp => sp.GetRequiredService<TriggerDispatcherService>());
 
-        // 注册 PLC 监控服务
-        services.AddHostedService<PlcMonitorService>();
+        // 注册设备监控服务 (原 PlcMonitorService)
+        services.AddHostedService<DeviceMonitorService>();
 
         // 注册驱动
         services.AddTransient<DriverFactory>();
