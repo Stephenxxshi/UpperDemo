@@ -19,7 +19,7 @@ public class MultiFormatConfigLoader
         var results = new List<T>();
         if (!Directory.Exists(directoryPath))
         {
-            _logger.LogWarning($"[ 多格式配置加载 ] 未找到目录: {directoryPath}");
+            _logger.LogWarning($"[ 加载配置服务 ] 未找到目录: {directoryPath}");
             return results;
         }
 
@@ -34,11 +34,11 @@ public class MultiFormatConfigLoader
                 var parser = _parserFactory.GetParser(file);
                 var items = parser.Parse<T>(file);
                 results.AddRange(items);
-                _logger.LogInformation($"[ 多格式配置加载 ] 已从 {Path.GetFileName(file)} 读取 {items.Count} 条数据");
+                _logger.LogInformation($"[ 加载配置服务 ] 已从 {Path.GetFileName(file)} 读取 {items.Count} 条数据");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"[ 多格式配置加载 ] 解析配置文件失败: {file}");
+                _logger.LogError(ex, $"[ 加载配置服务 ] 解析配置文件失败: {file}");
             }
         }
 
@@ -49,7 +49,7 @@ public class MultiFormatConfigLoader
     {
          if (!File.Exists(filePath))
         {
-            _logger.LogWarning($"[ 多格式配置加载 ]未找到文件: {filePath}");
+            _logger.LogWarning($"[ 加载配置服务 ]未找到文件: {filePath}");
             return new List<T>();
         }
         
@@ -60,7 +60,7 @@ public class MultiFormatConfigLoader
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"解析配置文件失败: {filePath}");
+            _logger.LogError(ex, $"[ 加载配置服务 ]  解析配置文件失败: {filePath}");
             return new List<T>();
         }
     }
