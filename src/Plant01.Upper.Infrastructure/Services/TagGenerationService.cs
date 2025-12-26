@@ -1,9 +1,8 @@
 using Microsoft.Extensions.Logging;
-
-using Plant01.Upper.Application.Services;
 using Plant01.Upper.Application.Models.DeviceCommunication;
 using Plant01.Upper.Infrastructure.DeviceCommunication.DeviceAddressing;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
+using Plant01.Upper.Application.Interfaces;
 
 namespace Plant01.Upper.Infrastructure.Services;
 

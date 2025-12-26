@@ -1,7 +1,7 @@
 using Plant01.Core.Helper;
-using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
+using Plant01.Upper.Application.Models;
 using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Entities;
 

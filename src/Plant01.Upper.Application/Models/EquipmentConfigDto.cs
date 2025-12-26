@@ -1,6 +1,6 @@
 using Plant01.Upper.Domain.Entities;
 
-namespace Plant01.Upper.Application.Contracts.DTOs;
+namespace Plant01.Upper.Application.Models;
 
 /// <summary>
 /// 设备模板配置 DTO

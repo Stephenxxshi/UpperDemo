@@ -1,4 +1,4 @@
-namespace Plant01.Upper.Application.Services;
+namespace Plant01.Upper.Application.Interfaces;
 
 /// <summary>
 /// 标签生成服务接口 (应用层不直接依赖基础设施)

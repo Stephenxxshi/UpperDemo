@@ -1,4 +1,4 @@
-namespace Plant01.Upper.Application.Contracts.DTOs;
+namespace Plant01.Upper.Application.Models;
 
 /// <summary>
 /// 产线配置 DTO（用于反序列化 production_lines.json）

@@ -2,8 +2,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using Plant01.Domain.Shared.Models.Equipment;
-using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Application.Interfaces;
+using Plant01.Upper.Application.Models;
 using Plant01.Upper.Domain.Entities;
 
 namespace Plant01.Upper.Infrastructure.Services;

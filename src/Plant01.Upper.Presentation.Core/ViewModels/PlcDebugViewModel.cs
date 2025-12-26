@@ -1,9 +1,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using Microsoft.Extensions.Logging;
+
 using Plant01.Upper.Application.Interfaces;
-using Plant01.Upper.Application.Services;
 using Plant01.Upper.Infrastructure.DeviceCommunication.DeviceAddressing;
+
 using System.Collections.ObjectModel;
 
 namespace Plant01.Upper.Presentation.Core.ViewModels;

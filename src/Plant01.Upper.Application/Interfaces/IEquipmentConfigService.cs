@@ -1,4 +1,4 @@
-using Plant01.Upper.Application.Contracts.DTOs;
+using Plant01.Upper.Application.Models;
 using Plant01.Upper.Domain.Entities;
 
 namespace Plant01.Upper.Application.Interfaces;
