@@ -5,38 +5,34 @@ namespace Plant01.Upper.Domain.ValueObjects;
 /// </summary>
 public enum ProcessStep
 {
-    /// <summary>
-    /// 上袋
-    /// </summary>
-    Loading = 1,
     
     /// <summary>
-    /// 套袋
+    /// 包装
     /// </summary>
-    Bagging = 2,
-    
-    /// <summary>
-    /// 包装/装料
-    /// </summary>
-    Filling = 3,
+    Packaging,
     
     /// <summary>
     /// 复检称重
     /// </summary>
-    Weighing = 4,
+    Weighing,
     
     /// <summary>
     /// 喷码
     /// </summary>
-    Printing = 5,
+    Inkjet,
     
     /// <summary>
     /// 码垛
     /// </summary>
-    Palletizing = 6,
+    Palletizing,
     
     /// <summary>
     /// 出垛
     /// </summary>
-    PalletOut = 7
+    PalletOut,
+
+    /// <summary>
+    /// 贴标
+    /// </summary>
+    Labeling
 }

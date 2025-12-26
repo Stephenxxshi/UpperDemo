@@ -23,7 +23,7 @@ public class StretchWrapperWorkStationProcessor : WorkstationProcessorBase
         // 判断重量是否合格
 
         // 回复PLC
-        await WriteProcessResult(context, ProcessResult.Success, "出垛成功");
+        await WriteProcessResult(context, ProcessResult.Success, "覆膜缠绕结束");
         _logger.LogInformation($"[ {WorkStationProcess} ] 流程执行完成");
 
     }

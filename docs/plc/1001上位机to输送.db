@@ -22,11 +22,23 @@ VERSION : 0.1
       包装机 : Struct
          读码完成 : Int;   // 1=读码完成,
       END_STRUCT;
+      称重机 : Struct
+         读码完成 : Int;   // 1=读码完成,
+      END_STRUCT;
+      喷码机 : Struct
+         读码完成 : Int;   // 1=读码完成,
+      END_STRUCT;
       码垛机 : Struct
          读码完成 : Int;   // 1=读码完成
          垛位号 : Int;   // 码垛的编号
       END_STRUCT;
       组托 : Struct
+         读码完成 : Int;   // 1=读码完成
+      END_STRUCT;
+      缠绕覆膜 : Struct
+         读码完成 : Int;   // 1=读码完成
+      END_STRUCT;
+      贴标 : Struct
          读码完成 : Int;   // 1=读码完成
       END_STRUCT;
    END_STRUCT;

@@ -41,6 +41,21 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
 
     public async Task ExecuteAsync(WorkstationProcessContext context)
     {
+        // PLC是否手动模式
+        var mdj1 = _equipmentConfigService.GetEquipment("MDJ1");
+        var manualModeTag = mdj1?.TagMappings.FirstOrDefault(m => m.Purpose == "ManualMode");
+        var autoModeTag = mdj1?.TagMappings.FirstOrDefault(m => m.Purpose == "AutoMode");
+        if (manualModeTag != null && autoModeTag != null)
+        {
+            var isManualMode = _deviceComm.GetTagValue<bool>(manualModeTag.TagName);
+            var isAutoMode = _deviceComm.GetTagValue<bool>(autoModeTag.TagName);
+            if (isManualMode && !isAutoMode)
+            {
+                _logger.LogInformation("[ {WorkStationProcess} ] 设备处于手动模式，跳过流程执行", WorkStationProcess);
+                return;
+            }
+        }
+
         _logger.LogInformation("[ {WorkStationProcess} ] [ 标签: {Tag} ] 触发流程", WorkStationProcess, context.TriggerTagName);
 
         // 获取设备配置以查找标签

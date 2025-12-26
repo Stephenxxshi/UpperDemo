@@ -79,10 +79,9 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
         }
 
 
-        //if (bag.CanLoad())
-        if (true)
+        if (bag.CanPackaging())
         {
-            bag.AddRecord(ProcessStep.Loading, context.EquipmentCode, true);
+            bag.AddRecord(ProcessStep.Packaging, context.EquipmentCode, true);
 
             if (!isNew)
             {
@@ -90,7 +89,7 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
             }
 
             await unitOfWork.SaveChangesAsync();
-            _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 在 {context.EquipmentCode} 加载");
+            _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 在 {context.EquipmentCode} 包装");
         }
 
         await WriteProcessResult(context, ProcessResult.Success, "包装工位流程执行完成");

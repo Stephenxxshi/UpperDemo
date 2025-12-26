@@ -23,6 +23,19 @@ VERSION : 0.1
          包装机状态 : Int;   // 0通信中断，1=待机中，2=生成中，其他=异常
          申请读码 : Int;   // 1=申请读码
          袋码数据 : String[32];   // 字符串
+         包装重量 : Real;
+         包装时间 : Real;
+      END_STRUCT;
+      称重机 : Struct
+         称重机状态 : Int;   // 0通信中断，1=待机中，2=生成中，其他=异常
+         申请读码 : Int;   // 1=申请读码
+         袋码数据 : String[32];   // 字符串
+         称重重量 : Real;   // 重量 单位：kg
+      END_STRUCT;
+      喷码机 : Struct
+         喷码机状态 : Int;   // 0通信中断，1=待机中，2=生成中，其他=异常
+         申请读码 : Int;   // 1=申请读码
+         袋码数据 : String[32];   // 字符串
       END_STRUCT;
       码垛 : Struct
          码垛机状态 : Int;
@@ -31,6 +44,15 @@ VERSION : 0.1
          码垛包数 : Int;   // 实时包数
       END_STRUCT;
       组托 : Struct
+         申请读码 : Int;   // 1=申请读码
+         袋码数据 : String[32];
+         垛盘码数据 : String[32];
+      END_STRUCT;
+      缠绕覆膜 : Struct
+         申请读码 : Int;   // 1=申请读码
+         袋码数据 : String[32];
+      END_STRUCT;
+      贴标 : Struct
          申请读码 : Int;   // 1=申请读码
          袋码数据 : String[32];
          垛盘码数据 : String[32];

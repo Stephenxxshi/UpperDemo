@@ -124,31 +124,31 @@ public class Bag : CommonFields
     /// <summary>
     /// 是否允许上袋
     /// </summary>
-    public bool CanLoad()
-    {
-        // 逻辑：没有成功的上袋记录即可（或者允许重复上袋但需记录）
-        // 这里假设一个袋码只能上袋一次
-        return !Records.Any(r => r.Step == ProcessStep.Loading && r.IsSuccess);
-    }
+    //public bool CanLoad()
+    //{
+    //    // 逻辑：没有成功的上袋记录即可（或者允许重复上袋但需记录）
+    //    // 这里假设一个袋码只能上袋一次
+    //    return !Records.Any(r => r.Step == ProcessStep.Loading && r.IsSuccess);
+    //}
 
     /// <summary>
     /// 是否允许套袋
     /// </summary>
-    public bool CanBag()
-    {
-        // 必须有上袋成功记录，且没有套袋成功记录
-        return Records.Any(r => r.Step == ProcessStep.Loading && r.IsSuccess)
-            && !Records.Any(r => r.Step == ProcessStep.Bagging && r.IsSuccess);
-    }
+    //public bool CanBag()
+    //{
+    //    // 必须有上袋成功记录，且没有套袋成功记录
+    //    return Records.Any(r => r.Step == ProcessStep.Loading && r.IsSuccess)
+    //        && !Records.Any(r => r.Step == ProcessStep.Bagging && r.IsSuccess);
+    //}
 
     /// <summary>
     /// 是否允许包装/装料
     /// </summary>
-    public bool CanFill()
+    public bool CanPackaging()
     {
-        // 必须有套袋成功记录，且没有装料成功记录
-        return Records.Any(r => r.Step == ProcessStep.Bagging && r.IsSuccess)
-            && !Records.Any(r => r.Step == ProcessStep.Filling && r.IsSuccess);
+        // 逻辑：没有成功的上袋记录即可（或者允许重复上袋但需记录）
+        // 这里假设一个袋码只能上袋一次
+        return !Records.Any(r => r.Step == ProcessStep.Packaging && r.IsSuccess);
     }
 
     /// <summary>
@@ -156,20 +156,20 @@ public class Bag : CommonFields
     /// </summary>
     public bool CanWeigh()
     {
-        // 必须有装料成功记录
+        // 必须有包装成功记录
         // 复检可以多次，所以不检查是否已复检
-        return Records.Any(r => r.Step == ProcessStep.Filling && r.IsSuccess);
+        return Records.Any(r => r.Step == ProcessStep.Packaging && r.IsSuccess);
     }
 
     /// <summary>
     /// 是否允许喷码
     /// </summary>
-    public bool CanPrint()
+    public bool CanInkjet()
     {
         // 必须有复检称重成功记录（合格）
         // 这里假设 IsSuccess=true 代表称重合格
         return Records.Any(r => r.Step == ProcessStep.Weighing && r.IsSuccess)
-            && !Records.Any(r => r.Step == ProcessStep.Printing && r.IsSuccess);
+            && !Records.Any(r => r.Step == ProcessStep.Inkjet && r.IsSuccess);
     }
 
     /// <summary>
@@ -178,7 +178,21 @@ public class Bag : CommonFields
     public bool CanPalletize()
     {
         // 必须有喷码成功记录
-        return Records.Any(r => r.Step == ProcessStep.Printing && r.IsSuccess)
+        return Records.Any(r => r.Step == ProcessStep.Inkjet && r.IsSuccess)
             && !Records.Any(r => r.Step == ProcessStep.Palletizing && r.IsSuccess);
+    }
+
+    public bool CanPalletOut()
+    {
+        // 必须有码垛成功记录
+        return Records.Any(r => r.Step == ProcessStep.Palletizing && r.IsSuccess)
+            && !Records.Any(r => r.Step == ProcessStep.PalletOut && r.IsSuccess);
+    }
+
+    public bool CanLabeling()
+    {
+        // 必须有码垛成功记录，且没有贴标成功记录
+        return Records.Any(r => r.Step == ProcessStep.Palletizing && r.IsSuccess)
+            && !Records.Any(r => r.Step == ProcessStep.Labeling && r.IsSuccess);
     }
 }
