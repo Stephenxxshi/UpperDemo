@@ -6,7 +6,7 @@ using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Domain.Repository;
 using Plant01.Upper.Domain.ValueObjects;
 
-namespace Plant01.Upper.Infrastructure.Workstations.Processors;
+namespace Plant01.Upper.Application.Workstations.Processors;
 
 /// <summary>
 /// 码垛工位流程处理器示例

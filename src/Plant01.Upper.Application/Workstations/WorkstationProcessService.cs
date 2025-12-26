@@ -1,14 +1,11 @@
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
+using Plant01.Core.Helper;
+using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Entities;
-using Plant01.Upper.Infrastructure.Configs.Models;
-using Plant01.Upper.Infrastructure.Services;
 
-namespace Plant01.Upper.Infrastructure.Workstations;
+namespace Plant01.Upper.Application.Workstations;
 
 /// <summary>
 /// 工位流程服务（监听触发标签，执行业务流程）
@@ -16,7 +13,7 @@ namespace Plant01.Upper.Infrastructure.Workstations;
 public class WorkstationProcessService : IHostedService
 {
     private readonly IDeviceCommunicationService _deviceComm;
-    private readonly EquipmentConfigService _equipmentConfig;
+    private readonly IEquipmentConfigService _equipmentConfig;
     private readonly ProductionConfigManager _productionConfig;
     private readonly ILogger<WorkstationProcessService> _logger;
 
@@ -28,7 +25,7 @@ public class WorkstationProcessService : IHostedService
 
     public WorkstationProcessService(
         IDeviceCommunicationService deviceComm,
-        EquipmentConfigService equipmentConfig,
+        IEquipmentConfigService equipmentConfig,
         ProductionConfigManager productionConfig,
         IEnumerable<IWorkstationProcessor> processors,
         ILogger<WorkstationProcessService> logger)
@@ -150,7 +147,7 @@ public class WorkstationProcessService : IHostedService
                 //if (workstationCode.Contains("PKG")) workstationType = "Packaging";
                 //else if (workstationCode.Contains("PAL")) workstationType = "Palletizing";
                 //else 
-                    workstationType = "Unknown";
+                workstationType = "Unknown";
             }
 
             // 查找对应的工位处理器

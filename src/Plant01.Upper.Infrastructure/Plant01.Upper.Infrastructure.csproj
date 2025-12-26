@@ -52,4 +52,8 @@
     <ProjectReference Include="..\Plant01.Upper.Domain\Plant01.Upper.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Configs\Models\" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace Plant01.Upper.Infrastructure.Services;
+namespace Plant01.Core.Helper;
 
 /// <summary>
 /// 触发条件评估器

@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Entities;
-using Plant01.Upper.Infrastructure.Configs.Models;
 
 namespace Plant01.Upper.Infrastructure.Services;
 

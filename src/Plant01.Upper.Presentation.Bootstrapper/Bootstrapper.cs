@@ -14,6 +14,8 @@ using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Application.Mappings; // 确保引用了 Mapping Profile 所在的命名空间
 using Plant01.Upper.Application.Models.Logging;
 using Plant01.Upper.Application.Services;
+using Plant01.Upper.Application.Workstations;
+using Plant01.Upper.Application.Workstations.Processors;
 using Plant01.Upper.Domain.Repository;
 using Plant01.Upper.Infrastructure.DeviceCommunication;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
@@ -21,8 +23,6 @@ using Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Engine;
 using Plant01.Upper.Infrastructure.Repository;
 using Plant01.Upper.Infrastructure.Services;
-using Plant01.Upper.Infrastructure.Workstations;
-using Plant01.Upper.Infrastructure.Workstations.Processors;
 using Plant01.Upper.Presentation.Core.ViewModels;
 
 using Serilog;

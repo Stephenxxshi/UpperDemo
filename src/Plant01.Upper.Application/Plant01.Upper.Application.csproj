@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Plant01.Core\Plant01.Core.csproj" />
     <ProjectReference Include="..\Plant01.Domain.Shared\Plant01.Domain.Shared.csproj" />
     <ProjectReference Include="..\Plant01.Upper.Domain\Plant01.Upper.Domain.csproj" />
   </ItemGroup>

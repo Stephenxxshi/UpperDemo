@@ -6,14 +6,14 @@ using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Domain.Repository;
 
-namespace Plant01.Upper.Infrastructure.Workstations.Processors;
+namespace Plant01.Upper.Application.Workstations.Processors;
 
 /// <summary>
 /// 出垛工位流程处理器示例
 /// </summary>
-public class LabelingWorkStationProcessor : WorkstationProcessorBase
+public class InkjetWorkStationProcessor : WorkstationProcessorBase
 {
-    public LabelingWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
+    public InkjetWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
     {
         WorkstationType = "Inkjet";
     }

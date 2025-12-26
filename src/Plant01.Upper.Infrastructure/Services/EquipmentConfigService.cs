@@ -2,9 +2,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using Plant01.Domain.Shared.Models.Equipment;
+using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Domain.Entities;
-using Plant01.Upper.Infrastructure.Configs.Models;
 
 namespace Plant01.Upper.Infrastructure.Services;
 
@@ -253,5 +253,10 @@ public class EquipmentConfigService : IEquipmentConfigService
         return _equipmentCache.Values
             .Where(e => string.Equals(e.StationCode, stationCode, StringComparison.OrdinalIgnoreCase))
             .ToList();
+    }
+
+    List<string> IEquipmentConfigService.GetAllEquipmentCodes()
+    {
+        return _equipmentCache.Keys.ToList();
     }
 }

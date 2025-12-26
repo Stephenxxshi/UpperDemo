@@ -1,3 +1,4 @@
+using Plant01.Upper.Application.Contracts.DTOs;
 using Plant01.Upper.Domain.Entities;
 
 namespace Plant01.Upper.Application.Interfaces;
@@ -15,5 +16,20 @@ public interface IEquipmentConfigService
     /// <summary>
     /// 获取所有设备编码
     /// </summary>
-    IEnumerable<string> GetAllEquipmentCodes();
+    List<string> GetAllEquipmentCodes();
+
+    /// <summary>
+    /// 获取所有设备映射配置（用于触发标签扫描）
+    /// </summary>
+    List<EquipmentMappingDto> GetAllMappings();
+
+    /// <summary>
+    /// 批量获取设备
+    /// </summary>
+    List<Equipment> GetEquipmentsByRefs(List<string> refs);
+
+    /// <summary>
+    /// 获取设备的标签映射
+    /// </summary>
+    List<TagMappingDto> GetMappings(string equipmentCode);
 }
