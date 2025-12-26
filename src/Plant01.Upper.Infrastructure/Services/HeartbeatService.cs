@@ -32,7 +32,7 @@ public class HeartbeatService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("心跳服务已启动");
+        _logger.LogInformation("[ 心跳服务 ] 心跳服务已启动");
 
         // 启动时初始化缓存
         RefreshHeartbeatTags();
@@ -52,7 +52,7 @@ public class HeartbeatService : BackgroundService
             }
         }
 
-        _logger.LogInformation("心跳服务已停止");
+        _logger.LogInformation("[ 心跳服务 ] 心跳服务已停止");
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ public class HeartbeatService : BackgroundService
         }
 
         _cachedHeartbeatTags = tags;
-        _logger.LogInformation("心跳标签缓存已更新，共监控 {Count} 个输出心跳", _cachedHeartbeatTags.Count);
+        _logger.LogInformation("[ 心跳服务 ] 心跳标签缓存已更新，共监控 {Count} 个输出心跳", _cachedHeartbeatTags.Count);
     }
 
     private async Task ProcessHeartbeatsAsync()
@@ -104,7 +104,7 @@ public class HeartbeatService : BackgroundService
             catch (Exception ex)
             {
                 // 仅记录警告，避免刷屏
-                _logger.LogWarning("向标签 {Tag} 写入心跳失败: {Message}", mapping.TagName, ex.Message);
+                _logger.LogWarning("[ 心跳服务 ] 向标签 {Tag} 写入心跳失败: {Message}", mapping.TagName, ex.Message);
             }
         }
     }

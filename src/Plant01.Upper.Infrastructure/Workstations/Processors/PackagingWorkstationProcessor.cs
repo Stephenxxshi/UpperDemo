@@ -18,6 +18,7 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
     public PackagingWorkstationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
     {
         WorkstationType = "Packaging";
+        WorkStationProcess = "包装工位流程";
     }
 
 

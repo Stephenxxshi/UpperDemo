@@ -113,6 +113,10 @@ public static class Bootstrapper
         // 注册设备监控服务 (原 PlcMonitorService)
         services.AddHostedService<DeviceMonitorService>();
 
+        // 注册 MVVM Messenger (修复 DeviceMonitorService 的依赖报错)
+        services.AddSingleton<CommunityToolkit.Mvvm.Messaging.IMessenger>(CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default);
+
+
         // 注册驱动
         services.AddTransient<DriverFactory>();
         services.AddTransient<SiemensS7Driver>();
