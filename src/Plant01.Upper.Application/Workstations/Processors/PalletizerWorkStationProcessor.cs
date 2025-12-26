@@ -16,6 +16,7 @@ public class PalletizerWorkStationProcessor : WorkstationProcessorBase
     public PalletizerWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
     {
         WorkstationType = "Palletizer";
+        WorkStationProcess = "码垛工位流程";
     }
 
     protected override async Task InternalExecuteAsync(WorkstationProcessContext context, string bagCode)
@@ -34,7 +35,7 @@ public class PalletizerWorkStationProcessor : WorkstationProcessorBase
 
         if (bag == null)
         {
-            _logger.LogError($"袋码 [ {bagCode} ] 在 {context.EquipmentCode}未检测到袋码");
+            _logger.LogError($"[ {WorkStationProcess} ] 袋码 [ {bagCode} ] 在 {context.EquipmentCode} 未检测到袋码");
             return;
         }
 
@@ -46,11 +47,11 @@ public class PalletizerWorkStationProcessor : WorkstationProcessorBase
             await bagRepo.UpdateAsync(bag);
 
             await unitOfWork.SaveChangesAsync();
-            _logger.LogInformation($"袋码 [ {bagCode} ] 在 {context.EquipmentCode} 码垛完成");
+            _logger.LogInformation($"[ {WorkStationProcess} ] 袋码 [ {bagCode} ] 在 {context.EquipmentCode} 码垛完成");
         }
 
-        await WriteProcessResult(context,ProcessResult.Success);
-        _logger.LogInformation($"袋码 [ {bagCode} ] 在 {context.EquipmentCode} 码垛工位流程执行完成");
+        await WriteProcessResult(context, ProcessResult.Success);
+        _logger.LogInformation($"[ {WorkStationProcess} ] 袋码 [ {bagCode} ] 在 {context.EquipmentCode} 码垛工位流程执行完成");
     }
 
 }

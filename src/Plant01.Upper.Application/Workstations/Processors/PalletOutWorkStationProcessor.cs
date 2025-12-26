@@ -16,6 +16,7 @@ public class PalletOutWorkStationProcessor : WorkstationProcessorBase
     public PalletOutWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
     {
         WorkstationType = "PalletOut";
+        WorkStationProcess = "出垛工位流程";
     }
 
     protected override async Task InternalExecuteAsync(WorkstationProcessContext context, string bagCode)
@@ -33,7 +34,7 @@ public class PalletOutWorkStationProcessor : WorkstationProcessorBase
         var equipment = _equipmentConfigService.GetEquipment(context.EquipmentCode);
         if (equipment == null)
         {
-            _logger.LogError($"袋码[ {bagCode} ] : 未找到设备配置 ", context.EquipmentCode);
+            _logger.LogError($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] : 未找到设备配置 ", context.EquipmentCode);
             await WriteProcessResult(context, ProcessResult.Error, "没有找到设备配置");
             return;
         }
@@ -46,12 +47,12 @@ public class PalletOutWorkStationProcessor : WorkstationProcessorBase
         if (palletTag is not null)
         {
             pallet = _deviceComm.GetTagValue<string>(palletTag.TagName);
-            _logger.LogInformation($"袋码[ {bagCode} ] -> 在 {context.EquipmentCode}  读取到托盘号: {pallet}");
+            _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 在 {context.EquipmentCode}  读取到托盘号: {pallet}");
         }
 
         if (string.IsNullOrEmpty(pallet))
         {
-            _logger.LogWarning($"袋码[ {bagCode} ] -> 未读取到托盘号");
+            _logger.LogWarning($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 未读取到托盘号");
             await WriteProcessResult(context, ProcessResult.Error, "未读取到托盘号");
             return;
         }
@@ -81,7 +82,7 @@ public class PalletOutWorkStationProcessor : WorkstationProcessorBase
         var response = await _mesService.FinishPalletizingAsync(request);
         if (response != null)
         {
-            _logger.LogError($"袋码[ {bagCode} ] : {response.ErrorMsg}");
+            _logger.LogError($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] : {response.ErrorMsg}");
             await WriteProcessResult(context, ProcessResult.Error, response.ErrorMsg);
             return;
         }
@@ -90,7 +91,7 @@ public class PalletOutWorkStationProcessor : WorkstationProcessorBase
 
         // 保存袋码
         await WriteProcessResult(context, ProcessResult.Success, "出垛成功");
-        _logger.LogInformation("出垛工位流程执行完成");
+        _logger.LogInformation($"[ {WorkStationProcess} ] 出垛工位流程执行完成");
     }
 
 

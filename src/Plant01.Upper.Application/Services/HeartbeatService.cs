@@ -1,10 +1,7 @@
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
-using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Entities;
 
-namespace Plant01.Upper.Infrastructure.Services;
+namespace Plant01.Upper.Application.Services;
 
 /// <summary>
 /// 心跳服务
@@ -16,7 +13,7 @@ public class HeartbeatService : BackgroundService
     private readonly ProductionConfigManager _configManager;
     private readonly ILogger<HeartbeatService> _logger;
     private readonly Dictionary<string, bool> _heartbeatStates = new();
-    
+
     // 优化：缓存心跳标签列表，避免每秒重复筛选
     private List<EquipmentTagMapping> _cachedHeartbeatTags = new();
 
@@ -62,7 +59,7 @@ public class HeartbeatService : BackgroundService
     public void RefreshHeartbeatTags()
     {
         var tags = new List<EquipmentTagMapping>();
-        
+
         var equipments = _configManager.GetAllProductionLines()
             .SelectMany(l => l.Workstations)
             .SelectMany(w => w.Equipments);
@@ -73,7 +70,7 @@ public class HeartbeatService : BackgroundService
 
             var heartbeatTags = equipment.TagMappings
                 .Where(m => m.Purpose == TagPurpose.Heartbeat && m.Direction == TagDirection.Output);
-            
+
             tags.AddRange(heartbeatTags);
         }
 

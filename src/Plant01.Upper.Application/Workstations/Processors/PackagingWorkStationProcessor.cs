@@ -1,6 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Domain.Aggregation;
@@ -28,14 +25,14 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
         var workOrders = await _workOrderRepository.GetAllAsync(workOrder => workOrder.Status == Domain.ValueObjects.WorkOrderStatus.开工);
         if (workOrders.Count == 0)
         {
-            _logger.LogWarning($"袋码[ {bagCode} ] -> 没有找到开工中的工单");
+            _logger.LogWarning($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 没有找到开工中的工单");
             await WriteProcessResult(context, ProcessResult.Error, "没有找到开工中的工单");
             return;
         }
 
         if (workOrders.Count > 1)
         {
-            _logger.LogError($"袋码[ {bagCode} ] -> 开工的工单数量为 [ {workOrders.Count} ] > 1");
+            _logger.LogError($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 开工的工单数量为 [ {workOrders.Count} ] > 1");
             await WriteProcessResult(context, ProcessResult.Error, "开工的工单数量异常");
             return;
         }
@@ -46,7 +43,7 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
         var equipment = _equipmentConfigService.GetEquipment(context.EquipmentCode);
         if (equipment == null)
         {
-            _logger.LogError($"袋码[ {bagCode} ] -> 未找到设备配置: {context.EquipmentCode}");
+            _logger.LogError($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 未找到设备配置: {context.EquipmentCode}");
             await WriteProcessResult(context, ProcessResult.Error, "没有找到设备配置");
             return;
         }
@@ -93,11 +90,11 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
             }
 
             await unitOfWork.SaveChangesAsync();
-            _logger.LogInformation($"袋码[ {bagCode} ] -> 在 {context.EquipmentCode} 加载");
+            _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 在 {context.EquipmentCode} 加载");
         }
 
         await WriteProcessResult(context, ProcessResult.Success, "包装工位流程执行完成");
-        _logger.LogInformation($"袋码[ {bagCode} ] -> 在 {context.EquipmentCode} 包装工位流程执行完成");
+        _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] 流程执行完成");
     }
 
 

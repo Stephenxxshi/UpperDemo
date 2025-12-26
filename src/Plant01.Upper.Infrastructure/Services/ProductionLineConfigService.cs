@@ -2,10 +2,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Application.Models;
-using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Entities;
+using Plant01.Upper.Infrastructure.Services;
 
-namespace Plant01.Upper.Infrastructure.Services;
+namespace Plant01.Upper.Application.Services;
 
 /// <summary>
 /// 产线配置初始化服务

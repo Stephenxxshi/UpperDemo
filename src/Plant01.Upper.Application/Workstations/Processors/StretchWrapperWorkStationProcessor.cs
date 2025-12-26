@@ -1,6 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Domain.Repository;
@@ -15,6 +12,7 @@ public class StretchWrapperWorkStationProcessor : WorkstationProcessorBase
     public StretchWrapperWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
     {
         WorkstationType = "StretchWrapper";
+        WorkStationProcess = "覆膜缠绕流程";
     }
 
     protected override async Task InternalExecuteAsync(WorkstationProcessContext context, string bagCode)
@@ -26,7 +24,7 @@ public class StretchWrapperWorkStationProcessor : WorkstationProcessorBase
 
         // 回复PLC
         await WriteProcessResult(context, ProcessResult.Success, "出垛成功");
-        _logger.LogInformation("出垛工位流程执行完成");
+        _logger.LogInformation($"[ {WorkStationProcess} ] 流程执行完成");
 
     }
 

@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-
-using Plant01.Domain.Shared.Interfaces;
+﻿using Plant01.Domain.Shared.Interfaces;
 using Plant01.Upper.Application.Contracts.Api.Requests;
 using Plant01.Upper.Application.Contracts.Api.Responses;
 using Plant01.Upper.Application.Interfaces;
@@ -180,7 +177,7 @@ public class MesService : IMesService
     public async Task ReportPalletCompletionAsync(string workOrderCode, string palletCode)
     {
         _logger.LogInformation("Reporting pallet completion for WorkOrder: {WorkOrder}, Pallet: {Pallet}", workOrderCode, palletCode);
-        
+
         // 构造请求对象 (实际项目中需要从数据库查询详细信息)
         var request = new FinishPalletizingRequest
         {
@@ -191,7 +188,7 @@ public class MesService : IMesService
             List = new List<PackageDetail>() // TODO: 查询托盘内的包明细
         };
 
-        try 
+        try
         {
             await FinishPalletizingAsync(request);
         }

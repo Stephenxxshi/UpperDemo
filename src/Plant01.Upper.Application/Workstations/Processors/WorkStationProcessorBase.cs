@@ -1,6 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Domain.Entities;
@@ -44,7 +41,7 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
 
     public async Task ExecuteAsync(WorkstationProcessContext context)
     {
-        _logger.LogInformation("[ {WorkStationProcess} ] [ 标签: {Tag} ] 触发流程",WorkStationProcess, context.TriggerTagName);
+        _logger.LogInformation("[ {WorkStationProcess} ] [ 标签: {Tag} ] 触发流程", WorkStationProcess, context.TriggerTagName);
 
         // 获取设备配置以查找标签
         var equipment = _equipmentConfigService.GetEquipment(context.EquipmentCode);
@@ -110,7 +107,7 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
                 _logger.LogInformation($"[ {WorkStationProcess} ]  [ {context.BagCode ?? string.Empty} ] -> 写入 [ {resultMapping.TagName} ] ：{(int)result}({result})");
             }
 
-            
+
         }
         catch (Exception ex)
         {

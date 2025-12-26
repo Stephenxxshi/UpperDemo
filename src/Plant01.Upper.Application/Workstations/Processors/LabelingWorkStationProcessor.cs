@@ -16,6 +16,7 @@ public class LabelingWorkStationProcessor : WorkstationProcessorBase
     public LabelingWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
     {
         WorkstationType = "Inkjet";
+        WorkStationProcess = "贴标工位流程";
     }
 
     protected override async Task InternalExecuteAsync(WorkstationProcessContext context, string bagCode)
@@ -29,7 +30,7 @@ public class LabelingWorkStationProcessor : WorkstationProcessorBase
 
         // 发送PLC
         await WriteProcessResult(context, ProcessResult.Success, "出垛成功");
-        _logger.LogInformation($"袋码 [ {bagCode} ] -> 完成喷码");
+        _logger.LogInformation($"[ {WorkStationProcess} ] 袋码 [ {bagCode} ] -> 完成喷码");
     }
 
 
