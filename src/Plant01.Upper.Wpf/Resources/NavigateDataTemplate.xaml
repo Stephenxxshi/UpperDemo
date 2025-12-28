@@ -18,4 +18,7 @@
     <DataTemplate DataType="{x:Type vm:WorkOrderListViewModel}">
         <views:WorkOrderList />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:DevicePointTableViewModel}">
+        <views:DevicePointTableView />
+    </DataTemplate>
 </ResourceDictionary>

@@ -4,7 +4,7 @@ using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Parsers;
-using Plant01.Upper.Infrastructure.Services; // Add this
+using Plant01.Upper.Infrastructure.Services;
 
 using System.Globalization;
 using System.Text.Json;
@@ -19,7 +19,7 @@ public class ConfigurationLoader
     private readonly string _configsPath;
     private readonly ILogger<ConfigurationLoader> _logger;
     private readonly Dictionary<string, IDriverTagParser> _tagParsers;
-    private readonly MultiFormatConfigLoader _multiFormatLoader; // Add this
+    private readonly MultiFormatConfigLoader _multiFormatLoader;
 
     public ConfigurationLoader(string configsPath, ILogger<ConfigurationLoader> logger, MultiFormatConfigLoader multiFormatLoader) // Inject MultiFormatConfigLoader
     {

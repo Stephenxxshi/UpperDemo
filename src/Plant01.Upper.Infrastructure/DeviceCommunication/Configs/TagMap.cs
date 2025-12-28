@@ -18,15 +18,13 @@ public class TagMap : ClassMap<CommunicationTag>
             {
                 return result;
             }
-            // Handle aliases
+            // 处理DataType类型
             if (string.Equals(typeStr, "Short", StringComparison.OrdinalIgnoreCase)) return TagDataType.Int16;
             if (string.Equals(typeStr, "UShort", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt16;
             if (string.Equals(typeStr, "Int", StringComparison.OrdinalIgnoreCase)) return TagDataType.Int32;
             if (string.Equals(typeStr, "UInt", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt32;
             if (string.Equals(typeStr, "Bool", StringComparison.OrdinalIgnoreCase)) return TagDataType.Boolean;
             if (string.Equals(typeStr, "Float", StringComparison.OrdinalIgnoreCase)) return TagDataType.Float;
-            if (string.Equals(typeStr, "Word", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt16;
-            if (string.Equals(typeStr, "DWord", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt32;
             
             return TagDataType.Int16; // Default
         });

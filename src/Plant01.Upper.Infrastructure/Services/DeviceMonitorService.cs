@@ -67,8 +67,8 @@ public class DeviceMonitorService : BackgroundService
             {
                 foreach (var mapping in equipment.TagMappings)
                 {
-                    // 假设 TagName 是唯一的，如果有重复，后加载的覆盖
-                    _tagConfigCache[mapping.TagName] = (equipment.EquipmentCode, mapping);
+                    // TagCode 必须是唯一的，如果有重复，后加载的覆盖
+                    _tagConfigCache[mapping.TagCode] = (equipment.EquipmentCode, mapping);
                 }
             }
             _logger.LogInformation("[ 设备监控服务 ] 已构建标签配置缓存，共 {Count} 个标签", _tagConfigCache.Count);
@@ -84,10 +84,10 @@ public class DeviceMonitorService : BackgroundService
         try
         {
             // 1. 查找配置
-            if (!_tagConfigCache.TryGetValue(e.TagName, out var config))
+            if (!_tagConfigCache.TryGetValue(e.TagCode, out var config))
             {
                 // 未配置的标签，忽略
-                // _logger.LogWarning($"[ 设备监控服务 ] 未配置的标签:{ e.TagName}");
+                _logger.LogWarning($"[ 设备监控服务 ] 未配置的标签:{e.TagCode}");
                 return;
             }
 
@@ -97,7 +97,7 @@ public class DeviceMonitorService : BackgroundService
             // 无论是否为触发器，只要值变化了，都应该通知上层
             _messenger.Send(new TagValueChangedMessage(
                 EquipmentCode: equipmentCode,
-                TagName: e.TagName,
+                TagCode: e.TagCode,
                 NewValue: e.NewValue.Value,
                 OldValue: null, // 事件参数中暂无旧值
                 Purpose: mapping.Purpose,
@@ -118,22 +118,22 @@ public class DeviceMonitorService : BackgroundService
             if (TriggerEvaluator.Evaluate(e.NewValue.Value, mapping.TriggerCondition))
             {
                 _logger.LogInformation("[ 设备监控服务 ] 触发器激活: {Equipment} - {Tag} (Value: {Value})", 
-                    equipmentCode, e.TagName, e.NewValue.Value);
+                    equipmentCode, e.TagCode, e.NewValue.Value);
 
                 // 5. 发送调度消息
                 // 使用 EquipmentCode 作为 StationId
                 await _dispatcher.EnqueueAsync(
                     stationId: equipmentCode,
                     source: TriggerSourceType.PLC,
-                    payload: $"{e.TagName}={e.NewValue.Value}",
+                    payload: $"{e.TagCode}={e.NewValue.Value}",
                     priority: TriggerPriority.Normal,
-                    debounceKey: e.TagName // 按标签名防抖
+                    debounceKey: e.TagCode // 按标签名防抖
                 );
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "[ 设备监控服务 ] 处理标签变化时出错 {Tag}", e.TagName);
+            _logger.LogError(ex, "[ 设备监控服务 ] 处理标签变化时出错 {Tag}", e.TagCode);
         }
     }
 

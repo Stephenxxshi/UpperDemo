@@ -105,7 +105,7 @@ public class WorkstationProcessService : IHostedService
     private async void OnTagChanged(object? sender, TagChangeEventArgs e)
     {
         // 检查是否为触发标签
-        if (!_triggerMappings.TryGetValue(e.TagName, out var triggerInfo))
+        if (!_triggerMappings.TryGetValue(e.TagCode, out var triggerInfo))
             return;
 
         // 检查触发条件
@@ -119,13 +119,13 @@ public class WorkstationProcessService : IHostedService
         var now = DateTime.Now;
         if ((now - triggerInfo.LastTriggerTime).TotalMilliseconds < 500)
         {
-            _logger.LogTrace($"[ 工位流程服务 ] [ {e.TagName} ] -> 触发信号防抖过滤");
+            _logger.LogTrace($"[ 工位流程服务 ] [ {e.TagCode} ] -> 触发信号防抖过滤");
             return;
         }
 
         triggerInfo.LastTriggerTime = now;
 
-        _logger.LogInformation($"[ 工位流程服务 ] [ {e.TagName} ] = {e.NewValue.Value} -> 检测到流程触发");
+        _logger.LogInformation($"[ 工位流程服务 ] [ {e.TagCode} ] = {e.NewValue.Value} -> 检测到流程触发");
 
         try
         {
@@ -136,7 +136,7 @@ public class WorkstationProcessService : IHostedService
 
             if (string.IsNullOrEmpty(workstationCode))
             {
-                _logger.LogWarning($"[ 工位流程服务 ] [ {e.TagName} ] 设备 {triggerInfo.EquipmentCode} 未关联工位");
+                _logger.LogWarning($"[ 工位流程服务 ] [ {e.TagCode} ] 设备 {triggerInfo.EquipmentCode} 未关联工位");
                 return;
             }
 
@@ -153,7 +153,7 @@ public class WorkstationProcessService : IHostedService
             // 查找对应的工位处理器
             if (!_processors.TryGetValue(workstationType, out var processor))
             {
-                _logger.LogWarning($"[ 工位流程服务 ] [ {e.TagName} ] 未找到工位类型 {workstationType} 的流程处理器 (工位: {workstationCode})");
+                _logger.LogWarning($"[ 工位流程服务 ] [ {e.TagCode} ] 未找到工位类型 {workstationType} 的流程处理器 (工位: {workstationCode})");
                 await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Error, "未找到工位处理器");
                 return;
             }
@@ -163,7 +163,7 @@ public class WorkstationProcessService : IHostedService
             {
                 WorkstationCode = workstationCode,
                 EquipmentCode = triggerInfo.EquipmentCode,
-                TriggerTagName = e.TagName,
+                TriggerTagName = e.TagCode,
                 TriggerValue = e.NewValue.Value,
                 TriggerTime = now
             };
@@ -171,11 +171,11 @@ public class WorkstationProcessService : IHostedService
             // 执行工位流程
             await processor.ExecuteAsync(context);
 
-            _logger.LogInformation($"[ 工位流程服务 ] [ {e.TagName} ] 工位流程执行完成: {workstationCode}");
+            _logger.LogInformation($"[ 工位流程服务 ] [ {e.TagCode} ] 工位流程执行完成: {workstationCode}");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"[ 工位流程服务 ] [ {e.TagName} ] 执行工位流程失败");
+            _logger.LogError(ex, $"[ 工位流程服务 ] [ {e.TagCode} ] 执行工位流程失败");
         }
     }
 

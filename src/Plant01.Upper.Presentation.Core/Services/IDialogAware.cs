@@ -1,23 +1,22 @@
 using System;
 
-namespace Plant01.Upper.Presentation.Core.Services
+namespace Plant01.Upper.Presentation.Core.Services;
+
+public interface IDialogAware
 {
-    public interface IDialogAware
-    {
-        /// <summary>
-        /// Dialog title
-        /// </summary>
-        string Title { get; }
+    /// <summary>
+    /// 对话框标题
+    /// </summary>
+    string Title { get; }
 
-        /// <summary>
-        /// Event to request closing the dialog with a result
-        /// </summary>
-        event Action<object> RequestClose;
+    /// <summary>
+    /// 请求关闭对话框并返回结果的事件
+    /// </summary>
+    event Action<object> RequestClose;
 
-        /// <summary>
-        /// Called when the dialog is opened
-        /// </summary>
-        /// <param name="parameters">Parameters passed to the dialog</param>
-        void OnDialogOpened(object parameters);
-    }
+    /// <summary>
+    /// 对话框打开时调用
+    /// </summary>
+    /// <param name="parameters">传递给对话框的参数</param>
+    void OnDialogOpened(object parameters);
 }

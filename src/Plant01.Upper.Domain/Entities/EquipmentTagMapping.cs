@@ -9,12 +9,12 @@ public class EquipmentTagMapping
     /// <summary>
     /// 标签代码（通信层标签全名，如 SDJ01.Heartbeat）
     /// </summary>
-    public string TagName { get; set; } = string.Empty;
+    public string TagCode { get; set; } = string.Empty;
 
     /// <summary>
     /// 标签名称（业务层标签全名，如 包装机01_申请读码）
     /// </summary>
-    public string TagCode { get; set; } = string.Empty;
+    public string TagName { get; set; } = string.Empty;
 
     /// <summary>
     /// 标签用途（如 Heartbeat, Alarm, Output, Mode, Recipe 等）
@@ -87,7 +87,7 @@ public static class TagPurpose
     public const string Pressure = "Pressure";        // 压力
     public const string QrCode = "QrCode";                // 二维码
     
-    // === 流程控制相关（新增） ===
+    // === 流程控制相关 ===
     public const string ProcessTrigger = "ProcessTrigger";     // 流程触发信号
     public const string ProcessResult = "ProcessResult";       // 流程结果回写
     public const string OrderRequest = "OrderRequest";         // 订单请求

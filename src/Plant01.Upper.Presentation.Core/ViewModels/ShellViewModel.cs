@@ -59,6 +59,14 @@ public partial class ShellViewModel : ObservableObject
         },
         new NavigateItem
         {
+            Title = "设备点位",
+            Description = "设备点位",
+            IconChar = "&#xe7c6;",
+            IconPlacement = "Top",
+            ViewModelType = typeof(DevicePointTableViewModel)
+        },
+        new NavigateItem
+        {
             Description = "Application settings",
             IconChar = "&#xe7c6;",
             IconPlacement = "Top",

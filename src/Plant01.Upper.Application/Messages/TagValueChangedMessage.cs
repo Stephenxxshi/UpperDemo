@@ -5,7 +5,8 @@ namespace Plant01.Upper.Application.Messages;
 /// </summary>
 public record TagValueChangedMessage(
     string EquipmentCode,   // 设备编号
-    string TagName,         // 标签名称
+    string TagCode,        // 标签代码
+    //string TagName,         // 标签名称
     object? NewValue,       // 新值
     object? OldValue,       // 旧值
     string Purpose,         // 标签用途

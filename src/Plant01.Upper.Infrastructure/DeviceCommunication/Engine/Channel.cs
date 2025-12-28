@@ -201,7 +201,8 @@ public class Channel : IDisposable
                     }
 
                     // 读取标签
-                    var readTags = _tags.Where(t => t.AccessRights.HasFlag(Models.AccessRights.Read)).ToList();
+                    //var readTags = _tags.Where(t => t.AccessRights.HasFlag(Models.AccessRights.Read)).ToList();
+                    var readTags = _tags;
                     if (readTags.Any())
                     {
                         var values = await _driver.ReadTagsAsync(readTags);
@@ -222,8 +223,11 @@ public class Channel : IDisposable
                                     // if (!isFirstLoad) 
                                     Task.Run(() =>
                                     {
-                                        //_logger.LogDebug("设备 {Device} 标签 {Tag} 值已更新为 {Value}", Name, tag.Name, kvp.Value);
-                                        _onTagChanged?.Invoke(tag);
+                                        if (tag.AccessRights != AccessRights.ReadWrite)
+                                        {
+                                            _logger.LogDebug("设备 {Device} 标签 {Tag} 值已更新为 {Value}", Name, tag.Code, kvp.Value);
+                                            _onTagChanged?.Invoke(tag);
+                                        }
                                     });
                                 }
                             }

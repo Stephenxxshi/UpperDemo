@@ -34,8 +34,7 @@ public class ConfigHotReloader : IDisposable
     {
         // Only care about tags.csv or json files in Channels folder
         if (e.Name != null && 
-            (e.Name.EndsWith("tags.csv", StringComparison.OrdinalIgnoreCase) || 
-             (e.Name.Contains("Channels") && e.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase))))
+             (e.Name.Contains("Channels") && e.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase)))
         {
             DebounceReload();
         }

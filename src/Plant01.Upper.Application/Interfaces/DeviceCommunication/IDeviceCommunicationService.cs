@@ -36,12 +36,12 @@ public interface IDeviceCommunicationService
 /// </summary>
 public class TagChangeEventArgs : EventArgs
 {
-    public string TagName { get; }
+    public string TagCode { get; }
     public TagValue NewValue { get; }
 
-    public TagChangeEventArgs(string tagName, TagValue newValue)
+    public TagChangeEventArgs(string tagCode, TagValue newValue)
     {
-        TagName = tagName;
+        TagCode = tagCode;
         NewValue = newValue;
     }
 }
