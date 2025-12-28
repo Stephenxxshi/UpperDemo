@@ -14,7 +14,7 @@ public class EquipmentTemplateDto
     public int Sequence { get; set; }
     public bool Enabled { get; set; } = true;
     public string? ConfigJson { get; set; }
-    
+
     // CSV Parent Linking
     public string? StationCode { get; set; }
     public string? LineCode { get; set; }
@@ -34,6 +34,7 @@ public class EquipmentMappingDto
 /// </summary>
 public class TagMappingDto
 {
+    public string TagCode { get; set; } = string.Empty;
     public string TagName { get; set; } = string.Empty;
     public string Purpose { get; set; } = string.Empty;
     public bool IsCritical { get; set; }
@@ -52,11 +53,13 @@ public class WorkstationRefDto
     public string Name { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty; // Added Type
     public int Sequence { get; set; }
+    public bool Enable { get; set; }
     public List<string> EquipmentRefs { get; set; } = new();
-    
+    public string? ConfigJson { get; set; } = string.Empty;
+
     // CSV Parent Linking
     public string? LineCode { get; set; }
-    
+
     // CSV Child Linking (Pipe separated)
-    public string? EquipmentRefsStr { get; set; } 
+    public string? EquipmentRefsStr { get; set; }
 }

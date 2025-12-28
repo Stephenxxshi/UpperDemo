@@ -196,20 +196,20 @@ public class WorkstationProcessService : IHostedService
 
             if (resultMapping != null)
             {
-                await _deviceComm.WriteTagAsync(resultMapping.TagName, (int)result);
+                await _deviceComm.WriteTagAsync(resultMapping.TagCode, (int)result);
                 _logger.LogInformation("[ 工位流程服务 ] 设备 [{Equipment} ] 写入 -> [ {TagName} ] = {Result}",
-                    equipmentCode, resultMapping.TagName, result);
+                    equipmentCode, resultMapping.TagCode, result);
             }
 
             // 如果有消息标签，也写回消息
             if (!string.IsNullOrEmpty(message))
             {
                 var messageMapping = equipment.TagMappings
-                    .FirstOrDefault(m => m.TagName.Contains("Message") || m.TagName.Contains("Msg"));
+                    .FirstOrDefault(m => m.TagCode.Contains("Message") || m.TagCode.Contains("Msg"));
 
                 if (messageMapping != null)
                 {
-                    await _deviceComm.WriteTagAsync(messageMapping.TagName, message);
+                    await _deviceComm.WriteTagAsync(messageMapping.TagCode, message);
                 }
             }
         }

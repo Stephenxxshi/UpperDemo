@@ -48,6 +48,17 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
             return;
         }
 
+        // 获取包装时间和包装重量
+        var packagingWeightTag = equipment.TagMappings.FirstOrDefault(tag => tag.Purpose == "Weight");
+        var packagingTimeSpanTag = equipment.TagMappings.FirstOrDefault(tag => tag.Purpose == "TimeOffset");
+        float? packagingWeight = null;
+        float? packagingTimeSpan = null;
+        if (packagingWeightTag != null && packagingTimeSpanTag != null)
+        {
+            packagingWeight = _deviceComm.GetTagValue<float>(packagingWeightTag.TagCode);
+            packagingTimeSpan = _deviceComm.GetTagValue<float>(packagingTimeSpanTag.TagCode);
+        }
+
 
         // 保存袋码
         using var scope = _serviceScopeFactory.CreateScope();
@@ -60,6 +71,7 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
 
         if (bag == null)
         {
+            _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 创建新袋码记录");
             // 上袋是第一步，如果不存在则创建
             bag = new Bag
             {
@@ -72,7 +84,9 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
                 StationNo = context.WorkstationCode,
                 ProductWeightUnit = "kg", // 默认单位
                 ProductHeightUnit = "mm",  // 默认单位
-                BatchCode = currentWorkOrder.BatchNumber
+                BatchCode = currentWorkOrder.BatchNumber,
+                PackagingWeight = packagingWeight,
+                PackagingTimeSpan = TimeSpan.FromSeconds((double)packagingTimeSpan)
             };
             await bagRepo.AddAsync(bag);
             isNew = true;

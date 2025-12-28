@@ -208,7 +208,7 @@ public class Channel : IDisposable
 
                         foreach (var kvp in values)
                         {
-                            var tag = _tags.FirstOrDefault(t => t.Name == kvp.Key);
+                            var tag = _tags.FirstOrDefault(t => t.Code == kvp.Key);
                             if (tag != null)
                             {
                                 // 记录更新前的状态，用于判断是否是首次初始化
@@ -257,7 +257,7 @@ public class Channel : IDisposable
 
         public async Task<bool> TryWriteTagAsync(string tagName, object value)
         {
-            var tag = _tags.FirstOrDefault(t => t.Name == tagName);
+            var tag = _tags.FirstOrDefault(t => t.Code == tagName);
             if (tag != null)
             {
                 await _driver.WriteTagAsync(tag, value);

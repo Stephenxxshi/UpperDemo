@@ -13,7 +13,7 @@ public class TagEngine
 
     public void RegisterTag(CommunicationTag tag)
     {
-        _tags[tag.Name] = tag;
+        _tags[tag.Code] = tag;
     }
 
     public void Clear()

@@ -7,10 +7,15 @@ namespace Plant01.Upper.Domain.Entities;
 public class EquipmentTagMapping
 {
     /// <summary>
-    /// 标签名称（通信层标签全名，如 SDJ01.Heartbeat）
+    /// 标签代码（通信层标签全名，如 SDJ01.Heartbeat）
     /// </summary>
     public string TagName { get; set; } = string.Empty;
-    
+
+    /// <summary>
+    /// 标签名称（业务层标签全名，如 包装机01_申请读码）
+    /// </summary>
+    public string TagCode { get; set; } = string.Empty;
+
     /// <summary>
     /// 标签用途（如 Heartbeat, Alarm, Output, Mode, Recipe 等）
     /// </summary>

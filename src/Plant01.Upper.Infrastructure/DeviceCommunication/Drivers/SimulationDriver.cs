@@ -89,7 +89,7 @@ public class SimulationDriver : IDriver
                 val = arr;
             }
 
-            result[tag.Name] = val;
+            result[tag.Code] = val;
         }
 
         return Task.FromResult(result);

@@ -7,7 +7,7 @@ public class TagMap : ClassMap<CommunicationTag>
 {
     public TagMap()
     {
-        Map(m => m.Name).Name("TagName");
+        Map(m => m.Code).Name("TagCode");
         Map(m => m.Address).Name("Address");
         Map(m => m.Description).Name("Description").Optional();
         
@@ -24,8 +24,7 @@ public class TagMap : ClassMap<CommunicationTag>
             if (string.Equals(typeStr, "Int", StringComparison.OrdinalIgnoreCase)) return TagDataType.Int32;
             if (string.Equals(typeStr, "UInt", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt32;
             if (string.Equals(typeStr, "Bool", StringComparison.OrdinalIgnoreCase)) return TagDataType.Boolean;
-            if (string.Equals(typeStr, "Real", StringComparison.OrdinalIgnoreCase)) return TagDataType.Float;
-            if (string.Equals(typeStr, "DInt", StringComparison.OrdinalIgnoreCase)) return TagDataType.Int32;
+            if (string.Equals(typeStr, "Float", StringComparison.OrdinalIgnoreCase)) return TagDataType.Float;
             if (string.Equals(typeStr, "Word", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt16;
             if (string.Equals(typeStr, "DWord", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt32;
             

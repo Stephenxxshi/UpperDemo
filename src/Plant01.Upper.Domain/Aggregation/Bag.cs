@@ -17,83 +17,112 @@ public class Bag : CommonFields
     /// 产线
     /// </summary>
     public string LineNo { get; set; } = string.Empty;
+
     /// <summary>
     /// 工位
     /// </summary>
     public string StationNo { get; set; } = string.Empty;
+
     /// <summary>
     /// 袋码
     /// </summary>
     public string BagCode { get; set; } = string.Empty;
+
     /// <summary>
     /// 工单号
     /// </summary>
     public string OrderCode { get; set; } = string.Empty;
+
     /// <summary>
     /// 配方
     /// </summary>
     public string ProductCode { get; set; } = string.Empty;
+
     /// <summary>
     /// 牌号
     /// </summary>
     public string ProductAlias { get; set; } = string.Empty;
+
     /// <summary>
     /// 标称重量
     /// </summary>
     public float? ProductWeight { get; set; }
 
     /// <summary>
+    /// 包装机包装重量
+    /// </summary>
+    public float? PackagingWeight { get; set; }
+
+    /// <summary>
+    /// 包装时间
+    /// </summary>
+    public TimeSpan? PackagingTimeSpan { get; set; }
+
+    /// <summary>
     /// 实际重量
     /// </summary>
     public float? ProductActualWeight { get; set; }
+
     /// <summary>
     /// 重量单位
     /// </summary>
-    public string ProductWeightUnit { get; set; }
+    public string ProductWeightUnit { get; set; } = string.Empty;
+
     /// <summary>
     /// 袋偏
     /// </summary>
-    public ushort ProductHeight { get; set; }
+    public ushort? ProductHeight { get; set; }
+
     /// <summary>
     /// 袋偏单位
     /// </summary>
     public string ProductHeightUnit { get; set; }
+
     /// <summary>
     /// 批号
     /// </summary>
     public string BatchCode { get; set; }
+
     /// <summary>
     /// 批次补位
     /// </summary>
     public ushort SeqDigits { get; set; }
+
     /// <summary>
     /// 垛型
     /// </summary>
     public ushort LoadShape { get; set; }
+
     /// <summary>
     /// 垛量
     /// </summary>
     public ushort LoadQuantity { get; set; }
+
     /// <summary>
     /// 是否打印
     /// </summary>
     public bool IsNeedPrint { get; set; }
+
     /// <summary>
     /// 序列号
     /// </summary>
     public string? SerialNo { get; set; }
+
     /// <summary>
     /// 垛位
     /// </summary>
     public ushort? LoadPosition { get; set; }
+
     /// <summary>
     /// 托盘码
     /// </summary>
     public string? PalletCode { get; set; }
+
     /// <summary>
     /// 喷墨时间
     /// </summary>
     public DateTime? PrintedAt { get; set; }
+
     /// <summary>
     /// 码垛时间
     /// </summary>

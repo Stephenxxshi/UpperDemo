@@ -166,8 +166,8 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
     private void OnTagValueChanged(CommunicationTag tag)
     {
         var snapshot = tag.GetSnapshot();
-        var tagValue = new TagValue(tag.Name, snapshot.Value, (Domain.Models.TagQuality)snapshot.Quality, snapshot.Timestamp);
-        TagChanged?.Invoke(this, new TagChangeEventArgs(tag.Name, tagValue));
+        var tagValue = new TagValue(tag.Code, snapshot.Value, (Domain.Models.TagQuality)snapshot.Quality, snapshot.Timestamp);
+        TagChanged?.Invoke(this, new TagChangeEventArgs(tag.Code, tagValue));
     }
 
     public TagValue GetTagValue(string tagName)
@@ -178,7 +178,7 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
             return new TagValue(tagName, null, Domain.Models.TagQuality.Bad, DateTime.MinValue);
         }
         var snapshot = tag.GetSnapshot();
-        return new TagValue(tag.Name, snapshot.Value, (Domain.Models.TagQuality)snapshot.Quality, snapshot.Timestamp);
+        return new TagValue(tag.Code, snapshot.Value, (Domain.Models.TagQuality)snapshot.Quality, snapshot.Timestamp);
     }
 
     public T GetTagValue<T>(string tagName, T defaultValue = default)

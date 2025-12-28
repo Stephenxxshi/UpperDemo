@@ -69,6 +69,7 @@ public class EquipmentConfigService : IEquipmentConfigService
 
                     var mapping = new TagMappingDto
                     {
+                        TagCode = row.TagCode?.Trim() ?? "",
                         TagName = row.TagName?.Trim() ?? "",
                         Purpose = row.Purpose?.Trim() ?? "",
                         IsCritical = row.IsCritical,
@@ -99,6 +100,7 @@ public class EquipmentConfigService : IEquipmentConfigService
 
     public class EquipmentMappingCsvRow
     {
+        public string TagCode { get; set; } = string.Empty;
         public string TagName { get; set; } = string.Empty;
         public string Purpose { get; set; } = string.Empty;
         [CsvHelper.Configuration.Attributes.Optional]
@@ -114,7 +116,7 @@ public class EquipmentConfigService : IEquipmentConfigService
     {
         if (string.IsNullOrWhiteSpace(input)) return TagDirection.Input;
         if (input.Equals("Output", StringComparison.OrdinalIgnoreCase) ||
-            input.Equals("OutPut", StringComparison.OrdinalIgnoreCase)) // Handle typo in CSV
+            input.Equals("OutPut", StringComparison.OrdinalIgnoreCase)) // 处理CSV中的拼写错误
         {
             return TagDirection.Output;
         }
@@ -128,7 +130,7 @@ public class EquipmentConfigService : IEquipmentConfigService
     {
         if (!_equipmentCache.TryGetValue(code, out var template))
         {
-            _logger.LogWarning("[ 设备通信服务 ] 未找到设备模板: {Code}", code);
+            _logger.LogWarning("[ 设备配置服务 ] 未找到设备模板: {Code}", code);
             return null;
         }
 
@@ -149,6 +151,7 @@ public class EquipmentConfigService : IEquipmentConfigService
             equipment.TagMappings = mappings.Select(m => new EquipmentTagMapping
             {
                 TagName = m.TagName,
+                TagCode = m.TagCode,
                 Purpose = m.Purpose,
                 IsCritical = m.IsCritical,
                 Direction = m.Direction,
@@ -205,7 +208,7 @@ public class EquipmentConfigService : IEquipmentConfigService
     /// </summary>
     public void Reload()
     {
-        _logger.LogInformation("[ 设备通信服务 ] 正在重新加载设备配置...");
+        _logger.LogInformation("[ 设备配置服务 ] 正在重新加载设备配置...");
         LoadConfigs();
     }
 
@@ -218,7 +221,7 @@ public class EquipmentConfigService : IEquipmentConfigService
         {
             return type;
         }
-        _logger.LogWarning("[ 设备通信服务 ] 未知的设备类型: {Type}, 使用默认值 Unknown", typeStr);
+        _logger.LogWarning("[ 设备配置服务 ] 未知的设备类型: {Type}, 使用默认值 Unknown", typeStr);
         return EquipmentType.Unknown;
     }
 

@@ -119,11 +119,11 @@ public class WsdomInkjetTcpDriver : IDriver
                     foreach (var tag in commTags.Where(t => t.Address.StartsWith("PrintStatus", StringComparison.OrdinalIgnoreCase)))
                     {
                         if (tag.Address.Equals("PrintStatus", StringComparison.OrdinalIgnoreCase))
-                            result[tag.Name] = JsonSerializer.Serialize(response);
+                            result[tag.Code] = JsonSerializer.Serialize(response);
                         else if (tag.Address.Equals("PrintStatus.Progress", StringComparison.OrdinalIgnoreCase))
-                            result[tag.Name] = response.Progress;
+                            result[tag.Code] = response.Progress;
                         else if (tag.Address.Equals("PrintStatus.TotalPages", StringComparison.OrdinalIgnoreCase))
-                            result[tag.Name] = response.TotalPages;
+                            result[tag.Code] = response.TotalPages;
                     }
                 }
             }
@@ -137,7 +137,7 @@ public class WsdomInkjetTcpDriver : IDriver
                 {
                     foreach (var tag in commTags.Where(t => t.Address.StartsWith("Jobs", StringComparison.OrdinalIgnoreCase)))
                     {
-                        result[tag.Name] = JsonSerializer.Serialize(response);
+                        result[tag.Code] = JsonSerializer.Serialize(response);
                     }
                 }
             }

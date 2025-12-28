@@ -284,7 +284,7 @@ public class ConfigurationLoader
         }
 
         var existing = LoadTags();
-        var dict = existing.ToDictionary(t => t.Name, StringComparer.OrdinalIgnoreCase);
+        var dict = existing.ToDictionary(t => t.Code, StringComparer.OrdinalIgnoreCase);
 
         foreach (var s in scanned)
         {
@@ -312,7 +312,7 @@ public class ConfigurationLoader
             {
                 existing.Add(new CommunicationTag
                 {
-                    Name = s.TagName,
+                    Code = s.TagName,
                     Address = s.Address,
                     DataType = dataType,
                     ArrayLength = arrayLen,

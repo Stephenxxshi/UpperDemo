@@ -86,22 +86,22 @@ public class HeartbeatService : BackgroundService
             try
             {
                 // 初始化状态
-                if (!_heartbeatStates.ContainsKey(mapping.TagName))
+                if (!_heartbeatStates.ContainsKey(mapping.TagCode))
                 {
-                    _heartbeatStates[mapping.TagName] = false;
+                    _heartbeatStates[mapping.TagCode] = false;
                 }
 
                 // 翻转状态 (0 -> 1 -> 0)
-                _heartbeatStates[mapping.TagName] = !_heartbeatStates[mapping.TagName];
-                var valueToWrite = _heartbeatStates[mapping.TagName];
+                _heartbeatStates[mapping.TagCode] = !_heartbeatStates[mapping.TagCode];
+                var valueToWrite = _heartbeatStates[mapping.TagCode];
 
                 // 写入标签
-                await _deviceCommunicationService.WriteTagAsync(mapping.TagName, valueToWrite);
+                await _deviceCommunicationService.WriteTagAsync(mapping.TagCode, valueToWrite);
             }
             catch (Exception ex)
             {
                 // 仅记录警告，避免刷屏
-                _logger.LogWarning("[ 心跳服务 ] 向标签 {Tag} 写入心跳失败: {Message}", mapping.TagName, ex.Message);
+                _logger.LogWarning("[ 心跳服务 ] 向标签 {Tag} 写入心跳失败: {Message}", mapping.TagCode, ex.Message);
             }
         }
     }

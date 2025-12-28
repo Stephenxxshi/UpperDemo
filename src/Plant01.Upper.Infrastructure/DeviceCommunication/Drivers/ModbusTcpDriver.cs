@@ -109,12 +109,12 @@ public class ModbusTcpDriver : IDriver
                     _ => throw new NotSupportedException($"不支持的数据类型: {tag.DataType}")
                 };
 
-                result[tag.Name] = value;
+                result[tag.Code] = value;
             }
             catch (Exception ex)
             {
-                result[tag.Name] = null;
-                Console.WriteLine($"读取标签 {tag.Name} 失败: {ex.Message}");
+                result[tag.Code] = null;
+                Console.WriteLine($"读取标签 {tag.Code} 失败: {ex.Message}");
             }
         }
 

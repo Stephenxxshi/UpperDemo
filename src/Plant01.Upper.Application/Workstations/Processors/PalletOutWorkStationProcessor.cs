@@ -43,7 +43,7 @@ public class PalletOutWorkStationProcessor : WorkstationProcessorBase
         string pallet = string.Empty;
         if (palletTag is not null)
         {
-            pallet = _deviceComm.GetTagValue<string>(palletTag.TagName);
+            pallet = _deviceComm.GetTagValue<string>(palletTag.TagCode);
             _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 在 {context.EquipmentCode}  读取到托盘号: {pallet}");
         }
 

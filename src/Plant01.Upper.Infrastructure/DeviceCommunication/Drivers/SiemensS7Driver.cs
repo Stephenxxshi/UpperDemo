@@ -201,11 +201,11 @@ public class SiemensS7Driver : IDriver
                 {
                     int relativeOffset = tag.GetS7Offset() - startOffset;
                     object? val = ParseTagValueFromBytes(tag, content, relativeOffset);
-                    dict[tag.Name] = val;
+                    dict[tag.Code] = val;
                 }
                 catch
                 {
-                    dict[tag.Name] = null;
+                    dict[tag.Code] = null;
                 }
             }
         }
@@ -298,22 +298,22 @@ public class SiemensS7Driver : IDriver
             {
                 var len = Math.Max(1, (int)tag.ArrayLength);
                 var r = _client!.ReadString(tag.Address, (ushort)len);
-                dict[tag.Name] = r.IsSuccess ? r.Content : null;
+                dict[tag.Code] = r.IsSuccess ? r.Content : null;
                 return;
             }
 
             int count = Math.Max(1, (int)tag.ArrayLength);
             if (count > 1)
             {
-                dict[tag.Name] = ReadArrayByAddress(_client!, tag.DataType, tag.Address, count);
+                dict[tag.Code] = ReadArrayByAddress(_client!, tag.DataType, tag.Address, count);
                 return;
             }
 
-            dict[tag.Name] = ReadScalarByAddress(_client!, tag.DataType, tag.Address);
+            dict[tag.Code] = ReadScalarByAddress(_client!, tag.DataType, tag.Address);
         }
         catch
         {
-            dict[tag.Name] = null;
+            dict[tag.Code] = null;
         }
     }
 

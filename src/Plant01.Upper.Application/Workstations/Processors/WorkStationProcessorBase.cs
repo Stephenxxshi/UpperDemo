@@ -47,8 +47,8 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
         var autoModeTag = mdj1?.TagMappings.FirstOrDefault(m => m.Purpose == "AutoMode");
         if (manualModeTag != null && autoModeTag != null)
         {
-            var isManualMode = _deviceComm.GetTagValue<bool>(manualModeTag.TagName);
-            var isAutoMode = _deviceComm.GetTagValue<bool>(autoModeTag.TagName);
+            var isManualMode = _deviceComm.GetTagValue<bool>(manualModeTag.TagCode);
+            var isAutoMode = _deviceComm.GetTagValue<bool>(autoModeTag.TagCode);
             if (isManualMode && !isAutoMode)
             {
                 _logger.LogInformation("[ {WorkStationProcess} ] 设备处于手动模式，跳过流程执行", WorkStationProcess);
@@ -71,12 +71,12 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
         context.Equipment = equipment;
 
         // 获取袋码标签
-        var qrCodeTag = context.Equipment.TagMappings.FirstOrDefault(m => m.Purpose == "QrCode" || m.TagName.EndsWith(".Code"));
+        var qrCodeTag = context.Equipment.TagMappings.FirstOrDefault(m => m.Purpose == "QrCode" || m.TagCode.EndsWith(".Code"));
         string bagCode = string.Empty;
 
         if (qrCodeTag != null)
         {
-            bagCode = _deviceComm.GetTagValue<string>(qrCodeTag.TagName);
+            bagCode = _deviceComm.GetTagValue<string>(qrCodeTag.TagCode);
         }
 
         if (string.IsNullOrEmpty(bagCode))
@@ -104,12 +104,12 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
             if (!string.IsNullOrEmpty(message))
             {
                 var messageMapping = context.Equipment.TagMappings
-                    .FirstOrDefault(m => m.TagName.Contains("Message") || m.TagName.Contains("Msg"));
+                    .FirstOrDefault(m => m.TagCode.Contains("Message") || m.TagCode.Contains("Msg"));
 
                 if (messageMapping != null)
                 {
-                    await _deviceComm.WriteTagAsync(messageMapping.TagName, message);
-                    _logger.LogInformation($"[ {WorkStationProcess} ] {context.BagCode ?? string.Empty} ] -> 写入 {messageMapping?.TagName} = {(int)result}");
+                    await _deviceComm.WriteTagAsync(messageMapping.TagCode, message);
+                    _logger.LogInformation($"[ {WorkStationProcess} ] {context.BagCode ?? string.Empty} ] -> 写入 {messageMapping?.TagCode} = {(int)result}");
                 }
             }
             // 查找 ProcessResult 用途的标签
@@ -118,8 +118,8 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
 
             if (resultMapping != null)
             {
-                await _deviceComm.WriteTagAsync(resultMapping.TagName, (int)result);
-                _logger.LogInformation($"[ {WorkStationProcess} ]  [ {context.BagCode ?? string.Empty} ] -> 写入 [ {resultMapping.TagName} ] ：{(int)result}({result})");
+                await _deviceComm.WriteTagAsync(resultMapping.TagCode, (int)result);
+                _logger.LogInformation($"[ {WorkStationProcess} ]  [ {context.BagCode ?? string.Empty} ] -> 写入 [ {resultMapping.TagCode} ] ：{(int)result}({result})");
             }
 
 

@@ -81,7 +81,7 @@ public class CommunicationTag
     /// <summary>
     /// 获取或设置标签名称
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
 
     /// <summary>
     /// 获取或设置标签描述
@@ -184,7 +184,7 @@ public class CommunicationTag
     /// </summary>
     public CommunicationTag(string name, string address, TagDataType dataType, string deviceName, string channelName, AccessRights accessRights, ushort arrayLength = 1)
     {
-        Name = name;
+        Code = name;
         Address = address;
         DataType = dataType;
         DeviceCode = deviceName;
