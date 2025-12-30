@@ -41,7 +41,7 @@ public class WorkstationProcessContext
     /// <summary>
     /// 触发的设备实体
     /// </summary>
-    public Equipment Equipment { get; set; } = default!;
+    public Equipment TriggerEquipment { get; set; } = default!;
 
     /// <summary>
     /// 触发标签名称

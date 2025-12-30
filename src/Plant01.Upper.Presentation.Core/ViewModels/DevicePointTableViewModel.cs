@@ -2,13 +2,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 
-using Microsoft.AspNetCore.Mvc.Razor.Infrastructure;
-
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Application.Messages;
 using Plant01.Upper.Presentation.Core.Models;
 using Plant01.Upper.Presentation.Core.Services;
+
 using System.Collections.ObjectModel;
 
 namespace Plant01.Upper.Presentation.Core.ViewModels;
@@ -88,8 +87,8 @@ public partial class DevicePointTableViewModel : ObservableObject, IRecipient<Ta
 
         try
         {
-            await _deviceCommunicationService.WriteTagAsync(model.TagName, model.WriteValue);
-            await _dialogService.ShowMessageAsync($"写入成功！\n标签: {model.TagName}\n值: {model.WriteValue}");
+            await _deviceCommunicationService.WriteTagAsync(model.TagCode, model.WriteValue);
+            await _dialogService.ShowMessageAsync($"写入成功！\n标签: {model.TagCode}\n值: {model.WriteValue}");
             model.WriteValue = string.Empty; // 写入成功后清空输入框
         }
         catch (Exception ex)

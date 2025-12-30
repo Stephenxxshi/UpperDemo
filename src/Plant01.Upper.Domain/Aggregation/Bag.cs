@@ -177,7 +177,8 @@ public class Bag : CommonFields
     {
         // 逻辑：没有成功的上袋记录即可（或者允许重复上袋但需记录）
         // 这里假设一个袋码只能上袋一次
-        return !Records.Any(r => r.Step == ProcessStep.Packaging && r.IsSuccess);
+        //return !Records.Any(r => r.Step == ProcessStep.Packaging && r.IsSuccess);
+        return true;
     }
 
     /// <summary>

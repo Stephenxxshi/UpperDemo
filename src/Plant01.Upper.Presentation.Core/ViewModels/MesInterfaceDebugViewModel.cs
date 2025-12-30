@@ -104,8 +104,8 @@ public partial class MesInterfaceDebugViewModel : ObservableObject
     private string _password = "123456";
 
     [ObservableProperty]
-    //private string _baseUrl = "http://localhost:5000";
-    private string _baseUrl = "http://2bm09ua35806.vicp.fun:41916";
+    private string _baseUrl = "http://localhost:5000";
+    //private string _baseUrl = "http://2bm09ua35806.vicp.fun:41916";
 
     // 日志
     [ObservableProperty]

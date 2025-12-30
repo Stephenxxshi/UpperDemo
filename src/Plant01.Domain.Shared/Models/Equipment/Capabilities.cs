@@ -1,5 +1,3 @@
-using System;
-
 namespace Plant01.Domain.Shared.Models.Equipment;
 
 [Flags]

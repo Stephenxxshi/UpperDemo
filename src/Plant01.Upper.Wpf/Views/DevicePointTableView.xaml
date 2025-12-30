@@ -67,10 +67,10 @@
                 </DataGridTemplateColumn>
 
                 <!--  操作列  -->
-                <DataGridTemplateColumn Width="80" Header="操作">
+                <DataGridTemplateColumn Width="100" Header="操作">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button
+                            <controls:AntButton
                                 Margin="2"
                                 Command="{Binding DataContext.WriteTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                 CommandParameter="{Binding}"

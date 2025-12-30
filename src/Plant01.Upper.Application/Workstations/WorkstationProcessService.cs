@@ -86,7 +86,7 @@ public class WorkstationProcessService : IHostedService
 
             foreach (var mapping in triggerMappings)
             {
-                _triggerMappings[mapping.TagName] = new WorkstationTriggerInfo
+                _triggerMappings[mapping.TagCode] = new WorkstationTriggerInfo
                 {
                     EquipmentCode = mappingDto.EquipmentCode,
                     TagMapping = mapping,
@@ -108,7 +108,7 @@ public class WorkstationProcessService : IHostedService
         if (!_triggerMappings.TryGetValue(e.TagCode, out var triggerInfo))
             return;
 
-        // 检查触发条件
+        // 检查触发条件是否满足
         if (!TriggerEvaluator.Evaluate(e.NewValue.Value, triggerInfo.TagMapping.TriggerCondition))
         {
             await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Idle);
@@ -138,16 +138,6 @@ public class WorkstationProcessService : IHostedService
             {
                 _logger.LogWarning($"[ 工位流程服务 ] [ {e.TagCode} ] 设备 {triggerInfo.EquipmentCode} 未关联工位");
                 return;
-            }
-
-            // 如果 Workstation 实体没有 Type 属性，这里暂时用硬编码
-            if (string.IsNullOrEmpty(workstationType))
-            {
-                // 简单推断：如果工位代码包含 PKG 则为 Packaging
-                //if (workstationCode.Contains("PKG")) workstationType = "Packaging";
-                //else if (workstationCode.Contains("PAL")) workstationType = "Palletizing";
-                //else 
-                workstationType = "Unknown";
             }
 
             // 查找对应的工位处理器

@@ -4,6 +4,7 @@
     "Name": "1# 生产线",
     "Enable": true,
     "Description": "1号包装码垛线",
+    "AgvDeviceCode": "AGV1",
     "StrategyConfigJson": "{\"AllocationMode\": \"Dynamic\", \"Palletizers\": [{\"Code\": \"L1_PAL01\", \"SourcePackers\": [\"L1_PM01\", \"L1_PM02\", \"L1_PM03\"]}, {\"Code\": \"L1_PAL02\", \"SourcePackers\": [\"L1_PM04\", \"L1_PM05\", \"L1_PM06\"]}, {\"Code\": \"L1_PAL03\", \"SourcePackers\": [\"L1_PM07\", \"L1_PM08\"]}]}",
     "Workstations": [
       //{
@@ -54,6 +55,7 @@
     "Code": "MDJ2",
     "Name": "2# 生产线",
     "Enable": true,
-    "Description": "2号包装码垛线"    
+    "Description": "2号包装码垛线",
+    "AgvDeviceCode": "AGV2"
   }
 ]

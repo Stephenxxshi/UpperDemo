@@ -18,6 +18,11 @@ public class ProductionLine
     public required string Name { get; set; }
 
     /// <summary>
+    /// AGV设备编号（对应设备配置中的设备编号）
+    /// </summary>
+    public string AgvDeviceCode { get; set; } = string.Empty;
+
+    /// <summary>
     /// 描述
     /// </summary>
     public string? Description { get; set; }

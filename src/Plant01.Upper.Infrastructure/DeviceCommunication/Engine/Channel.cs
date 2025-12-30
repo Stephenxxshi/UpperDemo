@@ -225,7 +225,7 @@ public class Channel : IDisposable
                                     {
                                         if (tag.AccessRights != AccessRights.ReadWrite)
                                         {
-                                            _logger.LogDebug("设备 {Device} 标签 {Tag} 值已更新为 {Value}", Name, tag.Code, kvp.Value);
+                                            _logger.LogDebug("设备:{Device} 标签:{Tag} 更新为:{Value}", Name, tag.Code, kvp.Value);
                                             _onTagChanged?.Invoke(tag);
                                         }
                                     });

@@ -4,6 +4,8 @@ using Plant01.Upper.Domain.Aggregation;
 using Plant01.Upper.Domain.Repository;
 using Plant01.Upper.Domain.ValueObjects;
 
+using System.Text.Json;
+
 namespace Plant01.Upper.Application.Workstations.Processors;
 
 /// <summary>
@@ -14,7 +16,7 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
 
     public PackagingWorkstationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
     {
-        WorkstationType = "Packaging";
+        WorkstationType = "WS_Packaging";
         WorkStationProcess = "包装工位流程";
     }
 
@@ -60,7 +62,7 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
         }
 
 
-        // 保存袋码
+        // 获取袋子实体
         using var scope = _serviceScopeFactory.CreateScope();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         var bagRepo = unitOfWork.BagRepository;
@@ -71,7 +73,7 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
 
         if (bag == null)
         {
-            _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 创建新袋码记录");
+            _logger.LogInformation($"[ {WorkStationProcess} ] 袋码:[ {bagCode} ] -> 创建新袋码记录");
             // 上袋是第一步，如果不存在则创建
             bag = new Bag
             {
@@ -92,22 +94,35 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
             isNew = true;
         }
 
-
-        if (bag.CanPackaging())
+        // 是否可以包装
+        if (!bag.CanPackaging())
         {
-            bag.AddRecord(ProcessStep.Packaging, context.EquipmentCode, true);
-
-            if (!isNew)
-            {
-                await bagRepo.UpdateAsync(bag);
-            }
-
-            await unitOfWork.SaveChangesAsync();
-            _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 在 {context.EquipmentCode} 包装");
+            _logger.LogError($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 袋码已使用，无法再次包装");
+            await WriteProcessResult(context, ProcessResult.Error, "袋码已使用，无法再次包装");
+            return;
         }
 
+        // 增加包装记录
+        var obj = new
+        {
+            PackagingWeight = packagingWeight,
+            PackagingTimeSpan = packagingTimeSpan
+        };
+        string data = JsonSerializer.Serialize(obj);
+        bag.AddRecord(ProcessStep.Packaging, context.EquipmentCode, true, data);
+
+        if (!isNew)
+        {
+            await bagRepo.UpdateAsync(bag);
+        }
+
+        // 更新袋码状态
+        await unitOfWork.SaveChangesAsync();
+        _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 在 {context.EquipmentCode} 包装");
         await WriteProcessResult(context, ProcessResult.Success, "包装工位流程执行完成");
         _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] 流程执行完成");
+
+
     }
 
 

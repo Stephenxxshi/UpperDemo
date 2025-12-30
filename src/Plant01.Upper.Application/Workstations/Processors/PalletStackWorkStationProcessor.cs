@@ -1,43 +1,43 @@
+using Plant01.Upper.Application.Contracts.Api.Requests;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
+using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Entities;
-using Plant01.Upper.Domain.Repository;
 
 namespace Plant01.Upper.Application.Workstations.Processors;
 
 /// <summary>
 /// 工位流程处理器基类
 /// </summary>
-public abstract class WorkstationProcessorBase : IWorkstationProcessor
+public abstract class PalletStackWorkStationProcessor : IWorkstationProcessor
 {
-    public string WorkstationType { get; protected set; } = string.Empty;
-    protected string WorkStationProcess = string.Empty;
-    protected Equipment TriggerEquipment;
+    public string WorkstationType { get; } = "WS_PalletStack";
+    private string WorkStationProcess = "进母托盘垛工位流程";
+    private Equipment TriggerEquipment;
+    private readonly IDeviceCommunicationService _deviceComm;
+    private readonly IMesService _mesService;
+    private readonly ILogger<PalletStackWorkStationProcessor> _logger;
+    private readonly IEquipmentConfigService _equipmentConfigService;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ProductionConfigManager _productionConfig;
 
-    protected readonly IDeviceCommunicationService _deviceComm;
-    protected readonly IMesService _mesService;
-    protected readonly ILogger<WorkstationProcessorBase> _logger;
-    protected readonly IEquipmentConfigService _equipmentConfigService;
-    protected readonly IServiceProvider _serviceProvider;
-    protected readonly IWorkOrderRepository _workOrderRepository;
-    protected readonly IServiceScopeFactory _serviceScopeFactory;
-
-    public WorkstationProcessorBase(
+    public PalletStackWorkStationProcessor(
         IDeviceCommunicationService deviceComm,
         IMesService mesService,
         IEquipmentConfigService equipmentConfigService,
+        ProductionConfigManager productionConfig,
         IServiceScopeFactory serviceScopeFactory,
         IServiceProvider serviceProvider,
-        IWorkOrderRepository workOrderRepository,
-        ILogger<WorkstationProcessorBase> logger)
+        ILogger<PalletStackWorkStationProcessor> logger)
     {
         _deviceComm = deviceComm;
         _mesService = mesService;
         _logger = logger;
-        _workOrderRepository = workOrderRepository;
         _equipmentConfigService = equipmentConfigService;
         _serviceProvider = serviceProvider;
         _serviceScopeFactory = serviceScopeFactory;
+        _productionConfig = productionConfig;
     }
 
     public async Task ExecuteAsync(WorkstationProcessContext context)
@@ -59,48 +59,48 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
 
         _logger.LogInformation("[ {WorkStationProcess} ] [ 标签: {Tag} ] 触发流程", WorkStationProcess, context.TriggerTagName);
 
-        // 获取设备配置以查找标签
+        // 获取是母托盘还是子托盘缺少
+        int palletType = 1;
+
+        // 获取AGV代码
+        var line = _productionConfig.GetProductionLineByWorkstation(context.WorkstationCode);
+        if (line is null)
+        {
+            _logger.LogError("[ {WorkStationProcess} ] 未找到生产线配置，无法获取AGV代码", WorkStationProcess);
+            await WriteProcessResult(context, ProcessResult.Error, "未找到生产线配置");
+            return;
+        }
+        var agvCode = line.AgvDeviceCode;
+
+        // 发送缺托盘信息给MES
+        LackPalletRequest request = new LackPalletRequest
+        {
+            AgvDeviceCode = agvCode,
+            PalletType = palletType
+        };
+
+        // todo:写一个通用的将报文保存到指定文件夹的方法
+        var mesApiResponse = await _mesService.ReportLackPalletAsync(request);
+        if (!mesApiResponse.IsSuccess)
+        {
+            _logger.LogError("[ {WorkStationProcess} ] MES接口调用失败 {mesApiResponse}", WorkStationProcess, mesApiResponse.ErrorMsg);
+            await WriteProcessResult(context, ProcessResult.Error, mesApiResponse.ErrorMsg);
+            return;
+        }
+
+        await WriteProcessResult(context, ProcessResult.Success, "缺托盘信息已发送到MES");
+    }
+
+    protected async Task<Equipment?> GetEquipmentMent(WorkstationProcessContext context)
+    {
         var equipment = _equipmentConfigService.GetEquipment(context.EquipmentCode);
         if (equipment == null)
         {
             _logger.LogError($"[ {WorkStationProcess} ]  [ {context.TriggerTagName} ] -> 在工位  [ {context.WorkstationCode} ] : 未找到设备配置 ");
 
             await WriteProcessResult(context, ProcessResult.Error, "未找到设备配置");
-            return;
         }
-
-        context.TriggerEquipment = equipment;
-
-        // 获取袋码标签
-        var qrCodeTag = context.TriggerEquipment.TagMappings.FirstOrDefault(m => m.Purpose == "QrCode" || m.TagCode.EndsWith(".Code"));
-        string bagCode = string.Empty;
-
-        if (qrCodeTag is null)
-        {
-            _logger.LogWarning($"[ {WorkStationProcess} ]  [ {context.TriggerTagName} ] 触发但未找到袋码标签");
-            await WriteProcessResult(context, ProcessResult.Error, "未找到袋码标签");
-            return;
-        }
-
-        // 获取袋码
-        _logger.LogDebug($"[ {WorkStationProcess} ]  [ {context.TriggerTagName} ] 读取袋码标签: {qrCodeTag.TagCode}");
-        bagCode = _deviceComm.GetTagValue<string>(qrCodeTag.TagCode);
-
-        if (string.IsNullOrEmpty(bagCode))
-        {
-            _logger.LogWarning($"[ {WorkStationProcess} ]  [ {context.TriggerTagName} ] 触发但未读取到袋码: {bagCode}");
-            await WriteProcessResult(context, ProcessResult.Error, "未读取到袋码");
-            return;
-        }
-
-        // 通过袋码获取数据库实体
-
-
-        context.BagCode = bagCode;
-
-        await InternalExecuteAsync(context, bagCode);
-
-
+        return equipment;
     }
 
     /// <summary>

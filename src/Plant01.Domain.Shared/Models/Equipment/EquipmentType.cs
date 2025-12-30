@@ -3,6 +3,7 @@ namespace Plant01.Domain.Shared.Models.Equipment;
 public enum EquipmentType
 {
     Unknown,
+    System,
     BagPicker,
     Packaging,
     Checkweigher,
@@ -11,4 +12,5 @@ public enum EquipmentType
     PalletOut,
     StretchWrapper,
     Labeling,
+    PalletStack
 }
