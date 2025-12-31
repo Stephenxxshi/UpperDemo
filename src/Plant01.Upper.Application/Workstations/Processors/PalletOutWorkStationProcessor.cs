@@ -1,6 +1,7 @@
 using Plant01.Upper.Application.Contracts.Api.Requests;
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
+using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Repository;
 
 namespace Plant01.Upper.Application.Workstations.Processors;
@@ -10,7 +11,7 @@ namespace Plant01.Upper.Application.Workstations.Processors;
 /// </summary>
 public class PalletOutWorkStationProcessor : WorkstationProcessorBase
 {
-    public PalletOutWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
+    public PalletOutWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger, ProductionConfigManager productionConfigManager) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger, productionConfigManager)
     {
         WorkstationType = "WS_PalletOut";
         WorkStationProcess = "出垛工位流程";

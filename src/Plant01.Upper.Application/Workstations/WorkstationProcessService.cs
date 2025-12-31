@@ -129,6 +129,7 @@ public class WorkstationProcessService : IHostedService
 
         try
         {
+
             // 获取工位代码
             var workstation = _productionConfig.GetWorkstationByEquipment(triggerInfo.EquipmentCode);
             var workstationCode = workstation?.Code;
@@ -140,14 +141,13 @@ public class WorkstationProcessService : IHostedService
                 return;
             }
 
-            // 查找对应的工位处理器
+            // 查找对应的工位处理器，准备消息分发
             if (!_processors.TryGetValue(workstationType, out var processor))
             {
                 _logger.LogWarning($"[ 工位流程服务 ] [ {e.TagCode} ] 未找到工位类型 {workstationType} 的流程处理器 (工位: {workstationCode})");
                 await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Error, "未找到工位处理器");
                 return;
             }
-
             // 构建流程上下文
             var context = new WorkstationProcessContext
             {
@@ -161,11 +161,12 @@ public class WorkstationProcessService : IHostedService
             // 执行工位流程
             await processor.ExecuteAsync(context);
 
-            _logger.LogInformation($"[ 工位流程服务 ] [ {e.TagCode} ] 工位流程执行完成: {workstationCode}");
+            //_logger.LogInformation($"[ 工位流程服务 ] [ {e.TagCode} ] 工位流程执行完成: {workstationCode}");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, $"[ 工位流程服务 ] [ {e.TagCode} ] 执行工位流程失败");
+            await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Error, ex.Message);
         }
     }
 

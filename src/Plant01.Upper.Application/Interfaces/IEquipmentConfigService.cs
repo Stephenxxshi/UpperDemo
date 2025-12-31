@@ -14,6 +14,13 @@ public interface IEquipmentConfigService
     Equipment? GetEquipment(string code);
 
     /// <summary>
+    /// 根据TagMapping获取设备实例
+    /// </summary>
+    /// <param name="purpose"></param>
+    /// <returns></returns>
+    //List<Equipment> GetEquipmentByPurpose(string purpose);
+
+    /// <summary>
     /// 获取所有设备编码
     /// </summary>
     List<string> GetAllEquipmentCodes();
@@ -32,4 +39,5 @@ public interface IEquipmentConfigService
     /// 获取设备的标签映射
     /// </summary>
     List<TagMappingDto> GetMappings(string equipmentCode);
+
 }

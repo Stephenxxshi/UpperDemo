@@ -108,12 +108,13 @@ public abstract class PalletStackWorkStationProcessor : IWorkstationProcessor
     /// </summary>
     protected async Task WriteProcessResult(WorkstationProcessContext context, ProcessResult result, string? message = null)
     {
+        var equipment = await GetEquipmentMent(context);
         try
         {
             // 如果有消息标签，写回消息
             if (!string.IsNullOrEmpty(message))
             {
-                var messageMapping = context.TriggerEquipment.TagMappings
+                var messageMapping = equipment.TagMappings
                     .FirstOrDefault(m => m.TagCode.Contains("Message") || m.TagCode.Contains("Msg"));
 
                 if (messageMapping != null)
@@ -123,7 +124,7 @@ public abstract class PalletStackWorkStationProcessor : IWorkstationProcessor
                 }
             }
             // 查找 ProcessResult 用途的标签
-            var resultMapping = context.TriggerEquipment.TagMappings
+            var resultMapping = equipment.TagMappings
                 .FirstOrDefault(m => m.Purpose == TagPurpose.ProcessResult);
 
             if (resultMapping != null)
@@ -136,7 +137,7 @@ public abstract class PalletStackWorkStationProcessor : IWorkstationProcessor
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "写回流程结果失败: {Equipment}", context.TriggerEquipment.Code);
+            _logger.LogError(ex, "写回流程结果失败: {Equipment}", equipment.Code);
         }
     }
 

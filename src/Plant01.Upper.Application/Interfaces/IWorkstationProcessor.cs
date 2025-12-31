@@ -24,9 +24,9 @@ public interface IWorkstationProcessor
 public class WorkstationProcessContext
 {
     /// <summary>
-    /// 袋码
+    /// 产线代码
     /// </summary>
-    public string BagCode { get; set; } = string.Empty;
+    //public string ProductLineCode { get; set; } = string.Empty;
 
     /// <summary>
     /// 工位代码
@@ -37,11 +37,6 @@ public class WorkstationProcessContext
     /// 触发的设备代码
     /// </summary>
     public string EquipmentCode { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 触发的设备实体
-    /// </summary>
-    public Equipment TriggerEquipment { get; set; } = default!;
 
     /// <summary>
     /// 触发标签名称

@@ -262,4 +262,11 @@ public class EquipmentConfigService : IEquipmentConfigService
     {
         return _equipmentCache.Keys.ToList();
     }
+
+    //public List<Equipment> GetEquipmentByPurpose(string purpose)
+    //{
+    //    return _equipmentCache.Values
+    //        .Where(e => e.TagMappings.Any(m => m.Purpose == purpose))
+    //        .ToList();
+    //}
 }

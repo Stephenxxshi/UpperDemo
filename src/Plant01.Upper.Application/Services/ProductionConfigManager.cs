@@ -1,3 +1,4 @@
+using Plant01.Domain.Shared.Models.Equipment;
 using Plant01.Upper.Domain.Entities;
 
 namespace Plant01.Upper.Application.Services;
@@ -70,6 +71,29 @@ public class ProductionConfigManager
         var workstation = GetWorkstationByCode(workstationCode);
         return workstation?.Equipments ?? new List<Equipment>();
     }
+
+    public List<Equipment> GetAllEquipment(string? stationCode = null)
+    {
+        if (stationCode is null)
+        {
+            return _productionLines
+            .SelectMany(x => x.Workstations)
+            .SelectMany(x => x.Equipments)
+            .ToList() ?? [];
+        }
+        else
+        {
+            return _productionLines.SelectMany(x => x.Workstations)
+                .FirstOrDefault(x => x.Code == stationCode)?.Equipments ?? [];
+        }
+    }
+
+    public List<Equipment> GetEquipmentsByCapabilities(Capabilities capabilities, string? stationCode = null)
+    {
+        var equipment = GetAllEquipment(stationCode);
+        return equipment.Where(e => e.Capabilities.HasFlag(capabilities)).ToList();
+    }
+
 
     /// <summary>
     /// 获取工位所属的产线

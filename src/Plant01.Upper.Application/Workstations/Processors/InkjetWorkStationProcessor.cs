@@ -1,5 +1,6 @@
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
+using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Repository;
 
 namespace Plant01.Upper.Application.Workstations.Processors;
@@ -9,7 +10,7 @@ namespace Plant01.Upper.Application.Workstations.Processors;
 /// </summary>
 public class InkjetWorkStationProcessor : WorkstationProcessorBase
 {
-    public InkjetWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
+    public InkjetWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger, ProductionConfigManager productionConfigManager) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger, productionConfigManager)
     {
         WorkstationType = "Inkjet";
         WorkStationProcess = "喷码工位流程";

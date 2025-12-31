@@ -9,6 +9,9 @@ using Plant01.Upper.Domain.Repository;
 
 namespace Plant01.Upper.Application.Services;
 
+/// <summary>
+/// 生产数据查询服务
+/// </summary>
 public class ProductionQueryService : IProductionQueryService
 {
     private readonly IRepository<WorkOrder> _workOrderRepository;

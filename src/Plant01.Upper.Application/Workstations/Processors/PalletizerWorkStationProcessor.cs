@@ -1,5 +1,6 @@
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
+using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Repository;
 using Plant01.Upper.Domain.ValueObjects;
 
@@ -10,9 +11,9 @@ namespace Plant01.Upper.Application.Workstations.Processors;
 /// </summary>
 public class PalletizerWorkStationProcessor : WorkstationProcessorBase
 {
-    public PalletizerWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
+    public PalletizerWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger, ProductionConfigManager productionConfigManager) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger, productionConfigManager)
     {
-        WorkstationType = "Palletizer";
+        WorkstationType = "WS_Palletizer";
         WorkStationProcess = "码垛工位流程";
     }
 
@@ -25,7 +26,6 @@ public class PalletizerWorkStationProcessor : WorkstationProcessorBase
         if (false)
         {
             // 上站防错
-            if()
 
             // 查询码垛位置
 

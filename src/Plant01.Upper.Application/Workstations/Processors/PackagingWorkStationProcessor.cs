@@ -1,5 +1,6 @@
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
+using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Aggregation;
 using Plant01.Upper.Domain.Repository;
 using Plant01.Upper.Domain.ValueObjects;
@@ -14,7 +15,7 @@ namespace Plant01.Upper.Application.Workstations.Processors;
 public class PackagingWorkstationProcessor : WorkstationProcessorBase
 {
 
-    public PackagingWorkstationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger)
+    public PackagingWorkstationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger, ProductionConfigManager productionConfigManager) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger, productionConfigManager)
     {
         WorkstationType = "WS_Packaging";
         WorkStationProcess = "包装工位流程";

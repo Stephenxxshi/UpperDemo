@@ -1,3 +1,5 @@
+using Plant01.Domain.Shared.Models.Equipment;
+
 namespace Plant01.Upper.Domain.Entities;
 
 /// <summary>
@@ -44,4 +46,17 @@ public class ProductionLine
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
+
+    public List<Equipment> GetEquipmentByCapabilities(Capabilities capabilities, string? stationCode = null)
+    {
+        var equipments = Workstations
+            .SelectMany(ws => ws.Equipments)
+            .Where(e => e.Capabilities.HasFlag(capabilities));
+        if (stationCode != null)
+        {
+            return equipments.Where(e => e.Code == stationCode).ToList();
+        }
+        return equipments.ToList();
+
+    }
 }
