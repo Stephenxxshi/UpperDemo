@@ -13,7 +13,6 @@ public class StretchWrapperWorkStationProcessor : WorkstationProcessorBase
     public StretchWrapperWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger, ProductionConfigManager productionConfigManager) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger, productionConfigManager)
     {
         WorkstationType = "StretchWrapper";
-        WorkStationProcess = "覆膜缠绕流程";
     }
 
     protected override async Task InternalExecuteAsync(WorkstationProcessContext context, string bagCode)
@@ -25,7 +24,7 @@ public class StretchWrapperWorkStationProcessor : WorkstationProcessorBase
 
         // 回复PLC
         await WriteProcessResult(context, ProcessResult.Success, "覆膜缠绕结束");
-        _logger.LogInformation($"[ {WorkStationProcess} ] 流程执行完成");
+        _logger.LogInformation($"[ {context.EquipmentCode} ] >>> 袋码 [ {bagCode} ] >>> 流程执行完成");
 
     }
 

@@ -188,7 +188,7 @@ public class WorkstationProcessService : IHostedService
             if (resultMapping != null)
             {
                 await _deviceComm.WriteTagAsync(resultMapping.TagCode, (int)result);
-                _logger.LogInformation("[ 工位流程服务 ] 设备 [{Equipment} ] 写入 -> [ {TagName} ] = {Result}",
+                _logger.LogInformation("[ 工位流程服务 ] [ {Equipment} ] 写入 >>> [ {TagName} ] >>> {Result}",
                     equipmentCode, resultMapping.TagCode, result);
             }
 

@@ -221,11 +221,11 @@ public class Channel : IDisposable
                                     // 注意：首次从 Bad->Good 的变化用于 UI 初始化。
                                     // 如果业务逻辑（如报警）不希望在启动时触发，可以取消下行的注释并使用 if (!isFirstLoad)
                                     // if (!isFirstLoad) 
-                                    Task.Run(() =>
+                                    _ = Task.Run(() =>
                                     {
                                         if (tag.AccessRights != AccessRights.ReadWrite)
                                         {
-                                            _logger.LogDebug("设备:{Device} 标签:{Tag} 更新为:{Value}", Name, tag.Code, kvp.Value);
+                                            _logger.LogDebug($"[ {Name} ] >>> 标签 [ {tag.Code} ] >>> [ {kvp.Value} ]");
                                             _onTagChanged?.Invoke(tag);
                                         }
                                     });

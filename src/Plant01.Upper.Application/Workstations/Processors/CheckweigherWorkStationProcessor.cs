@@ -16,7 +16,6 @@ public class CheckweigherWorkStationProcessor : WorkstationProcessorBase
     public CheckweigherWorkStationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger, ProductionConfigManager productionConfigManager) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger, productionConfigManager)
     {
         WorkstationType = "WS_Checkweigher";
-        WorkStationProcess = "复检称重流程";
     }
 
     protected override async Task InternalExecuteAsync(WorkstationProcessContext context, string bagCode)
@@ -32,16 +31,21 @@ public class CheckweigherWorkStationProcessor : WorkstationProcessorBase
 
         // 判断重量是否合格
 
-        // 保存袋码
+        // 查询袋码实体
         using var scope = _serviceScopeFactory.CreateScope();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         var bagRepo = unitOfWork.BagRepository;
 
         var bags = await bagRepo.GetAllAsync(o => o.BagCode == bagCode);
+        if (bags.Count > 1)
+        {
+            _logger.LogError($"[ {context.EquipmentCode} ] >>> 袋码 : [ {bagCode} ] -> 存在多个相同的袋码信息");
+        }
+
         var bag = bags.FirstOrDefault();
         if (bag is null)
         {
-            _logger.LogWarning($"[ {WorkStationProcess} ] 袋码 : [ {bagCode} ] -> 未找到对应的袋码信息");
+            _logger.LogWarning($"[ {context.EquipmentCode} ] >>> 袋码 : [ {bagCode} ] -> 未找到对应的袋码信息");
             await WriteProcessResult(context, ProcessResult.Error, "未找到对应的袋信息");
             return;
         }
@@ -49,7 +53,7 @@ public class CheckweigherWorkStationProcessor : WorkstationProcessorBase
         // 是否可以称重
         if (!bag.CanWeigh())
         {
-            _logger.LogError($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 前道工序未完成");
+            _logger.LogError($"[ {context.EquipmentCode} ] >>> 袋码[ {bagCode} ] -> 前道工序未完成");
             await WriteProcessResult(context, ProcessResult.Error, "前道工序未完成");
             return;
         }
@@ -64,11 +68,21 @@ public class CheckweigherWorkStationProcessor : WorkstationProcessorBase
         bag.AddRecord(ProcessStep.Weighing, context.EquipmentCode, true, data);
 
         // 更新袋码状态
-        await unitOfWork.SaveChangesAsync();
+        int result = await unitOfWork.SaveChangesAsync();
+        if (result <= 0)
+        {
+            _logger.LogError($"[ {context.EquipmentCode} ] >>> 袋码[ {bagCode} ] >>> 更新实际重量失败");
+            await WriteProcessResult(context, ProcessResult.Error, "更新实际重量失败");
+            return;
+        }
+        else
+        {
+            await WriteProcessResult(context, ProcessResult.Success, "复检称重流程完成");
+            _logger.LogInformation($"[ {context.EquipmentCode} ] >>> 袋码 [ {bagCode} ] >>> 复检称重工位流程执行完成");
+
+        }
 
         // 发送PLC
-        await WriteProcessResult(context, ProcessResult.Success, "复检称重流程完成");
-        _logger.LogInformation($"[ {WorkStationProcess} ] 袋码 : [ {bagCode} ] -> 复检称重工位流程执行完成");
     }
 
 

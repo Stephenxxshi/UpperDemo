@@ -5,6 +5,8 @@ using Plant01.Upper.Application.Services;
 using Plant01.Upper.Domain.Entities;
 using Plant01.Upper.Domain.Repository;
 
+using System;
+
 namespace Plant01.Upper.Application.Workstations.Processors;
 
 /// <summary>
@@ -13,7 +15,6 @@ namespace Plant01.Upper.Application.Workstations.Processors;
 public abstract class WorkstationProcessorBase : IWorkstationProcessor
 {
     public string WorkstationType { get; protected set; } = string.Empty;
-    protected string WorkStationProcess = string.Empty;
     protected Equipment TriggerEquipment;
 
     protected readonly IDeviceCommunicationService _deviceComm;
@@ -47,43 +48,25 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
 
     public async Task ExecuteAsync(WorkstationProcessContext context)
     {
-        // 获取产线实体
-        var productLine = _productionConfig.GetProductionLineByEquipment(context.EquipmentCode);
-        var lineEquipment = productLine.Workstations.SelectMany(x => x.Equipments)
-            .FirstOrDefault(x => x.Capabilities == Capabilities.LineStatus);
-
         // PLC是否手动模式
-        if (lineEquipment is null)
+        if (IsManualMode(context))
         {
-            _logger.LogError($"[ {context.WorkstationCode} ] >>> [ {context.TriggerTagName} ]: 未找到设备 {context.EquipmentCode}");
-            await WriteProcessResult(context, ProcessResult.Error, $"未找到设备 {context.EquipmentCode}");
+            _logger.LogError($"[ {context.EquipmentCode} ] >>> 触发标签 [ {context.TriggerTagName} ]: 未找到设备");
+            await WriteProcessResult(context, ProcessResult.Error, $"未找到触发标签对应的设备 {context.EquipmentCode}");
             return;
         }
-        var manualModeTag = lineEquipment.TagMappings.FirstOrDefault(m => m.Purpose == "ManualMode");
-        var autoModeTag = lineEquipment.TagMappings.FirstOrDefault(m => m.Purpose == "AutoMode");
-        if (manualModeTag != null && autoModeTag != null)
-        {
-            var isManualMode = _deviceComm.GetTagValue<bool>(manualModeTag.TagCode);
-            var isAutoMode = _deviceComm.GetTagValue<bool>(autoModeTag.TagCode);
-            if (isManualMode && !isAutoMode)
-            {
-                _logger.LogInformation($"[ {context.WorkstationCode} ] 设备处于手动模式，跳过流程执行");
-                return;
-            }
-        }
 
-        _logger.LogInformation($"[ {context.WorkstationCode} ] [ 标签: {context.TriggerTagName} ] 触发流程", WorkStationProcess, context.TriggerTagName);
+        _logger.LogInformation($"[ {context.EquipmentCode} ] >>> 触发标签 [ {context.TriggerTagName} ] >>> 触发了流程");
 
-        // 获取设备配置以查找标签
+        // 获取标签触发设备配置以查找功能标签
         var equipment = _equipmentConfigService.GetEquipment(context.EquipmentCode);
         if (equipment == null)
         {
-            _logger.LogError($"[ {context.WorkstationCode} ]  [ {context.TriggerTagName} ] -> 在工位  [ {context.WorkstationCode} ] : 未找到设备配置 ");
+            _logger.LogError($"[ {context.EquipmentCode} ] >>> 触发标签 [ {context.TriggerTagName} ] >>> 未找到设备配置 ");
 
             await WriteProcessResult(context, ProcessResult.Error, "未找到设备配置");
             return;
         }
-
 
         // 获取袋码标签
         var qrCodeTag = equipment.TagMappings.FirstOrDefault(m => m.Purpose == "QrCode" || m.TagCode.EndsWith(".Code"));
@@ -91,18 +74,18 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
 
         if (qrCodeTag is null)
         {
-            _logger.LogWarning($"[ {context.WorkstationCode} ]  [ {context.TriggerTagName} ] 触发但未找到QrCode");
+            _logger.LogWarning($"[ {context.EquipmentCode} ] >>> 触发标签 [ {context.TriggerTagName} ]  >>> 未找到QrCode");
             await WriteProcessResult(context, ProcessResult.Error, "未找到QrCode标签");
             return;
         }
 
         // 获取袋码
-        _logger.LogDebug($"[ {context.WorkstationCode} ]  [ {context.TriggerTagName} ] 读取袋码标签: {qrCodeTag.TagCode}");
+        _logger.LogDebug($"[ {context.EquipmentCode} ] >>> 触发标签 [ {context.TriggerTagName} ] >>> 读取袋码标签: {qrCodeTag.TagCode}");
         bagCode = _deviceComm.GetTagValue<string>(qrCodeTag.TagCode);
 
         if (string.IsNullOrEmpty(bagCode))
         {
-            _logger.LogWarning($"[ {context.WorkstationCode} ]  [ {context.TriggerTagName} ] 触发但未读取到袋码: {bagCode}");
+            _logger.LogWarning($"[ {context.EquipmentCode} ] >>> 触发标签 [ {context.TriggerTagName} ] 未读取到袋码: {bagCode}");
             await WriteProcessResult(context, ProcessResult.Error, "未读取到袋码");
             return;
         }
@@ -139,7 +122,7 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
             if (resultMapping != null)
             {
                 await _deviceComm.WriteTagAsync(resultMapping.TagCode, (int)result);
-                //_logger.LogInformation($"[ {context.WorkstationCode} ]  [ {context.BagCode ?? string.Empty} ] -> 写入 [ {resultMapping.TagCode} ] ：{(int)result}({result})");
+                //_logger.LogInformation($"[ {context.EquipmentCode} ]  [ {context.BagCode ?? string.Empty} ] -> 写入 [ {resultMapping.TagCode} ] ：{(int)result}({result})");
             }
 
 
@@ -148,6 +131,23 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
         {
             _logger.LogError(ex, "写回流程结果失败: {Equipment}", equipment.Code);
         }
+    }
+
+    private bool IsManualMode(WorkstationProcessContext context)
+    {
+        // 获取产线实体
+        var productLine = _productionConfig.GetProductionLineByEquipment(context.EquipmentCode);
+        var lineEquipment = productLine!.Workstations.SelectMany(x => x.Equipments)
+            .First(x => x.Capabilities == Capabilities.LineStatus);
+        var manualModeTag = lineEquipment.TagMappings.FirstOrDefault(m => m.Purpose == "ManualMode");
+        var autoModeTag = lineEquipment.TagMappings.FirstOrDefault(m => m.Purpose == "AutoMode");
+        if (manualModeTag != null && autoModeTag != null)
+        {
+            var isManualMode = _deviceComm.GetTagValue<bool>(manualModeTag.TagCode);
+            var isAutoMode = _deviceComm.GetTagValue<bool>(autoModeTag.TagCode);
+            return isManualMode && !isAutoMode;
+        }
+        return false;
     }
 
     protected virtual async Task InternalExecuteAsync(WorkstationProcessContext context, string bagCode)

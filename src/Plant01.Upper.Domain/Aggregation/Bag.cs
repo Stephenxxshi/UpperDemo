@@ -198,8 +198,9 @@ public class Bag : CommonFields
     {
         // 必须有复检称重成功记录（合格）
         // 这里假设 IsSuccess=true 代表称重合格
-        return Records.Any(r => r.Step == ProcessStep.Weighing && r.IsSuccess)
-            && !Records.Any(r => r.Step == ProcessStep.Inkjet && r.IsSuccess);
+        return Records.Any(r => r.Step == ProcessStep.Weighing && r.IsSuccess);
+        //return Records.Any(r => r.Step == ProcessStep.Weighing && r.IsSuccess)
+        //    && !Records.Any(r => r.Step == ProcessStep.Inkjet && r.IsSuccess);
     }
 
     /// <summary>

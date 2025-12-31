@@ -18,7 +18,6 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
     public PackagingWorkstationProcessor(IDeviceCommunicationService deviceComm, IMesService mesService, IEquipmentConfigService equipmentConfigService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider, IWorkOrderRepository workOrderRepository, ILogger<WorkstationProcessorBase> logger, ProductionConfigManager productionConfigManager) : base(deviceComm, mesService, equipmentConfigService, serviceScopeFactory, serviceProvider, workOrderRepository, logger, productionConfigManager)
     {
         WorkstationType = "WS_Packaging";
-        WorkStationProcess = "包装工位流程";
     }
 
 
@@ -28,14 +27,14 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
         var workOrders = await _workOrderRepository.GetAllAsync(workOrder => workOrder.Status == Domain.ValueObjects.WorkOrderStatus.开工);
         if (workOrders.Count == 0)
         {
-            _logger.LogWarning($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 没有找到开工中的工单");
+            _logger.LogWarning($"[ {context.WorkstationCode} ] >>> 袋码 [ {bagCode} ] >>> 没有找到开工中的工单");
             await WriteProcessResult(context, ProcessResult.Error, "没有找到开工中的工单");
             return;
         }
 
         if (workOrders.Count > 1)
         {
-            _logger.LogError($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 开工的工单数量为 [ {workOrders.Count} ] > 1");
+            _logger.LogError($"[ {context.WorkstationCode} ] >>> 袋码 [ {bagCode} ] >>> 开工的工单数量为 [ {workOrders.Count} ] > 1");
             await WriteProcessResult(context, ProcessResult.Error, "开工的工单数量异常");
             return;
         }
@@ -46,7 +45,7 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
         var equipment = _equipmentConfigService.GetEquipment(context.EquipmentCode);
         if (equipment == null)
         {
-            _logger.LogError($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 未找到设备配置: {context.EquipmentCode}");
+            _logger.LogError($"[ {context.WorkstationCode} ] >>> 袋码 [ {bagCode} ] >>> 未找到设备配置: {context.EquipmentCode}");
             await WriteProcessResult(context, ProcessResult.Error, "没有找到设备配置");
             return;
         }
@@ -74,7 +73,7 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
 
         if (bag == null)
         {
-            _logger.LogInformation($"[ {WorkStationProcess} ] 袋码:[ {bagCode} ] -> 创建新袋码记录");
+            _logger.LogInformation($"[ {context.EquipmentCode} ] >>> 袋码 [ {bagCode} ] >>> 创建新袋码记录");
             // 上袋是第一步，如果不存在则创建
             bag = new Bag
             {
@@ -98,7 +97,7 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
         // 是否可以包装
         if (!bag.CanPackaging())
         {
-            _logger.LogError($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 袋码已使用，无法再次包装");
+            _logger.LogError($"[ {context.EquipmentCode} ] >>> 袋码 [ {bagCode} ] >>> 袋码已使用，无法再次包装");
             await WriteProcessResult(context, ProcessResult.Error, "袋码已使用，无法再次包装");
             return;
         }
@@ -118,12 +117,19 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
         }
 
         // 更新袋码状态
-        await unitOfWork.SaveChangesAsync();
-        _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] -> 在 {context.EquipmentCode} 包装");
-        await WriteProcessResult(context, ProcessResult.Success, "包装工位流程执行完成");
-        _logger.LogInformation($"[ {WorkStationProcess} ] 袋码[ {bagCode} ] 流程执行完成");
-
-
+        int result = await unitOfWork.SaveChangesAsync();
+        if (result > 0)
+        {
+            _logger.LogInformation($"[ {context.EquipmentCode} ] >>> 袋码 [ {bagCode} ] >>> 包装记录已更新");
+            await WriteProcessResult(context, ProcessResult.Success);
+            _logger.LogInformation($"[ {context.EquipmentCode} ] >>> 袋码 [ {bagCode} ] >>> 流程执行完成");
+        }
+        else
+        {
+            _logger.LogError($"[ {context.EquipmentCode} ] >>> 袋码 [ {bagCode} ] >>> 包装记录更新失败");
+            await WriteProcessResult(context, ProcessResult.Error, "包装记录更新失败");
+            return;
+        }
     }
 
 
