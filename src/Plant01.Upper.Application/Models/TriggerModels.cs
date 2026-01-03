@@ -5,6 +5,7 @@ public enum TriggerSourceType
     PLC,        // PLC 信号
     Scanner,    // 扫码枪
     Manual,     // 人工/按钮
+    ModbusRTU,  // Modbus RTU 设备
     System      // 系统内部触发
 }
 

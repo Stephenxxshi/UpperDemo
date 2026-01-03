@@ -1,3 +1,4 @@
+using Plant01.Upper.Application.Models;
 using Plant01.Upper.Domain.Models;
 
 namespace Plant01.Upper.Application.Interfaces.DeviceCommunication;
@@ -38,10 +39,12 @@ public class TagChangeEventArgs : EventArgs
 {
     public string TagCode { get; }
     public TagValue NewValue { get; }
+    public TriggerSourceType TriggerSourceType { get; set; }
 
-    public TagChangeEventArgs(string tagCode, TagValue newValue)
+    public TagChangeEventArgs(string tagCode, TagValue newValue,TriggerSourceType triggerSource = TriggerSourceType.System)
     {
         TagCode = tagCode;
         NewValue = newValue;
+        TriggerSourceType = triggerSource;
     }
 }

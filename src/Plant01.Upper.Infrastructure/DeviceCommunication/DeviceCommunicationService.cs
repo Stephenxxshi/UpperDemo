@@ -2,6 +2,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
+using Plant01.Upper.Application.Models;
 using Plant01.Upper.Domain.Models;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Configs;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
@@ -167,7 +168,13 @@ public class DeviceCommunicationService : IDeviceCommunicationService, IHostedSe
     {
         var snapshot = tag.GetSnapshot();
         var tagValue = new TagValue(tag.Code, snapshot.Value, (Domain.Models.TagQuality)snapshot.Quality, snapshot.Timestamp);
-        TagChanged?.Invoke(this, new TagChangeEventArgs(tag.Code, tagValue));
+        TriggerSourceType triggerSourceType = tag.ChannelCode switch
+        {
+            "SiemensS7Tcp" => TriggerSourceType.PLC,
+            "RTU" => TriggerSourceType.ModbusRTU,
+            _ => TriggerSourceType.System,
+        };
+        TagChanged?.Invoke(this, new TagChangeEventArgs(tag.Code, tagValue,triggerSourceType));
     }
 
     public TagValue GetTagValue(string tagName)
