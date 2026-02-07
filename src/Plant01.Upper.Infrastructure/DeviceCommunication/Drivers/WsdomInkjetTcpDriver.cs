@@ -12,6 +12,12 @@ using System.Text.Json.Serialization;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Drivers;
 
+/// <summary>
+/// 提供基于 TCP 的驱动，用于与 Wsdom 喷码机进行通信，支持基于标签的读写操作和连接管理。
+/// </summary>
+/// <remarks>此驱动实现了 IDriver 接口，允许通过 TCP 网络与 Wsdom 喷码机集成。它管理连接状态，支持常用命令的缓存，并允许读取和写入设备标签。
+/// 网络操作保证线程安全。连接前需使用有效的 DeviceConfig 初始化驱动。典型使用流程为：初始化、连接、读取或写入标签、断开连接。
+/// 驱动使用注入的 ILogger 实例记录错误和警告。</remarks>
 public class WsdomInkjetTcpDriver : IDriver
 {
         private DeviceConfig? _config;
@@ -230,14 +236,14 @@ public class WsdomInkjetTcpDriver : IDriver
         var request = new WsdomRequest { Command = command, Data = data };
         var jsonBytes = JsonSerializer.SerializeToUtf8Bytes(request);
 
-        // 包长度 = 1 (Header) + 2 (Length) + N (Data)
+        // 包长度 = 1（头） + 2（长度） + N（数据）
         int totalLength = 1 + 2 + jsonBytes.Length;
         if (totalLength > 65535) throw new ArgumentException("数据包过大");
 
         var buffer = new byte[totalLength];
         buffer[0] = 0x8C; // Header
 
-        // Length (Big Endian)
+        // 长度（大端）
         var lenBytes = BitConverter.GetBytes((ushort)totalLength);
         if (BitConverter.IsLittleEndian) Array.Reverse(lenBytes);
         Array.Copy(lenBytes, 0, buffer, 1, 2);

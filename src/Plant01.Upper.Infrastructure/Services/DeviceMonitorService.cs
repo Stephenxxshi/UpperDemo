@@ -122,13 +122,9 @@ public class DeviceMonitorService : BackgroundService
 
                 // 5. 发送调度消息
                 // 使用 EquipmentCode 作为 StationId
-                var triggerSourceTypeStr = _tagConfigCache[e.TagCode].Mapping.TriggerSource;
-                var triggerSourceType = Enum.TryParse<TriggerSourceType>(mapping.TriggerSource, out var sourceType)
-                    ? sourceType
-                    : TriggerSourceType.PLC;
                 await _dispatcher.EnqueueAsync(
                     stationId: equipmentCode,
-                    source: TriggerSourceType.PLC,
+                    source: e.TriggerSourceType,
                     payload: $"{e.TagCode}={e.NewValue.Value}",
                     priority: TriggerPriority.Normal,
                     debounceKey: e.TagCode // 按标签名防抖

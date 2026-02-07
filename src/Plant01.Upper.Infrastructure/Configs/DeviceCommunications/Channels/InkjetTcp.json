@@ -1,0 +1,47 @@
+{
+  "$schema": "../Schemas/channel-config.schema.json",
+  "Code": "WsdomInkjetTcpDriver",
+  "Name": "西门子S7通道",
+  "Enable": true,
+  "Description": "用于连接西门子 S7 PLC 的 TCP 通道",
+  "Drive": "SiemensS7",
+  "DriveModel": "S7_1200",
+  "Devices": [
+    {
+      "Name": "PLC01",
+      "Description": "上袋机1 PLC",
+      "Enable": true,
+      "IpAddress": "10.168.10.1",
+      "Port": 102,
+      "Rack": 0,
+      "Slot": 1,
+      "ScanRate": 300,
+      "ConnectTimeout": 5000,
+      "PlcModel": "S7_1200"
+    },
+    {
+      "Name": "PLC02",
+      "Description": "上袋机2 PLC",
+      "Enable": false,
+      "IpAddress": "10.168.1.22",
+      "Port": 102,
+      "Rack": 0,
+      "Slot": 1,
+      "ScanRate": 100,
+      "ConnectTimeout": 5000,
+      "PlcModel": "S7_1200"
+    },
+    {
+      "Name": "PLC03",
+      "Description": "输送线 PLC",
+      "Enable": false,
+      "IpAddress": "10.168.1.41",
+      "Port": 102,
+      "Rack": 0,
+      "Slot": 1,
+      "ScanRate": 100,
+      "ConnectTimeout": 5000,
+      "PlcModel": "S7_1200"
+    }
+  ]
+}
