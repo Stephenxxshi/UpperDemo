@@ -43,7 +43,7 @@
                                 </Trigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter TargetName="bd" Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ControlItemBgActive}}" />
-                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PrimaryColor}}" />
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ControlItemTextActive}}" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>

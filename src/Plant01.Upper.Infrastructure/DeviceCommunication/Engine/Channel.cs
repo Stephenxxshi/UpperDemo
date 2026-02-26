@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Application.Models.DeviceCommunication;
+using Plant01.Upper.Infrastructure.DeviceCommunication.Expressions;
 using Plant01.Upper.Infrastructure.DeviceCommunication.Models;
 
 namespace Plant01.Upper.Infrastructure.DeviceCommunication.Engine;
@@ -212,16 +213,17 @@ public class Channel : IDisposable
                             var tag = _tags.FirstOrDefault(t => t.Code == kvp.Key);
                             if (tag != null)
                             {
+                                var transformedValue = TagValueExpressionEvaluator.EvaluateOrFallback(tag, kvp.Value, _logger);
                                 // 记录更新前的状态，用于判断是否是首次初始化
                                 bool isFirstLoad = tag.CurrentQuality == Models.TagQuality.Bad && tag.CurrentTimestamp == DateTime.MinValue;
                                 // 如果标签值发生变化，触发回调
-                                if (tag.Update(kvp.Value, Models.TagQuality.Good) || isFirstLoad)
+                                if (tag.Update(transformedValue, Models.TagQuality.Good) || isFirstLoad)
                                 {
                                     _ = Task.Run(() =>
                                     {
                                         if (tag.AccessRights != AccessRights.ReadWrite)
                                         {
-                                            _logger.LogDebug($"[ {Name} ] >>> 标签 [ {tag.Code} ] >>> [ {kvp.Value} ]");
+                                            _logger.LogDebug($"[ {Name} ] >>> 标签 [ {tag.Code} ] >>> [ {transformedValue} ]");
                                             _onTagChanged?.Invoke(tag);
                                         }
                                     });

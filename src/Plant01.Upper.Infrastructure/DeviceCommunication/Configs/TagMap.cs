@@ -18,7 +18,7 @@ public class TagMap : ClassMap<CommunicationTag>
             {
                 return result;
             }
-            // 处理DataType类型
+            // 澶勭悊DataType绫诲瀷
             if (string.Equals(typeStr, "Short", StringComparison.OrdinalIgnoreCase)) return TagDataType.Int16;
             if (string.Equals(typeStr, "UShort", StringComparison.OrdinalIgnoreCase)) return TagDataType.UInt16;
             if (string.Equals(typeStr, "Int", StringComparison.OrdinalIgnoreCase)) return TagDataType.Int32;
@@ -31,6 +31,20 @@ public class TagMap : ClassMap<CommunicationTag>
 
         Map(m => m.DeviceCode).Name("DeviceCode");
         Map(m => m.ChannelCode).Name("ChannelCode");
+        Map(m => m.ValueTransformExpression).Name("ValueTransformExpression", "TransformExpression", "Expression")
+            .Optional()
+            .Convert(args =>
+            {
+                foreach (var header in new[] { "ValueTransformExpression", "TransformExpression", "Expression" })
+                {
+                    var field = args.Row.GetField(header);
+                    if (!string.IsNullOrWhiteSpace(field))
+                    {
+                        return field.Trim();
+                    }
+                }
+                return null;
+            });
 
         Map(m => m.ArrayLength).Name("Length").Default((ushort)1).Convert(args => 
         {

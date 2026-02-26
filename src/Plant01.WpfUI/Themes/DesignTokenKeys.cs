@@ -268,6 +268,10 @@ public static class DesignTokenKeys
     /// </summary>
     public static ComponentResourceKey ControlItemBgActive => CreateKey(nameof(ControlItemBgActive));
     /// <summary>
+    /// 控件项激活/选中文字颜色。
+    /// </summary>
+    public static ComponentResourceKey ControlItemTextActive => CreateKey(nameof(ControlItemTextActive));
+    /// <summary>
     /// 控件项激活并悬停的背景。
     /// </summary>
     public static ComponentResourceKey ControlItemBgActiveHover => CreateKey(nameof(ControlItemBgActiveHover));

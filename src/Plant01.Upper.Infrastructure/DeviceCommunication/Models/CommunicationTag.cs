@@ -124,6 +124,11 @@ public class CommunicationTag
     public AccessRights AccessRights { get; set; } = AccessRights.ReadWrite;
 
     /// <summary>
+    /// 获取或设置源值到目标值的转换表达式（变量支持: value/x/source）
+    /// </summary>
+    public string? ValueTransformExpression { get; set; }
+
+    /// <summary>
     /// 获取或设置驱动特定的扩展属性（如 Modbus 的 StationId、S7 的 Db 等）
     /// </summary>
     public Dictionary<string, object>? ExtendedProperties { get; set; }
