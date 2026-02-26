@@ -7,10 +7,10 @@
     <converters:ThicknessSideConverter x:Key="ThicknessSideConverter"/>
 
     <Style TargetType="{x:Type controls:AntModal}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PopoverBackground}}"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColorSplit}}"/>
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="{DynamicResource {x:Static themes:DesignTokenKeys.PaddingLG}}"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="{DynamicResource {x:Static themes:DesignTokenKeys.FontSize}}"/>
@@ -19,14 +19,14 @@
                 <ControlTemplate TargetType="{x:Type controls:AntModal}">
                     <Border Background="Transparent">
                         <!-- Shadow Container -->
-                        <Border Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"
+                        <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="{DynamicResource {x:Static themes:DesignTokenKeys.BorderRadius}}"
                                 Margin="20"
                                 MinWidth="400">
                             <Border.Effect>
-                                <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.2" Direction="270"/>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="3" Opacity="0.4" Direction="270"/>
                             </Border.Effect>
                             
                             <Grid>
