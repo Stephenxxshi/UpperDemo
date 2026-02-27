@@ -9,8 +9,7 @@ public class TagMap : ClassMap<CommunicationTag>
     {
         Map(m => m.Code).Name("TagCode");
         Map(m => m.Address).Name("Address");
-        Map(m => m.Description).Name("Description").Optional();
-        
+
         Map(m => m.DataType).Name("DataType").Convert(args => 
         {
             var typeStr = args.Row.GetField("DataType");
@@ -31,20 +30,6 @@ public class TagMap : ClassMap<CommunicationTag>
 
         Map(m => m.DeviceCode).Name("DeviceCode");
         Map(m => m.ChannelCode).Name("ChannelCode");
-        Map(m => m.ValueTransformExpression).Name("ValueTransformExpression", "TransformExpression", "Expression")
-            .Optional()
-            .Convert(args =>
-            {
-                foreach (var header in new[] { "ValueTransformExpression", "TransformExpression", "Expression" })
-                {
-                    var field = args.Row.GetField(header);
-                    if (!string.IsNullOrWhiteSpace(field))
-                    {
-                        return field.Trim();
-                    }
-                }
-                return null;
-            });
 
         Map(m => m.ArrayLength).Name("Length").Default((ushort)1).Convert(args => 
         {

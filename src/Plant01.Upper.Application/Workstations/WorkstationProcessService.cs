@@ -108,8 +108,10 @@ public class WorkstationProcessService : IHostedService
         if (!_triggerMappings.TryGetValue(e.TagCode, out var triggerInfo))
             return;
 
+        var transformedValue = TagValueTransformEvaluator.EvaluateOrFallback(triggerInfo.TagMapping, e.NewValue.Value, _logger);
+
         // 检查触发条件是否满足
-        if (!TriggerEvaluator.Evaluate(e.NewValue.Value, triggerInfo.TagMapping.TriggerCondition))
+        if (!TriggerEvaluator.Evaluate(transformedValue, triggerInfo.TagMapping.TriggerCondition))
         {
             await WriteProcessResult(triggerInfo.EquipmentCode, ProcessResult.Idle);
             return;
@@ -125,7 +127,7 @@ public class WorkstationProcessService : IHostedService
 
         triggerInfo.LastTriggerTime = now;
 
-        _logger.LogInformation($"[ 工位流程服务 ] [ {e.TagCode} ] = {e.NewValue.Value} -> 检测到流程触发");
+        _logger.LogInformation($"[ 工位流程服务 ] [ {e.TagCode} ] = {transformedValue} -> 检测到流程触发");
 
         try
         {
@@ -154,7 +156,7 @@ public class WorkstationProcessService : IHostedService
                 WorkstationCode = workstationCode,
                 EquipmentCode = triggerInfo.EquipmentCode,
                 TriggerTagName = e.TagCode,
-                TriggerValue = e.NewValue.Value,
+                TriggerValue = transformedValue,
                 TriggerTime = now
             };
 

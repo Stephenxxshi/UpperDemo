@@ -37,6 +37,8 @@ public class TagMappingDto
     public string TagCode { get; set; } = string.Empty;
     public string TagName { get; set; } = string.Empty;
     public string Purpose { get; set; } = string.Empty;
+    public FinalDataType DataType { get; set; } = FinalDataType.Int16;
+    public string? ValueTransformExpression { get; set; }
     public bool IsCritical { get; set; }
     public TagDirection Direction { get; set; } = TagDirection.Input;
     public bool IsTrigger { get; set; }

@@ -1,13 +1,14 @@
-# Tag 值转换表达式说明
+# Tag 值转换表达式说明（业务层）
 
 ## 目标
-在 `DeviceCommunication` 标签配置中，为每个 Tag 增加可选的“源值 -> 目标值”转换表达式能力。
+在业务标签映射中，为每个 Tag 增加可选的“源值 -> 目标值”转换表达式能力。
 
 ## 配置字段
-在标签 CSV 中新增可选列（支持任一列名）：
-- `ValueTransformExpression`（推荐）
-- `TransformExpression`
-- `Expression`
+在 `Configs/Lines/Tags/*.csv` 中使用可选列：
+- `ValueTransformExpression`
+
+并建议同时配置：
+- `DataType`（用于转换结果强类型化）
 
 未配置时，系统保持原始值不变。
 
@@ -21,7 +22,7 @@
 - `=1`（等价于 `value = 1`，可用于触发位转布尔）
 
 ## 生效时机
-在驱动读取到原始值后、写入 `CommunicationTag` 快照前执行转换。
+转换在业务层和 UI 层执行，通信层只提供原始值。
 
 ## 异常处理
 - 表达式执行失败时，自动回退为原始值。

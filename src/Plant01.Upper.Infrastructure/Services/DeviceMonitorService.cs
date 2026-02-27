@@ -8,6 +8,7 @@ using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Application.Messages;
 using Plant01.Upper.Application.Models;
+using Plant01.Upper.Application.Services;
 
 namespace Plant01.Upper.Infrastructure.Services;
 
@@ -92,6 +93,7 @@ public class DeviceMonitorService : BackgroundService
             }
 
             var (equipmentCode, mapping) = config;
+            var transformedValue = TagValueTransformEvaluator.EvaluateOrFallback(mapping, e.NewValue.Value, _logger);
 
             // 2. 发送通用状态变化消息 (给 UI 或 状态服务)
             // 无论是否为触发器，只要值变化了，都应该通知上层
@@ -115,17 +117,17 @@ public class DeviceMonitorService : BackgroundService
             }
 
             // 4. 检查触发条件
-            if (TriggerEvaluator.Evaluate(e.NewValue.Value, mapping.TriggerCondition))
+            if (TriggerEvaluator.Evaluate(transformedValue, mapping.TriggerCondition))
             {
                 _logger.LogInformation("[ 设备监控服务 ] 触发器激活: {Equipment} - {Tag} (Value: {Value})", 
-                    equipmentCode, e.TagCode, e.NewValue.Value);
+                    equipmentCode, e.TagCode, transformedValue);
 
                 // 5. 发送调度消息
                 // 使用 EquipmentCode 作为 StationId
                 await _dispatcher.EnqueueAsync(
                     stationId: equipmentCode,
                     source: e.TriggerSourceType,
-                    payload: $"{e.TagCode}={e.NewValue.Value}",
+                    payload: $"{e.TagCode}={transformedValue}",
                     priority: TriggerPriority.Normal,
                     debounceKey: e.TagCode // 按标签名防抖
                 );

@@ -26,6 +26,38 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
     protected readonly IServiceScopeFactory _serviceScopeFactory;
     protected readonly ProductionConfigManager _productionConfig;
 
+    protected T GetTransformedTagValue<T>(EquipmentTagMapping mapping, T defaultValue = default)
+    {
+        var raw = _deviceComm.GetTagValue(mapping.TagCode).Value;
+        var transformed = TagValueTransformEvaluator.EvaluateOrFallback(mapping, raw, _logger);
+
+        try
+        {
+            if (transformed is T typed)
+            {
+                return typed;
+            }
+
+            var targetType = typeof(T);
+            var underlyingType = Nullable.GetUnderlyingType(targetType);
+            if (underlyingType != null)
+            {
+                targetType = underlyingType;
+            }
+
+            if (transformed == null)
+            {
+                return defaultValue;
+            }
+
+            return (T)Convert.ChangeType(transformed, targetType);
+        }
+        catch
+        {
+            return defaultValue;
+        }
+    }
+
     public WorkstationProcessorBase(
         IDeviceCommunicationService deviceComm,
         IMesService mesService,
@@ -81,7 +113,7 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
 
         // 获取袋码
         _logger.LogDebug($"[ {context.EquipmentCode} ] >>> 触发标签 [ {context.TriggerTagName} ] >>> 读取袋码标签: {qrCodeTag.TagCode}");
-        bagCode = _deviceComm.GetTagValue<string>(qrCodeTag.TagCode);
+        bagCode = GetTransformedTagValue<string>(qrCodeTag);
 
         if (string.IsNullOrEmpty(bagCode))
         {
@@ -143,8 +175,8 @@ public abstract class WorkstationProcessorBase : IWorkstationProcessor
         var autoModeTag = lineEquipment.TagMappings.FirstOrDefault(m => m.Purpose == "AutoMode");
         if (manualModeTag != null && autoModeTag != null)
         {
-            var isManualMode = _deviceComm.GetTagValue<bool>(manualModeTag.TagCode);
-            var isAutoMode = _deviceComm.GetTagValue<bool>(autoModeTag.TagCode);
+            var isManualMode = GetTransformedTagValue<bool>(manualModeTag);
+            var isAutoMode = GetTransformedTagValue<bool>(autoModeTag);
             return isManualMode && !isAutoMode;
         }
         return false;

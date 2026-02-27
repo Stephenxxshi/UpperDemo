@@ -20,7 +20,17 @@ public class EquipmentTagMapping
     /// 标签用途（如 Heartbeat, Alarm, Output, Mode, Recipe 等）
     /// </summary>
     public string Purpose { get; set; } = string.Empty;
-    
+
+    /// <summary>
+    /// 获取或设置数据类型
+    /// </summary>
+    public FinalDataType DataType { get; set; } = FinalDataType.Int16;
+
+    /// <summary>
+    /// 获取或设置源值到目标值的转换表达式（变量支持: value/x/source）
+    /// </summary>
+    public string? ValueTransformExpression { get; set; }
+
     /// <summary>
     /// 关联的通道名称（可选，用于快速定位）
     /// </summary>
@@ -30,7 +40,7 @@ public class EquipmentTagMapping
     /// 是否为关键标签（用于监控优先级）
     /// </summary>
     public bool IsCritical { get; set; }
-    
+
     /// <summary>
     /// 标签方向（输入/输出）
     /// </summary>
@@ -96,4 +106,23 @@ public static class TagPurpose
     public const string Busy = "Busy";                         // 忙碌信号
     public const string Complete = "Complete";                 // 完成信号
     public const string BarcodeRead = "BarcodeRead";           // 条码读取
+}
+
+/// <summary>
+/// 标签数据类型枚举
+/// </summary>
+public enum FinalDataType
+{
+    Boolean,
+    Byte,
+    Int16,
+    UInt16,
+    Int32,
+    UInt32,
+    Int64,
+    UInt64,
+    Float,
+    Double,
+    String,
+    DateTime
 }

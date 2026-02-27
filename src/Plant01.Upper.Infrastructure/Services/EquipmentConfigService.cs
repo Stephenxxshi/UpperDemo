@@ -72,6 +72,8 @@ public class EquipmentConfigService : IEquipmentConfigService
                         TagCode = row.TagCode?.Trim() ?? "",
                         TagName = row.TagName?.Trim() ?? "",
                         Purpose = row.Purpose?.Trim() ?? "",
+                        DataType = ParseFinalDataType(row.DataType),
+                        ValueTransformExpression = row.ValueTransformExpression?.Trim(),
                         IsCritical = row.IsCritical,
                         Direction = ParseTagDirection(row.Direction),
                         TriggerCondition = row.TriggerCondition?.Trim(),
@@ -104,12 +106,36 @@ public class EquipmentConfigService : IEquipmentConfigService
         public string TagName { get; set; } = string.Empty;
         public string Purpose { get; set; } = string.Empty;
         [CsvHelper.Configuration.Attributes.Optional]
+        public string DataType { get; set; } = string.Empty;
+        [CsvHelper.Configuration.Attributes.Optional]
+        public string ValueTransformExpression { get; set; } = string.Empty;
+        [CsvHelper.Configuration.Attributes.Optional]
         [CsvHelper.Configuration.Attributes.Default(false)]
         public bool IsCritical { get; set; }
         public string Direction { get; set; } = string.Empty;
         public string TriggerCondition { get; set; } = string.Empty;
         public string Remarks { get; set; } = string.Empty;
         public string EquipmentCode { get; set; } = string.Empty;
+    }
+
+    private FinalDataType ParseFinalDataType(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return FinalDataType.Int16;
+
+        if (Enum.TryParse<FinalDataType>(input, true, out var dataType))
+        {
+            return dataType;
+        }
+
+        if (input.Equals("Short", StringComparison.OrdinalIgnoreCase)) return FinalDataType.Int16;
+        if (input.Equals("UShort", StringComparison.OrdinalIgnoreCase)) return FinalDataType.UInt16;
+        if (input.Equals("Int", StringComparison.OrdinalIgnoreCase)) return FinalDataType.Int32;
+        if (input.Equals("UInt", StringComparison.OrdinalIgnoreCase)) return FinalDataType.UInt32;
+        if (input.Equals("Bool", StringComparison.OrdinalIgnoreCase)) return FinalDataType.Boolean;
+        if (input.Equals("Real", StringComparison.OrdinalIgnoreCase)) return FinalDataType.Float;
+
+        _logger.LogWarning("[ 设备配置服务 ] 未知标签数据类型: {DataType}, 使用默认 Int16", input);
+        return FinalDataType.Int16;
     }
 
     private TagDirection ParseTagDirection(string input)
@@ -153,6 +179,8 @@ public class EquipmentConfigService : IEquipmentConfigService
                 TagName = m.TagName,
                 TagCode = m.TagCode,
                 Purpose = m.Purpose,
+                DataType = m.DataType,
+                ValueTransformExpression = m.ValueTransformExpression,
                 IsCritical = m.IsCritical,
                 Direction = m.Direction,
                 IsTrigger = m.IsTrigger,

@@ -26,7 +26,7 @@ public class CheckweigherWorkStationProcessor : WorkstationProcessorBase
         double? actualWeight = null;
         if (actualWeightTag != null)
         {
-            actualWeight = _deviceComm.GetTagValue<float>(actualWeightTag.TagCode);
+            actualWeight = GetTransformedTagValue<float>(actualWeightTag);
         }
 
         // 判断重量是否合格

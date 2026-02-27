@@ -46,7 +46,7 @@ public class PalletOutWorkStationProcessor : WorkstationProcessorBase
         }
 
         // 获取托盘号
-        string pallet = _deviceComm.GetTagValue<string>(palletTag.TagCode);
+        string pallet = GetTransformedTagValue<string>(palletTag);
         if (string.IsNullOrEmpty(pallet))
         {
             _logger.LogWarning($"[ {context.EquipmentCode} ] >>> 袋码[ {bagCode} ] >>> 未读取到PLC的托盘号");

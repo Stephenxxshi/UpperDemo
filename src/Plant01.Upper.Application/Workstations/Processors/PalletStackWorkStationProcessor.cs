@@ -22,6 +22,38 @@ public abstract class PalletStackWorkStationProcessor : IWorkstationProcessor
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ProductionConfigManager _productionConfig;
 
+    private T GetTransformedTagValue<T>(EquipmentTagMapping mapping, T defaultValue = default)
+    {
+        var raw = _deviceComm.GetTagValue(mapping.TagCode).Value;
+        var transformed = TagValueTransformEvaluator.EvaluateOrFallback(mapping, raw, _logger);
+
+        try
+        {
+            if (transformed is T typed)
+            {
+                return typed;
+            }
+
+            var targetType = typeof(T);
+            var underlyingType = Nullable.GetUnderlyingType(targetType);
+            if (underlyingType != null)
+            {
+                targetType = underlyingType;
+            }
+
+            if (transformed == null)
+            {
+                return defaultValue;
+            }
+
+            return (T)Convert.ChangeType(transformed, targetType);
+        }
+        catch
+        {
+            return defaultValue;
+        }
+    }
+
     public PalletStackWorkStationProcessor(
         IDeviceCommunicationService deviceComm,
         IMesService mesService,
@@ -48,8 +80,8 @@ public abstract class PalletStackWorkStationProcessor : IWorkstationProcessor
         var autoModeTag = mdj1?.TagMappings.FirstOrDefault(m => m.Purpose == "AutoMode");
         if (manualModeTag != null && autoModeTag != null)
         {
-            var isManualMode = _deviceComm.GetTagValue<bool>(manualModeTag.TagCode);
-            var isAutoMode = _deviceComm.GetTagValue<bool>(autoModeTag.TagCode);
+            var isManualMode = GetTransformedTagValue<bool>(manualModeTag);
+            var isAutoMode = GetTransformedTagValue<bool>(autoModeTag);
             if (isManualMode && !isAutoMode)
             {
                 _logger.LogInformation("[ {WorkStationProcess} ] 设备处于手动模式，跳过流程执行", WorkStationProcess);

@@ -1,10 +1,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
 
 using Plant01.Upper.Application.Interfaces;
 using Plant01.Upper.Application.Interfaces.DeviceCommunication;
 using Plant01.Upper.Application.Messages;
+using Plant01.Upper.Application.Models;
+using Plant01.Upper.Application.Services;
 using Plant01.Upper.Presentation.Core.Models;
 using Plant01.Upper.Presentation.Core.Services;
 
@@ -19,6 +22,8 @@ public partial class DevicePointTableViewModel : ObservableObject, IRecipient<Ta
     private readonly IMessenger _messenger;
     private readonly IDialogService _dialogService;
     private readonly IDispatcherService _dispatcherService;
+    private readonly ILogger<DevicePointTableViewModel> _logger;
+    private readonly Dictionary<string, TagMappingDto> _tagMappingLookup = new(StringComparer.OrdinalIgnoreCase);
 
     [ObservableProperty]
     private ObservableCollection<DeviceTagDisplayModel> _tags = new();
@@ -28,13 +33,15 @@ public partial class DevicePointTableViewModel : ObservableObject, IRecipient<Ta
         IDeviceCommunicationService deviceCommunicationService,
         IMessenger messenger,
         IDialogService dialogService,
-        IDispatcherService dispatcherService)
+        IDispatcherService dispatcherService,
+        ILogger<DevicePointTableViewModel> logger)
     {
         _equipmentConfigService = equipmentConfigService;
         _deviceCommunicationService = deviceCommunicationService;
         _messenger = messenger;
         _dialogService = dialogService;
         _dispatcherService = dispatcherService;
+        _logger = logger;
 
         _messenger.RegisterAll(this);
         InitializeTags();
@@ -47,7 +54,9 @@ public partial class DevicePointTableViewModel : ObservableObject, IRecipient<Ta
         {
             foreach (var tagMapping in equipmentMapping.TagMappings)
             {
+                _tagMappingLookup[$"{equipmentMapping.EquipmentCode}|{tagMapping.TagCode}"] = tagMapping;
                 var tagValue = _deviceCommunicationService.GetTagValue(tagMapping.TagCode);
+                var transformedValue = TagValueTransformEvaluator.EvaluateOrFallback(tagMapping, tagValue.Value, _logger);
                 var model = new DeviceTagDisplayModel
                 {
                     EquipmentCode = equipmentMapping.EquipmentCode,
@@ -55,7 +64,7 @@ public partial class DevicePointTableViewModel : ObservableObject, IRecipient<Ta
                     TagName = tagMapping.TagName,
                     //Address = tagMapping.TagCode,
                     //Purpose = tagMapping.Purpose,
-                    Value = tagValue.Value,
+                    Value = transformedValue,
                     UpdateTime = tagValue.Timestamp == default ? DateTime.Now : tagValue.Timestamp
                 };
                 Tags.Add(model);
@@ -70,7 +79,15 @@ public partial class DevicePointTableViewModel : ObservableObject, IRecipient<Ta
         {
             _dispatcherService.Invoke(() =>
             {
-                tag.Value = message.NewValue;
+                var key = $"{message.EquipmentCode}|{message.TagCode}";
+                if (_tagMappingLookup.TryGetValue(key, out var mapping))
+                {
+                    tag.Value = TagValueTransformEvaluator.EvaluateOrFallback(mapping, message.NewValue, _logger);
+                }
+                else
+                {
+                    tag.Value = message.NewValue;
+                }
                 tag.UpdateTime = message.Timestamp;
             });
         }

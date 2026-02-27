@@ -57,8 +57,8 @@ public class PackagingWorkstationProcessor : WorkstationProcessorBase
         float? packagingTimeSpan = null;
         if (packagingWeightTag != null && packagingTimeSpanTag != null)
         {
-            packagingWeight = _deviceComm.GetTagValue<float>(packagingWeightTag.TagCode);
-            packagingTimeSpan = _deviceComm.GetTagValue<float>(packagingTimeSpanTag.TagCode);
+            packagingWeight = GetTransformedTagValue<float>(packagingWeightTag);
+            packagingTimeSpan = GetTransformedTagValue<float>(packagingTimeSpanTag);
         }
 
 
