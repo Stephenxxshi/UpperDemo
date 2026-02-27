@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:ui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+      xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800">
 
@@ -20,7 +21,7 @@
         <TextBlock Text="AntInput" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Grid.ColumnSpan="2"/>
 
         <!-- Preview Area -->
-        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="White">
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <Grid VerticalAlignment="Center" Margin="20">
                 <ui:AntInput x:Name="DemoInput" 
                              Width="300" 
@@ -29,17 +30,17 @@
         </Border>
 
         <!-- Settings Panel -->
-        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E8E8E8" BorderThickness="1" Padding="15" CornerRadius="4" Background="White">
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" Padding="15" CornerRadius="4" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <TextBlock Text="Configuration" FontWeight="Bold" Margin="0,0,0,15" FontSize="16"/>
 
                     <!-- Placeholder -->
-                    <TextBlock Text="Placeholder" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Placeholder" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <TextBox Text="{Binding ElementName=DemoInput, Path=Placeholder, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
 
                     <!-- Size -->
-                    <TextBlock Text="Size" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Size" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <ComboBox x:Name="SizeCombo" SelectedIndex="1" Margin="0,0,0,15" SelectionChanged="SizeCombo_SelectionChanged">
                         <ComboBoxItem Content="Small"/>
                         <ComboBoxItem Content="Default"/>
@@ -53,3 +54,5 @@
         </Border>
     </Grid>
 </UserControl>
+
+

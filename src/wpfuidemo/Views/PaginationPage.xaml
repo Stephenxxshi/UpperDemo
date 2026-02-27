@@ -20,32 +20,32 @@
         <TextBlock Text="AntPagination" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Grid.ColumnSpan="2"/>
 
         <!-- Preview Area -->
-        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="White">
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                 <ui:AntPagination x:Name="DemoPagination" Total="500" Current="1"/>
             </Grid>
         </Border>
 
         <!-- Settings Panel -->
-        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E8E8E8" BorderThickness="1" Padding="15" CornerRadius="4" Background="White">
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" Padding="15" CornerRadius="4" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <TextBlock Text="Configuration" FontWeight="Bold" Margin="0,0,0,15" FontSize="16"/>
 
                     <!-- Total -->
-                    <TextBlock Text="Total Items" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Total Items" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <TextBox Text="{Binding ElementName=DemoPagination, Path=Total, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
 
                     <!-- Current -->
-                    <TextBlock Text="Current Page" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Current Page" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <TextBox Text="{Binding ElementName=DemoPagination, Path=Current, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
 
                     <!-- PageSize -->
-                    <TextBlock Text="Page Size" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Page Size" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <TextBox Text="{Binding ElementName=DemoPagination, Path=PageSize, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
 
                     <!-- Size -->
-                    <TextBlock Text="Size" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Size" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <ComboBox x:Name="SizeCombo" SelectedIndex="1" Margin="0,0,0,15" SelectionChanged="SizeCombo_SelectionChanged">
                         <ComboBoxItem Content="Small"/>
                         <ComboBoxItem Content="Default"/>
@@ -61,3 +61,5 @@
         </Border>
     </Grid>
 </UserControl>
+
+

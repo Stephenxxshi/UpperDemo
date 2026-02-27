@@ -2,17 +2,18 @@
     x:Class="Plant01.Upper.Wpf.Views.MesDebugView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI"
     xmlns:vm="clr-namespace:Plant01.Upper.Presentation.Core.ViewModels;assembly=Plant01.Upper.Presentation.Core"
     xmlns:views="clr-namespace:Plant01.Upper.Wpf.Views"
-    xmlns:wpfui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
     d:DataContext="{d:DesignInstance vm:MesDebugViewModel}"
     d:DesignHeight="800"
     d:DesignWidth="1200"
-    Background="White"
+    Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"
     mc:Ignorable="d">
-    <wpfui:TransitioningContentControl RunTransitionOnLoaded="True">
+    <controls:TransitioningContentControl RunTransitionOnLoaded="True">
 
         <Grid Margin="10">
             <Grid.RowDefinitions>
@@ -26,6 +27,7 @@
                 Margin="0,0,0,10"
                 FontSize="20"
                 FontWeight="Bold"
+                Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"
                 Text="System Debug Tool" />
 
             <TabControl Grid.Row="1">
@@ -42,15 +44,18 @@
                 Grid.Row="2"
                 Margin="0,10,0,0"
                 Padding="8"
-                Background="#F0F0F0"
-                BorderBrush="#DDDDDD"
+                Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}"
+                BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}"
                 BorderThickness="0,1,0,0">
                 <!-- Status message binding might need adjustment if it was moved to sub-viewmodels, 
                      or we can expose a combined status in the main VM if needed. 
                      For now, let's assume each view handles its own status or we remove this global status bar. 
                      Or we can bind to one of them. Let's bind to MesInterfaceDebug.StatusMessage for now as it was the main one. -->
-                <TextBlock FontWeight="SemiBold" Text="{Binding MesInterfaceDebug.StatusMessage}" />
+                <TextBlock
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"
+                    Text="{Binding MesInterfaceDebug.StatusMessage}" />
             </Border>
         </Grid>
-    </wpfui:TransitioningContentControl>
+    </controls:TransitioningContentControl>
 </UserControl>

@@ -64,7 +64,7 @@
 
                 <!--  暗黑模式  -->
                 <controls:AntButton
-                    Margin="10,0"
+                    Margin="8,0"
                     HorizontalAlignment="Right"
                     Click="ToggleTheme_Click"
                     Content="暗黑模式"
@@ -76,7 +76,11 @@
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
                     WindowChrome.IsHitTestVisibleInChrome="True">
-                    <controls:AntColorPicker VerticalAlignment="Center" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+                    <controls:AntColorPicker
+                        Width="20"
+                        Height="20"
+                        VerticalAlignment="Center"
+                        SelectedColorChanged="ColorPicker_SelectedColorChanged" />
                 </StackPanel>
             </StackPanel>
 
@@ -120,7 +124,7 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Foreground="White"
+                Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextPrimary}}"
                 Text="25110801" />
         </Grid>
     </Grid>

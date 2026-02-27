@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+             xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Margin="20">
@@ -19,7 +20,7 @@
         <TextBlock Text="AntRadioButton" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Grid.ColumnSpan="2"/>
 
         <!-- Preview Area -->
-        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="White">
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
                 <ui:AntRadioButton x:Name="DemoRadio1" Content="Radio 1" GroupName="DemoGroup" IsChecked="True"/>
                 <ui:AntRadioButton x:Name="DemoRadio2" Content="Radio 2" GroupName="DemoGroup" Margin="10,0,0,0"/>
@@ -28,20 +29,20 @@
         </Border>
 
         <!-- Settings Panel -->
-        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E8E8E8" BorderThickness="1" Padding="15" CornerRadius="4" Background="White">
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" Padding="15" CornerRadius="4" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <TextBlock Text="Configuration" FontWeight="Bold" Margin="0,0,0,15" FontSize="16"/>
 
                     <!-- Type -->
-                    <TextBlock Text="Type" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Type" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <ComboBox x:Name="TypeCombo" SelectedIndex="0" Margin="0,0,0,15" SelectionChanged="TypeCombo_SelectionChanged">
                         <ComboBoxItem Content="Default"/>
                         <ComboBoxItem Content="Primary"/>
                     </ComboBox>
 
                     <!-- Size -->
-                    <TextBlock Text="Size" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Size" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <ComboBox x:Name="SizeCombo" SelectedIndex="1" Margin="0,0,0,15" SelectionChanged="SizeCombo_SelectionChanged">
                         <ComboBoxItem Content="Small"/>
                         <ComboBoxItem Content="Default"/>
@@ -55,3 +56,5 @@
         </Border>
     </Grid>
 </UserControl>
+
+

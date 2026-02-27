@@ -20,7 +20,7 @@
         <TextBlock Text="AntAlert" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Grid.ColumnSpan="2"/>
 
         <!-- Preview Area -->
-        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="White">
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <Grid VerticalAlignment="Center" Margin="20">
                 <ui:AntAlert x:Name="DemoAlert" 
                              Message="Alert Message" 
@@ -31,13 +31,13 @@
         </Border>
 
         <!-- Settings Panel -->
-        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E8E8E8" BorderThickness="1" Padding="15" CornerRadius="4" Background="White">
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" Padding="15" CornerRadius="4" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <TextBlock Text="Configuration" FontWeight="Bold" Margin="0,0,0,15" FontSize="16"/>
 
                     <!-- Type -->
-                    <TextBlock Text="Type" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Type" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <ComboBox x:Name="TypeCombo" SelectedIndex="0" Margin="0,0,0,15" SelectionChanged="TypeCombo_SelectionChanged">
                         <ComboBoxItem Content="Success"/>
                         <ComboBoxItem Content="Info"/>
@@ -46,11 +46,11 @@
                     </ComboBox>
 
                     <!-- Message -->
-                    <TextBlock Text="Message" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Message" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <TextBox Text="{Binding ElementName=DemoAlert, Path=Message, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
 
                     <!-- Description -->
-                    <TextBlock Text="Description" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Description" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <TextBox Text="{Binding ElementName=DemoAlert, Path=Description, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
 
                     <!-- Toggles -->
@@ -62,3 +62,5 @@
         </Border>
     </Grid>
 </UserControl>
+
+

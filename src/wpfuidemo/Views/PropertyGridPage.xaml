@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:controls="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+      xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI"
       xmlns:propertyGrids="clr-namespace:Plant01.WpfUI.Controls.PropertyGrids;assembly=Plant01.WpfUI"
       xmlns:viewModels="clr-namespace:wpfuidemo.ViewModels"
       mc:Ignorable="d" 
@@ -24,7 +25,7 @@
             <TextBlock Text="PropertyGrid Demo" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
             <TextBlock Text="Edit the properties on the right to see changes here:" Margin="0,0,0,10"/>
             
-            <Border BorderBrush="Gray" BorderThickness="1" Padding="10" CornerRadius="4">
+            <Border BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" Padding="10" CornerRadius="4">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,5">
                         <TextBlock Text="Name: " FontWeight="Bold"/>
@@ -52,3 +53,4 @@
                                MinTitleWidth="80"/>
     </Grid>
 </UserControl>
+

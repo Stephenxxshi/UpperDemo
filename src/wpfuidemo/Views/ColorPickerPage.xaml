@@ -20,24 +20,24 @@
         <TextBlock Text="AntColorPicker" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Grid.ColumnSpan="2"/>
 
         <!-- Preview Area -->
-        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="White">
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                 <ui:AntColorPicker x:Name="DemoColorPicker" SelectedColor="Blue"/>
             </Grid>
         </Border>
 
         <!-- Settings Panel -->
-        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E8E8E8" BorderThickness="1" Padding="15" CornerRadius="4" Background="White">
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" Padding="15" CornerRadius="4" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <TextBlock Text="Configuration" FontWeight="Bold" Margin="0,0,0,15" FontSize="16"/>
 
                     <!-- Selected Color -->
-                    <TextBlock Text="Selected Color" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Selected Color" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <TextBox Text="{Binding ElementName=DemoColorPicker, Path=SelectedColor, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
                     
                     <!-- Color Preview -->
-                    <Border Height="30" Background="{Binding ElementName=DemoColorPicker, Path=SelectedColor, Converter={x:Static themes:ColorToBrushConverter.Instance}}" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,0,15"/>
+                    <Border Height="30" Background="{Binding ElementName=DemoColorPicker, Path=SelectedColor, Converter={x:Static themes:ColorToBrushConverter.Instance}}" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" CornerRadius="4" Margin="0,0,0,15"/>
 
                     <!-- Toggles -->
                     <CheckBox Content="Disabled" Margin="0,0,0,10" Checked="DisabledCheck_Changed" Unchecked="DisabledCheck_Changed"/>
@@ -46,3 +46,5 @@
         </Border>
     </Grid>
 </UserControl>
+
+

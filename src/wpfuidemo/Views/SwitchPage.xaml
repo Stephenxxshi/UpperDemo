@@ -1,7 +1,8 @@
 <UserControl x:Class="wpfuidemo.Views.SwitchPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:ui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI">
+             xmlns:ui="clr-namespace:Plant01.WpfUI.Controls;assembly=Plant01.WpfUI"
+             xmlns:themes="clr-namespace:Plant01.WpfUI.Themes;assembly=Plant01.WpfUI">
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -15,7 +16,7 @@
         <TextBlock Text="AntSwitch" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Grid.ColumnSpan="2"/>
 
         <!-- Preview Area -->
-        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="White">
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                 <ui:AntSwitch x:Name="DemoSwitch" 
                               CheckedContent="Open" 
@@ -24,13 +25,13 @@
         </Border>
 
         <!-- Settings Panel -->
-        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E8E8E8" BorderThickness="1" Padding="15" CornerRadius="4" Background="White">
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" Padding="15" CornerRadius="4" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <TextBlock Text="Configuration" FontWeight="Bold" Margin="0,0,0,15" FontSize="16"/>
 
                     <!-- Text Placement -->
-                    <TextBlock Text="Text Placement" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Text Placement" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <ComboBox x:Name="PlacementCombo" SelectedIndex="0" Margin="0,0,0,15" SelectionChanged="Placement_SelectionChanged">
                         <ComboBoxItem Content="Inside"/>
                         <ComboBoxItem Content="Left"/>
@@ -38,11 +39,11 @@
                     </ComboBox>
 
                     <!-- Checked Content -->
-                    <TextBlock Text="Checked Content" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Checked Content" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <TextBox Text="{Binding ElementName=DemoSwitch, Path=CheckedContent, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
 
                     <!-- Unchecked Content -->
-                    <TextBlock Text="Unchecked Content" Margin="0,0,0,5" Foreground="#666"/>
+                    <TextBlock Text="Unchecked Content" Margin="0,0,0,5" Foreground="{DynamicResource {x:Static themes:DesignTokenKeys.TextSecondary}}"/>
                     <TextBox Text="{Binding ElementName=DemoSwitch, Path=UnCheckedContent, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Padding="4"/>
 
                     <!-- Toggles -->
@@ -53,3 +54,5 @@
         </Border>
     </Grid>
 </UserControl>
+
+
