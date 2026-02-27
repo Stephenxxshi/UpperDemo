@@ -24,16 +24,16 @@
         <Border Grid.Row="1" Grid.Column="0" BorderBrush="{DynamicResource {x:Static themes:DesignTokenKeys.BorderColor}}" BorderThickness="1" CornerRadius="4" Margin="0,0,20,0" Background="{DynamicResource {x:Static themes:DesignTokenKeys.ComponentBackground}}">
             <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                 <controls:AntTimeline x:Name="DemoTimeline">
-                    <controls:AntTimelineItem Color="Green">
+                    <controls:AntTimelineItem Color="{DynamicResource {x:Static themes:DesignTokenKeys.SuccessColor}}">
                         <TextBlock Text="Create a services site 2015-09-01"/>
                     </controls:AntTimelineItem>
-                    <controls:AntTimelineItem Color="Blue">
+                    <controls:AntTimelineItem Color="{DynamicResource {x:Static themes:DesignTokenKeys.InfoColor}}">
                         <TextBlock Text="Solve initial network problems 2015-09-01"/>
                     </controls:AntTimelineItem>
-                    <controls:AntTimelineItem Color="Red">
+                    <controls:AntTimelineItem Color="{DynamicResource {x:Static themes:DesignTokenKeys.ErrorColor}}">
                         <TextBlock Text="Technical testing 2015-09-01"/>
                     </controls:AntTimelineItem>
-                    <controls:AntTimelineItem Color="Gray">
+                    <controls:AntTimelineItem Color="{DynamicResource {x:Static themes:DesignTokenKeys.TextQuaternary}}">
                         <TextBlock Text="Network problems being solved 2015-09-01"/>
                     </controls:AntTimelineItem>
                 </controls:AntTimeline>
